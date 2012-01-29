@@ -275,6 +275,7 @@ void run_nvscript(const char *nv, const char *arg1, int wtime)
 		run_userfile("/opt/etc/config", s, arg1, wtime);
 		run_userfile("/mmc/etc/config", s, arg1, wtime);
 		run_userfile("/tmp/config", s, arg1, wtime);
+		run_userfile("/easytomato", s, arg1, wtime);
 	}
 }
 

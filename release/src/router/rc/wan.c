@@ -876,6 +876,7 @@ void start_wan_done(char *wan_ifname)
 		notice_set("wan", "");
 
 		run_nvscript("script_wanup", NULL, 0);
+		run_nvscript(".adblocker.sh", NULL, 0);
 	}
 
 	// We don't need STP after wireless led is lighted		//	no idea why... toggling it if necessary	-- zzz
