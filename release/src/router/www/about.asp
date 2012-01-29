@@ -84,13 +84,12 @@ function init()
 <td id='content'>
 <div id='ident'><% ident(); %></div>
 
-<div style='float:right;margin:140px 30px;text-align:center'>
-<img src='kinaree.png' alt='Linux &amp; Tomato' id='tux'>
-</div>
 <div style='margin:30px 30px;font-size:14px;color:#555;'>
-<b>Tomato Firmware v<% version(1); %></b><br>
-- Linux kernel <% version(2); %> and Broadcom Wireless Driver <% version(3); %> updates<br>
-- Support for additional router models, dual-band and Wireless-N mode.<br>
+<b>EasyTomato Firmware v<% version(1); %></b><br>
+Copyright (C) 2011 Relief Labs International
+<a href="http://www.easytomato.org">http://www.easytomato.org</a><br>
+<br>
+<b>Based on Tomato Firmware v<% version(); %></b><br>
 <!-- USB-BEGIN -->
 - USB support integration and GUI,
 <!-- USB-END -->

@@ -358,7 +358,7 @@ function earlyInit()
 <form id='_fom' action='javascript:{}'>
 <table id='container' cellspacing=0>
 <tr><td colspan=2 id='header'>
-	<div class='title'>Tomato</div>
+	<div class='title'>EasyTomato</div>
 	<div class='version'>Version <% version(); %></div>
 </td></tr>
 <tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
