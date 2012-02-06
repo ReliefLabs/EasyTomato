@@ -2463,6 +2463,7 @@ REMOVE-END */
 			['Upgrade',			'upgrade.asp'] ] ],
 		null,
 		['About',				'about.asp'],
+		['Test Stuff',				'test.asp'],
 		['Reboot...',			'javascript:reboot()'],
 		['Shutdown...',			'javascript:shutdown()'],
 		['Logout',				'javascript:logout()']

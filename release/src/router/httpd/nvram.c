@@ -66,6 +66,50 @@ void asp_nvram(int argc, char **argv)
 	web_puts("'};\n");
 }
 
+//	<% nvram2("x,y,z"); %>	-> {'x': '1','y': '2','z': '3'};
+// EasyTomato edit, put in a nvram2 function to return JSON object without the nvram= part of the string
+void asp_nvram2(int argc, char **argv)
+{
+	char *list;
+	char *p, *k;
+
+	if ((argc != 1) || ((list = strdup(argv[0])) == NULL)) return;
+	//web_puts("\nnvram = {\n");
+	web_puts("{\n");
+	p = list;
+	while ((k = strsep(&p, ",")) != NULL) {
+		if (*k == 0) continue;
+		if (strcmp(k, "wl_unit") == 0)
+			continue;
+
+		web_printf("\t'%s': '", k); // AB multiSSID
+		web_putj(nvram_safe_get(k));
+		web_puts("',\n");
+
+		if (strncmp(k, "wl_", 3) == 0) {
+			foreach_wif(1, k, print_wlnv);
+		}
+	}
+	free(list);
+
+	web_puts("\t'wl_unit': '"); // AB multiSSID
+	web_putj(nvram_safe_get("wl_unit"));
+	web_puts("',\n");
+
+	web_puts("\t'http_id': '"); // AB multiSSID
+	web_putj(nvram_safe_get("http_id"));
+	web_puts("',\n");
+
+	web_puts("\t'web_mx': '"); // AB multiSSID
+	web_putj(nvram_safe_get("web_mx"));
+	web_puts("',\n");
+
+	web_puts("\t'web_pb': '"); // AB multiSSID
+	web_putj(nvram_safe_get("web_pb"));
+	//web_puts("'};\n");
+	web_puts("'}\n");
+}
+
 // <% nvramseq('foo', 'bar%d', 5, 8); %>	-> foo = ['a','b','c'];
 void asp_nvramseq(int argc, char **argv)
 {

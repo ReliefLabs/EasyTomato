@@ -229,6 +229,13 @@ static void wo_nvram(char *url)
 	web_pipecmd("nvram show", WOF_NONE);
 }
 
+static void wo_nvram2(char *url)
+{
+  char *p;
+  p = webcgi_get("var");
+  asp_nvram2(1, &p);
+}
+
 static void wo_iptables(char *url)
 {
 	web_pipecmd("iptables -nvL; echo; iptables -t nat -nvL; echo; iptables -t mangle -nvL", WOF_NONE);
@@ -272,6 +279,7 @@ const struct mime_handler mime_handlers[] = {
 
 	{ "debug.js",		mime_javascript,			5,	wi_generic_noid,	wo_blank,		1 },	// while debugging
 	{ "cfe/*.bin",		mime_binary,				0,	wi_generic,			wo_cfe,			1 },
+	{ "nvram/nvram.cgi",	mime_javascript,			0,	wi_generic_noid,		wo_nvram2,		1 },
 	{ "nvram/*.txt",	mime_binary,				0,	wi_generic,			wo_nvram,		1 },
 	{ "ipt/*.txt",		mime_binary,				0,	wi_generic,			wo_iptables,	1 },
 #ifdef TCONFIG_IPV6
@@ -375,6 +383,7 @@ const aspapi_t aspapi[] = {
 	{ "notice",				asp_notice			},
 	{ "nv",					asp_nv				},
 	{ "nvram",				asp_nvram 			},
+	{ "nvram2",				asp_nvram2 			},
 	{ "nvramseq",			asp_nvramseq		},
 	{ "nvstat",				asp_nvstat 			},
 	{ "psup",				asp_psup			},

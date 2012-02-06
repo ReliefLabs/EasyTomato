@@ -1,6 +1,12 @@
 #ifndef TOMATO_PROFILE
-#define TOMATO_G 1
+#define TOMATO_N 1
 #define PROFILE_G 1
-#define TOMATO_PROFILE PROFILE_G
-#define TOMATO_PROFILE_NAME "G"
+#define PROFILE_N 2
+#define TOMATO_PROFILE PROFILE_N
+#define TOMATO_PROFILE_NAME "N"
+#define TOMATO_BUILD_NAME "S"
+#define TOMATO_BUILD_DESC "Std"
+#ifndef CONFIG_NVRAM_SIZE
+#define CONFIG_NVRAM_SIZE 0
+#endif
 #endif
