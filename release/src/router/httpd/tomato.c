@@ -1326,6 +1326,16 @@ wl_ap_ssid
 	{ "pptp_client_dfltroute",V_01                  },
 	{ "pptp_client_stateless",V_01                  },
 
+	/* EasyTomato Variables */
+	{ "easytomato_scratch_0", V_NONE },
+	{ "easytomato_scratch_1", V_NONE },
+	{ "easytomato_scratch_2", V_NONE },
+	{ "easytomato_scratch_3", V_NONE },
+	{ "easytomato_scratch_4", V_NONE },
+	{ "easytomato_scratch_5", V_NONE },
+	{ "easytomato_scratch_6", V_NONE },
+	{ "easytomato_scratch_7", V_NONE },
+
 	{ NULL }
 };
 
