@@ -4,8 +4,8 @@
 #define PROFILE_N 2
 #define TOMATO_PROFILE PROFILE_N
 #define TOMATO_PROFILE_NAME "N"
-#define TOMATO_BUILD_NAME "S"
-#define TOMATO_BUILD_DESC "Std"
+#define TOMATO_BUILD_NAME "M"
+#define TOMATO_BUILD_DESC "Ext"
 #ifndef CONFIG_NVRAM_SIZE
 #define CONFIG_NVRAM_SIZE 0
 #endif
