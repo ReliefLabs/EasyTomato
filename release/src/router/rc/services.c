@@ -238,7 +238,7 @@ void start_dnsmasq()
 				p = nvram_safe_get("lan_gateway");
 				if ((*p) && (strcmp(p, "0.0.0.0") != 0)) nv = p;
 			}
-#ifdef TCONFIG-VLAN
+#ifdef TCONFIG_VLAN
 			fprintf(f,
 				"dhcp-option=%s,3,%s\n",	// gateway
 				nvram_safe_get(lanN_ifname), nv);
@@ -452,6 +452,7 @@ void dns_to_resolv(void)
 				if (nvram_match("ppp_demand", "1")) {
 					switch (get_wan_proto()) {
 					case WP_PPPOE:
+					case WP_PPP3G:
 					case WP_PPTP:
 					case WP_L2TP:
 						fprintf(f, "nameserver 1.1.1.1\n");
