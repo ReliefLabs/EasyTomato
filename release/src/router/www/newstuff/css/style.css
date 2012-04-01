@@ -32,7 +32,7 @@ audio:not([controls]) { display: none; }
 
 html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 
-html, button, input, select, textarea { font-family: sans-serif; color: #222; }
+html, button, input, select, textarea { font-family: 'Helvetica Neue', 'Helvetica', sans-serif; color: #222; }
 
 body { margin: 0; font-size: 1em; line-height: 1.4; }
 
@@ -42,8 +42,8 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
  * Also: hot pink! (or customize the background color to match your design)
  */
 
-::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
-::selection { background: #fe57a1; color: #fff; text-shadow: none; }
+::-moz-selection { background: #A80014; color: #fff; text-shadow: none; }
+::selection { background: #A80014; color: #fff; text-shadow: none; }
 
 
 /* =============================================================================
@@ -215,8 +215,135 @@ td { vertical-align: top; }
 
 
 /* ==|== primary styles =====================================================
-   Author:
+   Author: Marco Moreira (@phmarco) - Easy Tomato Team
    ========================================================================== */
+
+/*--------- GLOBALS ------------*/
+.fade { opacity: .6 !important; }
+.fade:hover { opacity: .6 !important; }
+.fademe { opacity: .6; }
+.fademe:hover, .fademe:active { opacity: 1; }
+.float_left { float:left; }
+.float_right { float:right; }
+.grayme{ color: #666 !important; }
+.greenme { color: #339900 !important; }
+.hideme { display: none !important; }
+.invisible{visibility: hidden;}
+.noclick { cursor: default; }
+
+body{
+    background:url("../img/bodybg.png") repeat-x scroll 0px 0px transparent;
+}
+
+#header{
+    background:url("../img/sprite.png") repeat-x scroll 0px -136px transparent;
+    border-left: 1px #A80014 solid;
+    border-right: 1px #A80014 solid;
+	margin-bottom: 0;
+	height: 50px;
+	color: #FFF;
+	
+}
+
+#header div.advanced_box{
+	margin-right: 10px;
+	float: right;
+}
+
+#header h1 {
+	text-align: center;
+	margin: 0;
+	font-size: 24pt;
+	line-height: 47px;
+	text-shadow: 0 2px #990013;
+}
+#header .home_link{
+    background:url("../img/sprite.png") repeat-x scroll -10px 0px transparent;
+    display: block;
+    text-indent: -9001em;
+    height: 44px;
+    width: 44px;
+
+}
+#header p {
+	margin: 5px 0;
+	font-size: 12px;
+	text-align: right;
+	font-weight: bold;
+	text-shadow: 0 1px #990013;
+}
+#header p a{
+	color: #FFF;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+#main{
+    background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
+    border: 1px #AAA solid;
+    border-top: 0;
+}
+
+#topnav{
+	text-align: center;
+	border-top: 10px #EEE solid;
+	margin-bottom: 20px;
+}
+
+#topnav ul{
+	margin: 0;
+	padding: 0;
+	border-top: 1px #AAA solid;
+}
+
+#topnav ul li {
+	margin: -1px 2px 0 2px;
+	display: inline-block;
+	border: 1px #AAA solid;
+	background: #E6E7E8;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+#topnav ul li a {
+	font-size: 14px;
+	font-weight: bold;
+	color: #777;
+	text-shadow: 0 1px white;
+	text-decoration: none;
+	padding: 4px 20px 3px 20px;
+	display: block;
+	height: 23px;
+}
+
+#topnav ul li a:hover {
+	color: #000;
+}
+
+#topnav ul li.active_tab {
+    background:url("../img/sprite.png") no-repeat scroll 0px -225px transparent;
+    border-top: 1px #EEE solid;
+}
+
+#topnav ul li.active_tab a{
+	color: #000;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -242,6 +369,7 @@ td { vertical-align: top; }
 @media only screen and (min-width: 35em) {
   /* Style adjustments for viewports that meet the condition */
 }
+
 
 
 
@@ -291,3 +419,10 @@ td { vertical-align: top; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
+
+
+
+
+
+
+
