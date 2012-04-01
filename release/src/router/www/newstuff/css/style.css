@@ -219,6 +219,17 @@ td { vertical-align: top; }
    ========================================================================== */
 
 /*--------- GLOBALS ------------*/
+body{
+    background:url("../img/bodybg.png") repeat-x scroll 0px 0px transparent;
+    font-size: 10pt;
+}
+
+#main{
+    background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
+    border: 1px #AAA solid;
+    border-top: 0;
+}
+
 .fade { opacity: .6 !important; }
 .fade:hover { opacity: .6 !important; }
 .fademe { opacity: .6; }
@@ -228,9 +239,30 @@ td { vertical-align: top; }
 .grayme{ color: #666 !important; }
 .greenme { color: #339900 !important; }
 .hideme { display: none !important; }
+.info_trig{
+    background:url("../img/sprite.png") no-repeat scroll -10px -1400px transparent;
+	text-indent: -9001em;
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+}
 .invisible{visibility: hidden;}
 .lock_arrow_button{ background: url("../img/sprite.png") no-repeat scroll -10px -649px transparent; }
 
+.pretty_check{
+    background:url("../img/sprite.png") no-repeat scroll -10px -550px transparent;
+	text-indent: -9001em;
+	display: inline-block;
+}
+.pretty_check_off{
+    background:url("../img/sprite.png") no-repeat scroll -10px -600px transparent;
+	height: 13px;
+	width: 13px;
+}
+.pretty_check_on{
+	height: 16px;
+	width: 16px;
+}
 a.nicebutton {
 	background: url("../img/sprite.png") repeat-x scroll 0 -230px transparent;
 	border: 1px solid #777;
@@ -256,35 +288,113 @@ a.nicebutton span {
 
 
 
-body{
-    background:url("../img/bodybg.png") repeat-x scroll 0px 0px transparent;
-    font-size: 10pt;
+/*--------- Layout: Footer ------------*/
+#footer{
+	text-align: center;
+	padding: 5px 0;
+	font-weight: bold;
+	text-shadow: 0 1px white;
+	font-size: 8pt;
+	color: #777;
 }
 
 
-/*--------- Content ------------*/
-.info_trig{
-    background:url("../img/sprite.png") no-repeat scroll -10px -1400px transparent;
-	text-indent: -9001em;
+/*--------- Layout: Header ------------*/
+#header{
+    background:url("../img/sprite.png") repeat-x scroll 0px -136px transparent;
+    border-left: 1px #A80014 solid;
+    border-right: 1px #A80014 solid;
+	margin-bottom: 0;
+	height: 50px;
+	color: #FFF;
+	
+}
+
+#header .advanced_box{
+	margin-right: 10px;
+	float: right;
+}
+
+#header h1 {
+	text-align: center;
+	margin: 0;
+	font-size: 24pt;
+	line-height: 47px;
+	text-shadow: 0 2px #990013;
+}
+#header .home_link{
+    background:url("../img/sprite.png") repeat-x scroll -10px 0px transparent;
+    display: block;
+    text-indent: -9001em;
+    height: 44px;
+    width: 44px;
+
+}
+#header p {
+	margin: 5px 0;
+	font-size: 12px;
+	text-align: right;
+	font-weight: bold;
+	text-shadow: 0 1px #990013;
+}
+#header p a{
+	color: #FFF;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+
+
+/*--------- Layout: Top navigation ------------*/
+#topnav{
+	text-align: center;
+	border-top: 10px #EEE solid;
+	margin-bottom: 20px;
+}
+
+#topnav ul{
+	margin: 0;
+	padding: 0;
+	border-top: 1px #AAA solid;
+}
+
+#topnav ul li {
+	margin: -1px 2px 0 2px;
 	display: inline-block;
-	height: 16px;
-	width: 16px;
+	border: 1px #AAA solid;
+	background: #E6E7E8;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
-.pretty_check{
-    background:url("../img/sprite.png") no-repeat scroll -10px -550px transparent;
-	text-indent: -9001em;
-	display: inline-block;
+#topnav ul li a {
+	font-size: 14px;
+	font-weight: bold;
+	color: #777;
+	text-shadow: 0 1px white;
+	text-decoration: none;
+	padding: 4px 20px 3px 20px;
+	display: block;
+	height: 23px;
 }
-.pretty_check_off{
-    background:url("../img/sprite.png") no-repeat scroll -10px -600px transparent;
-	height: 13px;
-	width: 13px;
+
+#topnav ul li a:hover {
+	color: #000;
 }
-.pretty_check_on{
-	height: 16px;
-	width: 16px;
+
+#topnav ul li.active_tab {
+    background:url("../img/sprite.png") no-repeat scroll 0px -225px transparent;
+    border-top: 1px #EEE solid;
 }
+
+#topnav ul li.active_tab a{
+	color: #000;
+}
+
+
+
+
+/*--------- Groups: Content ------------*/
 
 .content_bar{
     background:url("../img/sprite.png") repeat-x scroll 0px -220px transparent;
@@ -354,27 +464,60 @@ body{
 
 
 
-/*--------- Footer ------------*/
-#footer{
-	text-align: center;
-	padding: 5px 0;
-	font-weight: bold;
-	text-shadow: 0 1px white;
-	font-size: 8pt;
-	color: #777;
+
+
+/*--------- Groups: Groups boxes ------------*/
+.group_boxes{}
+
+.group_boxes .devices_box {
+	border: 1px #CCC solid;
+	background: white;
+	padding: 5px;
+	text-align: left;
+	margin: 4px 0;
+}
+.group_boxes .devices_box ul{
+	height: 160px;
+	overflow-y: auto;
 }
 
+.group_boxes .devices_box li{
+	position: relative;
+	padding: 5px 0 5px 25px;
+	margin: 2px 0;
+	font-weight: bold;
+	text-shadow: 0 1px white;
+}
 
-/*--------- Groups boxes ------------*/
-.group_boxes{}
+.group_boxes .devices_box li a.box_handle{
+	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
+	text-indent: -9001em;
+	display: inline-block;
+	height: 18px;
+	width: 14px;
+	position: absolute;
+	top: 5px;
+	left: 5px;
+}
+.group_boxes .devices_box li .info_trig{}
+.group_boxes .devices_box li.shademe{
+	background: #EEE;
+}
+
+.group_boxes .devices_box li span{}
+
 .group_boxes .group_box {
-background: #EEE;
-box-shadow: 0px 0px 5px #555;
-border-radius: 5px;
-padding: 2px 5px;
-width: 210px;
-text-align: center;
-margin: 0 10px 25px 0px;
+	background: #EEE;
+	box-shadow: 0px 0px 5px #555;
+	border-radius: 5px;
+	padding: 2px 5px;
+	width: 210px;
+	text-align: center;
+	margin: 0 20px 25px 0px;
+}
+
+.group_boxes .group_box.omega {
+	margin-right: 0;
 }
 .group_boxes p{
 	font-size: 12pt;
@@ -382,229 +525,94 @@ margin: 0 10px 25px 0px;
 	text-shadow: 0 1px #FFF;
 	margin: 2px 0;
 }
-.group_boxes .devices_box {
-border: 1px #CCC solid;
-background: white;
-padding: 5px;
-text-align: left;
-margin: 4px 0;
-}
-.group_boxes .devices_box ul{
-height: 160px;
-overflow-y: auto;
-}
-
-.group_boxes .devices_box li{
-position: relative;
-padding: 5px 0 5px 25px;
-margin: 2px 0;
-font-weight: bold;
-text-shadow: 0 1px white;
-}
-
-.group_boxes .devices_box li.shademe{
-	background: #EEE;
-}
-.group_boxes .devices_box li a.box_handle{
-background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
-text-indent: -9001em;
-display: inline-block;
-height: 18px;
-width: 14px;
-position: absolute;
-top: 5px;
-left: 5px;
-}
-.group_boxes .devices_box li .info_trig{}
-.group_boxes .devices_box li span{}
 
 
 
-/*--------- Header ------------*/
-#header{
-    background:url("../img/sprite.png") repeat-x scroll 0px -136px transparent;
-    border-left: 1px #A80014 solid;
-    border-right: 1px #A80014 solid;
-	margin-bottom: 0;
-	height: 50px;
-	color: #FFF;
-	
+
+
+
+
+
+/*--------- Groups: Sidenav ------------*/
+.groups_sidenav{}
+
+.sidenav .device_list {
+	margin: 1px 0 1px 0;
+	padding: 0;
+	background: #DCECFC;
+}
+.sidenav .device_list li {
+	margin: -1px -1px -1px -1px;
+	padding: 3px 10px 3px 35px;
+	list-style: none;
+	border: 1px #0088DE solid;
+	text-shadow: 0 1px white;
+	position: relative;
+}
+.sidenav .device_list li .box_handle {
+	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
+	text-indent: -9001em;
+	display: inline-block;
+	height: 18px;
+	width: 14px;
+	position: absolute;
+	top: 15px;
+	left: 10px;
+}
+.sidenav .device_list li.hoverme{
+	background: #FFF6A6;
+	border-color: #FFCF2F;
+	z-index: 1;
+	text-shadow: none;
 }
 
-#header div.advanced_box{
-	margin-right: 10px;
+.sidenav .device_list li .info_trig {
 	float: right;
 }
 
-#header h1 {
-	text-align: center;
-	margin: 0;
-	font-size: 24pt;
-	line-height: 47px;
-	text-shadow: 0 2px #990013;
-}
-#header .home_link{
-    background:url("../img/sprite.png") repeat-x scroll -10px 0px transparent;
-    display: block;
-    text-indent: -9001em;
-    height: 44px;
-    width: 44px;
-
-}
-#header p {
-	margin: 5px 0;
-	font-size: 12px;
-	text-align: right;
+.sidenav .device_list li p {
+	font-size: 12pt;
 	font-weight: bold;
-	text-shadow: 0 1px #990013;
 }
-#header p a{
-	color: #FFF;
-	text-decoration: none;
-	font-weight: normal;
-}
+.sidenav .device_list li span{}
+.sidenav .device_list li span.float_right{}
 
-#main{
-    background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
-    border: 1px #AAA solid;
-    border-top: 0;
-}
-
-
-
-/*--------- Sidenav ------------*/
-.groups_sidenav{}
-.sidenav{
-/*
-	border: 1px #26A9E0 solid;
-	outline: 1px #00376E solid;
-*/
-}
 
 .sidenav .sidenav_footer{
 	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
 	border: 1px #26A9E0 solid;
 	outline: 1px #00376E solid;
-	
 	text-align: center;
 	padding: 5px;
 }
 
 .sidenav .sidenav_header {
-background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
-border: 1px #26A9E0 solid;
-outline: 1px #00376E solid;
-text-align: center;
-padding: 2px 5px 5px 5px;
-}
-.sidenav .sidenav_header p {
-font-weight: bold;
-color: white;
-text-shadow: 0 1px black;
-font-size: 13pt;
+	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
+	border: 1px #26A9E0 solid;
+	outline: 1px #00376E solid;
+	text-align: center;
+	padding: 2px 5px 5px 5px;
 }
 
 .sidenav .sidenav_header .extra_info {
-font-size: 11px;
-font-weight: normal;
+	font-size: 11px;
+	font-weight: normal;
 }
 
-.device_list {
-margin: 1px 0 1px 0;
-padding: 0;
-background: #DCECFC;
-
-}
-.device_list li {
-margin: -1px -1px -1px -1px;
-padding: 3px 10px 3px 35px;
-list-style: none;
-border: 1px #0088DE solid;
-text-shadow: 0 1px white;
-position: relative;
-}
-.device_list li.hoverme{
-background: #FFF6A6;
-border-color: #FFCF2F;
-z-index: 1;
-text-shadow: none;
-}
-
-.device_list li .box_handle {
-background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
-text-indent: -9001em;
-display: inline-block;
-height: 18px;
-width: 14px;
-position: absolute;
-top: 15px;
-left: 10px;
-}
-
-.device_list li .info_trig {
-float: right;
-
-}
-
-.device_list li p {
-font-size: 12pt;
-font-weight: bold;
-}
-.device_list li span{}
-.device_list li span.float_right{}
-
-
-
-
-
-
-
-
-/*--------- Top navigation ------------*/
-#topnav{
-	text-align: center;
-	border-top: 10px #EEE solid;
-	margin-bottom: 20px;
-}
-
-#topnav ul{
-	margin: 0;
-	padding: 0;
-	border-top: 1px #AAA solid;
-}
-
-#topnav ul li {
-	margin: -1px 2px 0 2px;
-	display: inline-block;
-	border: 1px #AAA solid;
-	background: #E6E7E8;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-}
-
-#topnav ul li a {
-	font-size: 14px;
+.sidenav .sidenav_header p {
 	font-weight: bold;
-	color: #777;
-	text-shadow: 0 1px white;
-	text-decoration: none;
-	padding: 4px 20px 3px 20px;
-	display: block;
-	height: 23px;
+	color: white;
+	text-shadow: 0 1px black;
+	font-size: 13pt;
 }
 
-#topnav ul li a:hover {
-	color: #000;
-}
 
-#topnav ul li.active_tab {
-    background:url("../img/sprite.png") no-repeat scroll 0px -225px transparent;
-    border-top: 1px #EEE solid;
-}
 
-#topnav ul li.active_tab a{
-	color: #000;
-}
+
+
+
+
+
 
 
 
