@@ -233,8 +233,102 @@ td { vertical-align: top; }
 
 body{
     background:url("../img/bodybg.png") repeat-x scroll 0px 0px transparent;
+    font-size: 10pt;
 }
 
+
+/*--------- Content ------------*/
+.info_trig{
+    background:url("../img/sprite.png") no-repeat scroll -10px -1400px transparent;
+	text-indent: -9001em;
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+}
+
+.pretty_check{
+    background:url("../img/sprite.png") no-repeat scroll -10px -550px transparent;
+	text-indent: -9001em;
+	display: inline-block;
+}
+.pretty_check_off{
+    background:url("../img/sprite.png") no-repeat scroll -10px -600px transparent;
+	height: 13px;
+	width: 13px;
+}
+.pretty_check_on{
+	height: 16px;
+	width: 16px;
+}
+
+.content_bar{
+    background:url("../img/sprite.png") repeat-x scroll 0px -220px transparent;
+
+	height: 35px;
+	font-size: 12pt;
+	font-weight: bold;
+	text-shadow: 0 1px white;
+}
+
+
+.content_bar .bar_options {
+	border: 1px solid #EFEFEF;
+	outline: 1px solid #AAA;
+	height: 27px;
+	text-align: left;
+	margin: 0 1px;
+	font-size: 11pt;
+	padding-top: 6px;
+}
+
+
+.content_bar .bar_title {
+	border: 1px solid #EFEFEF;
+	outline: 1px solid #AAA;
+	height: 33px;
+	text-align: center;
+	margin: 0;
+}
+.content_bar .bar_title p{
+	margin: 5px 0 0 0;
+}
+
+.content_bar .bar_title p{
+	margin: 5px 0 0 0;
+}
+
+
+.content_bar p{}
+
+.content_bar .new_group_trig_box{
+    background:url("../img/sprite.png") repeat-x scroll 0px -380px transparent;
+    border: 1px solid #006838;
+	outline: 1px solid #009345;
+	margin: 0;
+	width: 152px;
+}
+
+.content_bar .new_group_trig {
+	background: url("../img/sprite.png") no-repeat scroll -355px -1395px transparent;
+	padding: 5px 0 0 40px;
+	color: white;
+	text-decoration: none;
+	text-shadow: 0 1px #006838;
+	height: 28px;
+	display: block;
+}
+
+
+.content_bar .univ_block_box{
+	margin: 0 25px 0 10px;
+	line-height: 15px;
+}
+.content_bar .univ_block_box a{}
+.content_bar .univ_block_box a{}
+
+
+
+/*--------- Header ------------*/
 #header{
     background:url("../img/sprite.png") repeat-x scroll 0px -136px transparent;
     border-left: 1px #A80014 solid;
@@ -284,6 +378,18 @@ body{
     border-top: 0;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*--------- Top navigation ------------*/
 #topnav{
 	text-align: center;
 	border-top: 10px #EEE solid;
