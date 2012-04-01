@@ -229,7 +229,32 @@ td { vertical-align: top; }
 .greenme { color: #339900 !important; }
 .hideme { display: none !important; }
 .invisible{visibility: hidden;}
+.lock_arrow_button{ background: url("../img/sprite.png") no-repeat scroll -10px -649px transparent; }
+
+a.nicebutton {
+	background: url("../img/sprite.png") repeat-x scroll 0 -230px transparent;
+	border: 1px solid #777;
+	border-radius: 5px 5px 5px 5px;
+	display: inline-block;
+	padding: 3px 10px 4px;
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+	text-shadow: 0 1px white;
+}
+
+a.nicebutton:hover{
+background-position: 0 -1800px;
+border-color: #333;
+}
+
+a.nicebutton span {
+	display: block;
+    padding-left: 18px;
+}
 .noclick { cursor: default; }
+
+
 
 body{
     background:url("../img/bodybg.png") repeat-x scroll 0px 0px transparent;
@@ -264,10 +289,11 @@ body{
 .content_bar{
     background:url("../img/sprite.png") repeat-x scroll 0px -220px transparent;
 
-	height: 35px;
+	height: 36px;
 	font-size: 12pt;
 	font-weight: bold;
 	text-shadow: 0 1px white;
+	margin-bottom: 20px;
 }
 
 
@@ -302,8 +328,8 @@ body{
 
 .content_bar .new_group_trig_box{
     background:url("../img/sprite.png") repeat-x scroll 0px -380px transparent;
-    border: 1px solid #006838;
-	outline: 1px solid #009345;
+    border: 1px solid #00B54D;
+	outline: 1px solid #006838;
 	margin: 0;
 	width: 152px;
 }
@@ -381,6 +407,84 @@ body{
 
 
 
+
+/*--------- Sidenav ------------*/
+.groups_sidenav{}
+.sidenav{
+/*
+	border: 1px #26A9E0 solid;
+	outline: 1px #00376E solid;
+*/
+}
+
+.sidenav .sidenav_footer{
+background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
+border: 1px #26A9E0 solid;
+outline: 1px #00376E solid;
+
+text-align: center;
+padding: 5px;
+}
+
+.sidenav .sidenav_header {
+background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
+border: 1px #26A9E0 solid;
+outline: 1px #00376E solid;
+
+text-align: center;
+padding: 2px 5px 5px 5px;
+}
+.sidenav .sidenav_header p {
+font-weight: bold;
+color: white;
+text-shadow: 0 1px black;
+font-size: 13pt;
+}
+
+.sidenav .sidenav_header .extra_info {
+font-size: 11px;
+font-weight: normal;
+}
+
+.device_list {
+margin: 1px 0 1px 0;
+padding: 0;
+background: #DCECFC;
+
+}
+.device_list li {
+margin: -1px -1px -1px -1px;
+padding: 3px 10px 3px 35px;
+list-style: none;
+border: 1px #0088DE solid;
+text-shadow: 0 1px white;
+position: relative;
+}
+.device_list li.hoverme{
+background: #FFF6A6;
+border-color: #FFCF2F;
+z-index: 1;
+text-shadow: none;
+}
+
+.device_list li .box_handle {
+background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
+text-indent: -9001em;
+display: inline-block;
+height: 18px;
+width: 14px;
+position: absolute;
+top: 15px;
+left: 10px;
+}
+
+
+.device_list li p {
+font-size: 12pt;
+font-weight: bold;
+}
+.device_list li span{}
+.device_list li span.float_right{}
 
 
 
