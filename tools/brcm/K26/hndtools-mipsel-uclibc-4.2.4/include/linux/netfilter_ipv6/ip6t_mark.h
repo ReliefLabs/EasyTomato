@@ -1,9 +1,9 @@
-#ifndef _IP6T_MARK_H
-#define _IP6T_MARK_H
+#ifndef _IP6T_MARK_H_target
+#define _IP6T_MARK_H_target
 
 /* Backwards compatibility for old userspace */
-#include <linux/netfilter/xt_mark.h>
+#include <linux/netfilter/xt_MARK.h>
 
-#define ip6t_mark_info xt_mark_info
+#define ip6t_mark_target_info xt_mark_target_info
 
-#endif /*_IPT_MARK_H*/
+#endif /*_IP6T_MARK_H_target*/

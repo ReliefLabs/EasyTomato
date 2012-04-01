@@ -1,12 +1,17 @@
-/* Shared library add-on to iptables to add TOS matching support. */
+/* Shared library add-on to iptables to add TOS target support. */
 #include <stdio.h>
-#include <netdb.h>
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
 
 #include <iptables.h>
-#include <linux/netfilter_ipv4/ipt_tos.h>
+#include <linux/netfilter_ipv4/ip_tables.h>
+#include <linux/netfilter_ipv4/ipt_TOS.h>
+
+struct tosinfo {
+	struct ipt_entry_target t;
+	struct ipt_tos_target_info tos;
+};
 
 /* TOS names and values. */
 static
@@ -29,8 +34,8 @@ help(void)
 	unsigned int i;
 
 	printf(
-"TOS match v%s options:\n"
-"[!] --tos value                 Match Type of Service field from one of the\n"
+"TOS target v%s options:\n"
+"  --set-tos value                   Set Type of Service field to one of the\n"
 "                                following numeric or descriptive values:\n",
 IPTABLES_VERSION);
 
@@ -43,15 +48,20 @@ IPTABLES_VERSION);
 }
 
 static struct option opts[] = {
-	{ "tos", 1, 0, '1' },
-	{0}
+	{ "set-tos", 1, 0, '1' },
+	{ 0 }
 };
 
+/* Initialize the target. */
 static void
-parse_tos(const char *s, struct ipt_tos_info *info)
+init(struct ipt_entry_target *t, unsigned int *nfcache)
 {
-	unsigned int i;
-	unsigned int tos;
+}
+
+static void
+parse_tos(const char *s, struct ipt_tos_target_info *info)
+{
+	unsigned int i, tos;
 
 	if (string_to_number(s, 0, 255, &tos) != -1) {
 		if (tos == IPTOS_LOWDELAY
@@ -77,29 +87,33 @@ parse_tos(const char *s, struct ipt_tos_info *info)
 static int
 parse(int c, char **argv, int invert, unsigned int *flags,
       const struct ipt_entry *entry,
-      unsigned int *nfcache,
-      struct ipt_entry_match **match)
+      struct ipt_entry_target **target)
 {
-	struct ipt_tos_info *tosinfo = (struct ipt_tos_info *)(*match)->data;
+	struct ipt_tos_target_info *tosinfo
+		= (struct ipt_tos_target_info *)(*target)->data;
 
 	switch (c) {
 	case '1':
-		/* Ensure that `--tos' haven't been used yet. */
-		if (*flags == 1)
+		if (*flags)
 			exit_error(PARAMETER_PROBLEM,
-					"tos match: only use --tos once!");
-
-		check_inverse(optarg, &invert, &optind, 0);
-		parse_tos(argv[optind-1], tosinfo);
-		if (invert)
-			tosinfo->invert = 1;
+			           "TOS target: Cant specify --set-tos twice");
+		parse_tos(optarg, tosinfo);
 		*flags = 1;
 		break;
 
 	default:
 		return 0;
 	}
+
 	return 1;
+}
+
+static void
+final_check(unsigned int flags)
+{
+	if (!flags)
+		exit_error(PARAMETER_PROBLEM,
+		           "TOS target: Parameter --set-tos is required");
 }
 
 static void
@@ -117,48 +131,36 @@ print_tos(u_int8_t tos, int numeric)
 	printf("0x%02x ", tos);
 }
 
-/* Final check; must have specified --tos. */
-static void
-final_check(unsigned int flags)
-{
-	if (!flags)
-		exit_error(PARAMETER_PROBLEM,
-			   "TOS match: You must specify `--tos'");
-}
-
-/* Prints out the matchinfo. */
+/* Prints out the targinfo. */
 static void
 print(const struct ipt_ip *ip,
-      const struct ipt_entry_match *match,
+      const struct ipt_entry_target *target,
       int numeric)
 {
-	const struct ipt_tos_info *info = (const struct ipt_tos_info *)match->data;
-    
-	printf("TOS match ");
-	if (info->invert)
-		printf("!");
-	print_tos(info->tos, numeric);
+	const struct ipt_tos_target_info *tosinfo =
+		(const struct ipt_tos_target_info *)target->data;
+	printf("TOS set ");
+	print_tos(tosinfo->tos, numeric);
 }
 
-/* Saves the union ipt_matchinfo in parsable form to stdout. */
+/* Saves the union ipt_targinfo in parsable form to stdout. */
 static void
-save(const struct ipt_ip *ip, const struct ipt_entry_match *match)
+save(const struct ipt_ip *ip, const struct ipt_entry_target *target)
 {
-	const struct ipt_tos_info *info = (const struct ipt_tos_info *)match->data;
-    
-	if (info->invert)
-		printf("! ");
-	printf("--tos ");
-	print_tos(info->tos, 0);
+	const struct ipt_tos_target_info *tosinfo =
+		(const struct ipt_tos_target_info *)target->data;
+
+	printf("--set-tos 0x%02x ", tosinfo->tos);
 }
 
-static struct iptables_match tos = { 
+static struct iptables_target tos = {
 	.next		= NULL,
-	.name		= "tos",
+	.name		= "TOS",
 	.version	= IPTABLES_VERSION,
-	.size		= IPT_ALIGN(sizeof(struct ipt_tos_info)),
-	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_tos_info)),
+	.size		= IPT_ALIGN(sizeof(struct ipt_tos_target_info)),
+	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_tos_target_info)),
 	.help		= &help,
+	.init		= &init,
 	.parse		= &parse,
 	.final_check	= &final_check,
 	.print		= &print,
@@ -168,5 +170,5 @@ static struct iptables_match tos = {
 
 void _init(void)
 {
-	register_match(&tos);
+	register_target(&tos);
 }

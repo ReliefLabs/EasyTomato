@@ -1,16 +1,13 @@
 /* Shared library add-on to iptables for DSCP
  *
- * (C) 2002 by Harald Welte <laforge@gnumonks.org>
+ * (C) 2000- 2002 by Matthew G. Marsh <mgm@paktronix.com>,
+ * 		     Harald Welte <laforge@gnumonks.org>
  *
  * This program is distributed under the terms of GNU GPL v2, 1991
  *
- * libipt_dscp.c borrowed heavily from libipt_tos.c
+ * libipt_DSCP.c borrowed heavily from libipt_TOS.c
  *
- * --class support added by Iain Barnes
- * 
- * For a list of DSCP codepoints see 
- * http://www.iana.org/assignments/dscp-registry
- *
+ * --set-class added by Iain Barnes
  */
 #include <stdio.h>
 #include <string.h>
@@ -19,34 +16,40 @@
 
 #include <iptables.h>
 #include <linux/netfilter_ipv4/ip_tables.h>
-#include <linux/netfilter_ipv4/ipt_dscp.h>
+#include <linux/netfilter_ipv4/ipt_DSCP.h>
 
 /* This is evil, but it's my code - HW*/
 #include "libipt_dscp_helper.c"
 
+
+static void init(struct ipt_entry_target *t, unsigned int *nfcache) 
+{
+}
+
 static void help(void) 
 {
 	printf(
-"DSCP match v%s options\n"
-"[!] --dscp value		Match DSCP codepoint with numerical value\n"
+"DSCP target options\n"
+"  --set-dscp value		Set DSCP field in packet header to value\n"
 "  		                This value can be in decimal (ex: 32)\n"
 "               		or in hex (ex: 0x20)\n"
-"[!] --dscp-class name		Match the DiffServ class. This value may\n"
-"				be any of the BE,EF, AFxx or CSx classes\n"
+"  --set-dscp-class class	Set the DSCP field in packet header to the\n"
+"				value represented by the DiffServ class value.\n"
+"				This class may be EF,BE or any of the CSxx\n"
+"				or AFxx classes.\n"
 "\n"
 "				These two options are mutually exclusive !\n"
-				, IPTABLES_VERSION
 );
 }
 
 static struct option opts[] = {
-	{ "dscp", 1, 0, 'F' },
-	{ "dscp-class", 1, 0, 'G' },
+	{ "set-dscp", 1, 0, 'F' },
+	{ "set-dscp-class", 1, 0, 'G' },
 	{ 0 }
 };
 
 static void
-parse_dscp(const char *s, struct ipt_dscp_info *dinfo)
+parse_dscp(const char *s, struct ipt_DSCP_info *dinfo)
 {
 	unsigned int dscp;
        
@@ -64,7 +67,7 @@ parse_dscp(const char *s, struct ipt_dscp_info *dinfo)
 
 
 static void
-parse_class(const char *s, struct ipt_dscp_info *dinfo)
+parse_class(const char *s, struct ipt_DSCP_info *dinfo)
 {
 	unsigned int dscp = class_to_dscp(s);
 
@@ -76,32 +79,24 @@ parse_class(const char *s, struct ipt_dscp_info *dinfo)
 static int
 parse(int c, char **argv, int invert, unsigned int *flags,
       const struct ipt_entry *entry,
-      unsigned int *nfcache,
-      struct ipt_entry_match **match)
+      struct ipt_entry_target **target)
 {
-	struct ipt_dscp_info *dinfo
-		= (struct ipt_dscp_info *)(*match)->data;
+	struct ipt_DSCP_info *dinfo
+		= (struct ipt_DSCP_info *)(*target)->data;
 
 	switch (c) {
 	case 'F':
 		if (*flags)
 			exit_error(PARAMETER_PROBLEM,
-			           "DSCP match: Only use --dscp ONCE!");
-		check_inverse(optarg, &invert, &optind, 0);
-		parse_dscp(argv[optind-1], dinfo);
-		if (invert)
-			dinfo->invert = 1;
+			           "DSCP target: Only use --set-dscp ONCE!");
+		parse_dscp(optarg, dinfo);
 		*flags = 1;
 		break;
-
 	case 'G':
 		if (*flags)
 			exit_error(PARAMETER_PROBLEM,
-					"DSCP match: Only use --dscp-class ONCE!");
-		check_inverse(optarg, &invert, &optind, 0);
-		parse_class(argv[optind - 1], dinfo);
-		if (invert)
-			dinfo->invert = 1;
+				   "DSCP target: Only use --set-dscp-class ONCE!");
+		parse_class(optarg, dinfo);
 		*flags = 1;
 		break;
 
@@ -117,48 +112,45 @@ final_check(unsigned int flags)
 {
 	if (!flags)
 		exit_error(PARAMETER_PROBLEM,
-		           "DSCP match: Parameter --dscp is required");
+		           "DSCP target: Parameter --set-dscp is required");
 }
 
 static void
-print_dscp(u_int8_t dscp, int invert, int numeric)
+print_dscp(u_int8_t dscp, int numeric)
 {
-	if (invert)
-		fputc('!', stdout);
-
  	printf("0x%02x ", dscp);
 }
 
-/* Prints out the matchinfo. */
+/* Prints out the targinfo. */
 static void
 print(const struct ipt_ip *ip,
-      const struct ipt_entry_match *match,
+      const struct ipt_entry_target *target,
       int numeric)
 {
-	const struct ipt_dscp_info *dinfo =
-		(const struct ipt_dscp_info *)match->data;
-	printf("DSCP match ");
-	print_dscp(dinfo->dscp, dinfo->invert, numeric);
+	const struct ipt_DSCP_info *dinfo =
+		(const struct ipt_DSCP_info *)target->data;
+	printf("DSCP set ");
+	print_dscp(dinfo->dscp, numeric);
 }
 
-/* Saves the union ipt_matchinfo in parsable form to stdout. */
+/* Saves the union ipt_targinfo in parsable form to stdout. */
 static void
-save(const struct ipt_ip *ip, const struct ipt_entry_match *match)
+save(const struct ipt_ip *ip, const struct ipt_entry_target *target)
 {
-	const struct ipt_dscp_info *dinfo =
-		(const struct ipt_dscp_info *)match->data;
+	const struct ipt_DSCP_info *dinfo =
+		(const struct ipt_DSCP_info *)target->data;
 
-	printf("--dscp ");
-	print_dscp(dinfo->dscp, dinfo->invert, 1);
+	printf("--set-dscp 0x%02x ", dinfo->dscp);
 }
 
-static struct iptables_match dscp = { 
-	.next 		= NULL,
-	.name 		= "dscp",
-	.version 	= IPTABLES_VERSION,
-	.size 		= IPT_ALIGN(sizeof(struct ipt_dscp_info)),
-	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_dscp_info)),
+static struct iptables_target dscp = { 
+	.next		= NULL,
+	.name		= "DSCP",
+	.version	= IPTABLES_VERSION,
+	.size		= IPT_ALIGN(sizeof(struct ipt_DSCP_info)),
+	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_DSCP_info)),
 	.help		= &help,
+	.init		= &init,
 	.parse		= &parse,
 	.final_check	= &final_check,
 	.print		= &print,
@@ -168,5 +160,5 @@ static struct iptables_match dscp = {
 
 void _init(void)
 {
-	register_match(&dscp);
+	register_target(&dscp);
 }
