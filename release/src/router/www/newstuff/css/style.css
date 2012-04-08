@@ -216,18 +216,42 @@ td { vertical-align: top; }
 
 /* ==|== primary styles =====================================================
    Author: Marco Moreira (@phmarco) - Easy Tomato Team
+   PLEASE ORGANIZE DECLARATIONS BY SECTION AND ALPHABETICALLY INSIDE EACH SECTION
    ========================================================================== */
 
 /*--------- GLOBALS ------------*/
+.add_button{ background: url("../img/sprite.png") no-repeat scroll -10px -850px transparent; }
+
+#apply_trigger {
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16pt;
+	font-weight: bold;
+	background: url("../img/sprite.png") repeat-x scroll -10px -1850px transparent; 
+	color: white;
+	border: 1px #FFA852 solid;
+	outline: 1px #F05A28 solid;
+	text-shadow: 0 2px #F05A28;
+	padding: 10px 0;
+	margin-top: 2px;
+}
+#apply_trigger:hover {
+
+ background: #F6921E; 
+
+}
+
 body{
     background:url("../img/bodybg.png") repeat-x scroll 0px 0px transparent;
     font-size: 10pt;
 }
 
-#main{
+.main{
     background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
     border: 1px #AAA solid;
     border-top: 0;
+    padding-bottom: 20px;
 }
 
 .fade { opacity: .6 !important; }
@@ -236,6 +260,7 @@ body{
 .fademe:hover, .fademe:active { opacity: 1; }
 .float_left { float:left; }
 .float_right { float:right; }
+.goback_arrow_button{ background: url("../img/sprite.png") no-repeat scroll -10px -1600px transparent; }
 .grayme{ color: #666 !important; }
 .greenme { color: #339900 !important; }
 .hideme { display: none !important; }
@@ -264,7 +289,7 @@ body{
 	width: 16px;
 }
 a.nicebutton {
-	background: url("../img/sprite.png") repeat-x scroll 0 -230px transparent;
+	background: url("../img/sprite.png") repeat-x scroll 0 -1800px transparent;
 	border: 1px solid #777;
 	border-radius: 5px 5px 5px 5px;
 	display: inline-block;
@@ -276,7 +301,7 @@ a.nicebutton {
 }
 
 a.nicebutton:hover{
-	background-position: 0 -1800px;
+	background-position: 0 -233px;
 	border-color: #333;
 }
 
@@ -393,6 +418,78 @@ a.nicebutton span {
 
 
 
+/*--------- Layout: Sidenav ------------*/
+.sidenav .device_list {
+	margin: 1px 0 1px 0;
+	padding: 0;
+	background: #DCECFC;
+}
+.sidenav .device_list li {
+	margin: -1px -1px -1px -1px;
+	padding: 3px 10px 3px 35px;
+	list-style: none;
+	border: 1px #0088DE solid;
+	text-shadow: 0 1px white;
+	position: relative;
+}
+.sidenav .device_list li .box_handle {
+	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
+	text-indent: -9001em;
+	display: inline-block;
+	height: 18px;
+	width: 14px;
+	position: absolute;
+	top: 15px;
+	left: 10px;
+}
+.sidenav .device_list li.hoverme{
+	background: #FFF6A6;
+	border-color: #FFCF2F;
+	z-index: 1;
+	text-shadow: none;
+}
+
+.sidenav .device_list li .info_trig {
+	float: right;
+}
+
+.sidenav .device_list li p {
+	font-size: 12pt;
+	font-weight: bold;
+}
+.sidenav .device_list li span{}
+.sidenav .device_list li span.float_right{}
+
+
+.sidenav .sidenav_footer{
+	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
+	border: 1px #26A9E0 solid;
+	outline: 1px #00376E solid;
+	text-align: center;
+	padding: 5px;
+}
+
+.sidenav .sidenav_header {
+	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
+	border: 1px #26A9E0 solid;
+	outline: 1px #00376E solid;
+	text-align: center;
+	padding: 2px 5px 5px 5px;
+}
+
+.sidenav .sidenav_header .extra_info {
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.sidenav .sidenav_header p {
+	font-weight: bold;
+	color: white;
+	text-shadow: 0 1px black;
+	font-size: 13pt;
+}
+
+
 
 /*--------- Groups: Content ------------*/
 
@@ -453,7 +550,6 @@ a.nicebutton span {
 	height: 28px;
 	display: block;
 }
-
 
 .content_bar .univ_block_box{
 	margin: 0 25px 0 10px;
@@ -533,94 +629,92 @@ a.nicebutton span {
 
 
 
-/*--------- Groups: Sidenav ------------*/
-.groups_sidenav{}
 
-.sidenav .device_list {
-	margin: 1px 0 1px 0;
-	padding: 0;
-	background: #DCECFC;
-}
-.sidenav .device_list li {
-	margin: -1px -1px -1px -1px;
-	padding: 3px 10px 3px 35px;
-	list-style: none;
-	border: 1px #0088DE solid;
-	text-shadow: 0 1px white;
-	position: relative;
-}
-.sidenav .device_list li .box_handle {
-	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
-	text-indent: -9001em;
-	display: inline-block;
-	height: 18px;
-	width: 14px;
-	position: absolute;
-	top: 15px;
-	left: 10px;
-}
-.sidenav .device_list li.hoverme{
-	background: #FFF6A6;
-	border-color: #FFCF2F;
-	z-index: 1;
-	text-shadow: none;
+
+
+
+/*--------- Rules: Top Bar ------------*/
+#rules .content_bar{ background: none;}
+
+#rules .content_bar .back_trigger_box{ text-align: center;}
+#rules .content_bar .back_trigger{
+	padding: 5px 15px;
+	background-position-y: -1795px;
 }
 
-.sidenav .device_list li .info_trig {
+#rules .content_bar .back_trigger:hover{
+	background-position: 0 -227px;
+	border-color: #333;
+}
+
+#rules .content_bar .back_trigger span{
+	background-position: -10px -1597px;
+}
+
+#rules .content_bar .rules_title {
+text-align: center;
+background: #E6E6E6;
+border: 1px #EFEFEF solid;
+outline: 1px #CCC solid;
+padding: 3px 0;
+}
+#rules .content_bar .rules_title h4{ margin: 0;}
+
+
+
+
+
+
+/*--------- Rules: Sidenav ------------*/
+#rules_sidenav .delete_rule_trig{
+	background: url("../img/sprite.png") repeat-x scroll -303px -1749px  transparent;
 	float: right;
 }
-
-.sidenav .device_list li p {
-	font-size: 12pt;
-	font-weight: bold;
-}
-.sidenav .device_list li span{}
-.sidenav .device_list li span.float_right{}
-
-
-.sidenav .sidenav_footer{
-	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
-	border: 1px #26A9E0 solid;
-	outline: 1px #00376E solid;
-	text-align: center;
-	padding: 5px;
+#rules_sidenav .edit_rule_trig{
+	background: url("../img/sprite.png") repeat-x scroll -303px -1699px transparent;
 }
 
-.sidenav .sidenav_header {
-	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
-	border: 1px #26A9E0 solid;
-	outline: 1px #00376E solid;
-	text-align: center;
-	padding: 2px 5px 5px 5px;
-}
-
-.sidenav .sidenav_header .extra_info {
-	font-size: 11px;
-	font-weight: normal;
-}
-
-.sidenav .sidenav_header p {
-	font-weight: bold;
+#rules_sidenav .new_rule_trig {
+	background: url("../img/sprite.png") repeat-x scroll 0px -380px transparent;
+	border: 1px solid #00B54D;
+	outline: 1px solid #006838;
+	margin: 0;
+	padding: 2px 5px 4px 5px;
+	font-size: 11pt;
 	color: white;
-	text-shadow: 0 1px black;
-	font-size: 13pt;
+	text-decoration: none;
 }
 
+#rules_sidenav .new_rule_trig:hover {
+	background-position-y: -385px;
+}
 
+#rules_sidenav .new_rule_trig span{
+	padding-left: 18px;
+	background-position-y: -848px;
+}
+#rules_sidenav .rules_tut_trig{
+	color: #FFF;
+	float: left;
+}
 
+#rules_sidenav .rule_actions_box{
+	margin: 5px 0 5px -25px;
+}
+#rules_sidenav .rule_actions{
+	text-indent: -9001em;
+	display: block;
+	width: 88px;
+	height: 22px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+#rules_sidenav .sub_actions {
+	text-align: right;
+	margin: 10px 0 3px 0;
+	font-size: 11px;
+	font-weight: bold;
+	text-shadow: 0 1px black;
+}
 
 
 

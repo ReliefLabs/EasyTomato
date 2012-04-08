@@ -23,7 +23,6 @@
 	<link rel="stylesheet" href="css/reset.css" />
 	<link rel="stylesheet" href="css/text.css" />
 	<link rel="stylesheet" href="css/960.css" />
-	<link rel="stylesheet" href="css/demo.css">
 	<link rel="stylesheet" href="css/style.css">
 
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
@@ -37,111 +36,115 @@
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-  <header>
-
-  </header>
-  <div role="main" id="main">
-	
-
-
-
-
-
- 
-	<div class="container_16">
-	  <div id="header">
-		  <div class="grid_2">
-		    <p>
-		      100
-		  	  <a href="javascript:void(0);">Logo</a>
-		    </p>
-		    
-
+  <header class="container_16" id="header">
+  
+		  <div class="grid_1">
+		    <a href="javascript:void(0);" class="home_link">Home</a>
 		  </div>
 		  <!-- end .grid_2 -->
-		  <div class="grid_11">
-		    <p>
-		      640
-		 	  St. James Hospital
-		    </p>
+		  <div class="advanced_box">
+		    <p>  <a href="javascript:void(0);">[+] advanced tomato</a> </p>
+		    <p> Tuesday, June 3 14:30 </p>
 		  </div>
-		  <!-- end .grid_14 -->
-		  <div class="grid_3">
-		    <p>
-		      160
-		      advanced tomato
-		    </p>
-		  </div>
-		  <div class="clear"></div>
-	  
-	  </div>
-	  <!-- end #header -->
-	  
-	  
+	
+		    <h1> St. James Hospital </h1>
+		  <div class="clear"></div>	  
+  </header>
+  <!-- end #header -->
+  
+  <div role="main" id="rules" class="main container_16">	  
 	  
 	  <div id="topnav">
-		  <div class="grid_16">
-		    <p>
-		      940
-		      topnav
-		    </p>
-		  </div>
-		  <!-- end .grid_16 -->
-		  <div class="clear"></div>
-
+		<ul>
+			<li>
+				<a href="javascript:void(0);">Overview</a>
+			</li>
+			<li class="active_tab">
+				<a href="javascript:void(0);">Groups</a>
+			</li>
+			<li>
+				<a href="javascript:void(0);">Computers</a>
+			</li>
+			<li>
+				<a href="javascript:void(0);">Settings</a>
+			</li>
+		</ul>		
+		    
+		<div class="clear"></div>
 	  </div>
 	  <!-- end #topnav -->
 	  
-	  
+
 	  <div id="content">
 	  	<div class="content_bar">
 	  	
-		  <div class="grid_4">
-		    <p>
-		      220
-		      Go back to groups
-		    </p>
+		  <div class="grid_4 alpha back_trigger_box">
+<!-- 		    <a href="javascript:void(0);"><span class="goback">Go Back to Groups</span></a> -->
+	  		<a href="javascript:void(0);" class="nicebutton back_trigger"><span class="goback_arrow_button">Go Back to Groups</span></a>
+
 		  </div>
-		  <!-- end .grid_4 -->
-		  <div class="grid_12">
-		    <p>
-		      700
-		      Unassigned Computers Schedule
-		    </p>
+		  <!-- end .bar_title -->
+		  <div class="grid_12 rules_title">
+		  	<h4>Unassigned Computers Schedule</h4>
 		  </div>
-		  <!-- end .grid_12 -->
+		  <!-- end .bar_options -->
+		 
 		  <div class="clear"></div>
 
 		</div>
 	  <!-- end .content_bar -->
 	  
-	  <div class="sidenav">
-	  	
-		  <div class="grid_4">
-		    <p>
-		      220
-		      Blocking rules
-		      Blocking rules
-		      Blocking rules
-		      Blocking rules
-		      Blocking rules
-		      Blocking rules
-		      
-		    </p>
-		  </div>
-		  <!-- end .grid_4 -->
+	 
+	  
+	  <div id="rules_sidenav" class="grid_4 alpha sidenav">
+	  	<div class="sidenav_header">
+			<p>Blocking Rules</p>
+			<p class="extra_info">Click the checkboxes to enable/disable</p>
+			<div class="sub_actions">
+				<a href="javascript:void(0);" class="rules_tut_trig">How Rules Work</a>
+				<a href="javascript:void(0);" class="new_rule_trig"><span class="add_button">New Rule</span</a>
 
-		</div>
+			</div>
+		</div>	 
+		<a href="javascript:void(0);" id="apply_trigger">Apply Changes</a> 	
+		
+		<ul class="device_list">
+			<li>
+		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+		  		<p>Youtube Block</p>
+		  		<span>Every Day</span>
+			</li>
+			<li class="hoverme">
+		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+		  		<p>No Internet Sunday</p>
+		  		<span>Sunday</span>
+		  		<div class="rule_actions_box">
+		  			<a href="javascript:void(0);" class="delete_rule_trig rule_actions">Remove</a>
+		  			<a href="javascript:void(0);" class="edit_rule_trig rule_actions">Edit Rule</a>
+		  		</div>
+			</li>
+			<li>
+		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+		  		<p>No Social Media</p>
+		  		<span>Mon, Tue, Wed, Thu</span>
+			</li>
+		</ul>
+		
+
+	  	<div class="sidenav_footer">
+	  		<a href="javascript:void(0);" class="nicebutton edit_rules_trig"><span class="lock_arrow_button">Edit Rule</span></a>
+  		</div>
+	  </div>
 	  <!-- end .sidenav -->
 	  
-	  <div class="content_body rules_cal">
-	  	<div class="grid_12">
-		    <p>
-		      700
-		      Rules Calendar
-		    </p>
-		  </div>
-		  <!-- end .grid_12 -->
+	  
+
+	  
+	  
+	  <div class="content_body rules_calendar">
+	  	<div class="grid_12 omega">
+		  		  COLIN, PUT THE CALENDAR HERE. DO IT!
+		</div>
 		
 		  <div class="clear"></div>
 	  </div>
@@ -154,29 +157,17 @@
 	  </div>
 	  <!-- end #content -->
 	  
-	  
-	  
-	  
-	  
-	  
   </div>
   <!-- end #main -->
 
-  <footer>
-footer
-
+  <footer class="container_16" id="footer">
+		<p>Copyright 2012 EasyTomato.org</p>
   </footer>
 
 
   <!-- JavaScript at the bottom for fast page loading -->
-
-  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
-
-  <!-- scripts concatenated and minified via build script -->
-  <script src="js/plugins.js"></script>
-  <script src="js/script.js"></script>
+  <script type="text/javascript" src="/ender.min.js"></script>
+  <script type="text/javascript" src="/newstuff/js/rules.js"></script>
   <!-- end scripts -->
 
 </body>
