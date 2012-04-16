@@ -1,143 +1,243 @@
-/* Shared library add-on to iptables to add NFMARK matching support. */
+/* Shared library add-on to iptables to add MARK target support. */
 #include <stdio.h>
-#include <netdb.h>
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
 
 #include <iptables.h>
+#include <linux/netfilter_ipv4/ip_tables.h>
 /* For 64bit kernel / 32bit userspace */
-#include "../include/linux/netfilter_ipv4/ipt_mark.h"
+#include "../include/linux/netfilter_ipv4/ipt_MARK.h"
 
 /* Function which prints out usage message. */
 static void
 help(void)
 {
 	printf(
-"MARK match v%s options:\n"
-"[!] --mark value[/mask]         Match nfmark value with optional mask\n"
+"MARK target v%s options:\n"
+"  --set-mark value                   Set nfmark value\n"
+"  --and-mark value                   Binary AND the nfmark with value\n"
+"  --or-mark  value                   Binary OR  the nfmark with value\n"
 "\n",
 IPTABLES_VERSION);
 }
 
 static struct option opts[] = {
-	{ "mark", 1, 0, '1' },
-	{0}
+	{ "set-mark", 1, 0, '1' },
+	{ "and-mark", 1, 0, '2' },
+	{ "or-mark", 1, 0, '3' },
+	{ 0 }
 };
+
+/* Initialize the target. */
+static void
+init(struct ipt_entry_target *t, unsigned int *nfcache)
+{
+}
 
 /* Function which parses command options; returns true if it
    ate an option */
 static int
-parse(int c, char **argv, int invert, unsigned int *flags,
-      const struct ipt_entry *entry,
-      unsigned int *nfcache,
-      struct ipt_entry_match **match)
+parse_v0(int c, char **argv, int invert, unsigned int *flags,
+	 const struct ipt_entry *entry,
+	 struct ipt_entry_target **target)
 {
-	struct ipt_mark_info *markinfo = (struct ipt_mark_info *)(*match)->data;
+	struct ipt_mark_target_info *markinfo
+		= (struct ipt_mark_target_info *)(*target)->data;
 
 	switch (c) {
-		char *end;
 	case '1':
-		check_inverse(optarg, &invert, &optind, 0);
 #ifdef KERNEL_64_USERSPACE_32
-		markinfo->mark = strtoull(optarg, &end, 0);
-		if (*end == '/') {
-			markinfo->mask = strtoull(end+1, &end, 0);
-		} else
-			markinfo->mask = 0xffffffffffffffffULL;
+		if (string_to_number_ll(optarg, 0, 0, 
+				     &markinfo->mark))
 #else
-		markinfo->mark = strtoul(optarg, &end, 0);
-		if (*end == '/') {
-			markinfo->mask = strtoul(end+1, &end, 0);
-		} else
-			markinfo->mask = 0xffffffff;
+		if (string_to_number_l(optarg, 0, 0, 
+				     &markinfo->mark))
 #endif
-		if (*end != '\0' || end == optarg)
 			exit_error(PARAMETER_PROBLEM, "Bad MARK value `%s'", optarg);
-		if (invert)
-			markinfo->invert = 1;
+		if (*flags)
+			exit_error(PARAMETER_PROBLEM,
+			           "MARK target: Can't specify --set-mark twice");
 		*flags = 1;
 		break;
-
+	case '2':
+		exit_error(PARAMETER_PROBLEM,
+			   "MARK target: kernel too old for --and-mark");
+	case '3':
+		exit_error(PARAMETER_PROBLEM,
+			   "MARK target: kernel too old for --or-mark");
 	default:
 		return 0;
 	}
+
 	return 1;
 }
 
-#ifdef KERNEL_64_USERSPACE_32
-static void
-print_mark(unsigned long long mark, unsigned long long mask, int numeric)
-{
-	if(mask != 0xffffffffffffffffULL)
-		printf("0x%llx/0x%llx ", mark, mask);
-	else
-		printf("0x%llx ", mark);
-}
-#else
-static void
-print_mark(unsigned long mark, unsigned long mask, int numeric)
-{
-	if(mask != 0xffffffff)
-		printf("0x%lx/0x%lx ", mark, mask);
-	else
-		printf("0x%lx ", mark);
-}
-#endif
-
-/* Final check; must have specified --mark. */
 static void
 final_check(unsigned int flags)
 {
 	if (!flags)
 		exit_error(PARAMETER_PROBLEM,
-			   "MARK match: You must specify `--mark'");
+		           "MARK target: Parameter --set/and/or-mark"
+			   " is required");
 }
 
-/* Prints out the matchinfo. */
-static void
-print(const struct ipt_ip *ip,
-      const struct ipt_entry_match *match,
-      int numeric)
+/* Function which parses command options; returns true if it
+   ate an option */
+static int
+parse_v1(int c, char **argv, int invert, unsigned int *flags,
+	 const struct ipt_entry *entry,
+	 struct ipt_entry_target **target)
 {
-	struct ipt_mark_info *info = (struct ipt_mark_info *)match->data;
+	struct ipt_mark_target_info_v1 *markinfo
+		= (struct ipt_mark_target_info_v1 *)(*target)->data;
 
-	printf("MARK match ");
+	switch (c) {
+	case '1':
+	        markinfo->mode = IPT_MARK_SET;
+		break;
+	case '2':
+	        markinfo->mode = IPT_MARK_AND;
+		break;
+	case '3':
+	        markinfo->mode = IPT_MARK_OR;
+		break;
+	default:
+		return 0;
+	}
 
-	if (info->invert)
-		printf("!");
-	
-	print_mark(info->mark, info->mask, numeric);
+#ifdef KERNEL_64_USERSPACE_32
+	if (string_to_number_ll(optarg, 0, 0,  &markinfo->mark))
+#else
+	if (string_to_number_l(optarg, 0, 0, &markinfo->mark))
+#endif
+		exit_error(PARAMETER_PROBLEM, "Bad MARK value `%s'", optarg);
+
+	if (*flags)
+		exit_error(PARAMETER_PROBLEM,
+			   "MARK target: Can't specify --set-mark twice");
+
+	*flags = 1;
+	return 1;
 }
 
-/* Saves the union ipt_matchinfo in parsable form to stdout. */
+#ifdef KERNEL_64_USERSPACE_32
 static void
-save(const struct ipt_ip *ip, const struct ipt_entry_match *match)
+print_mark(unsigned long long mark)
 {
-	struct ipt_mark_info *info = (struct ipt_mark_info *)match->data;
+	printf("0x%llx ", mark);
+}
+#else
+static void
+print_mark(unsigned long mark)
+{
+	printf("0x%lx ", mark);
+}
+#endif
 
-	if (info->invert)
-		printf("! ");
-	
-	printf("--mark ");
-	print_mark(info->mark, info->mask, 0);
+/* Prints out the targinfo. */
+static void
+print_v0(const struct ipt_ip *ip,
+	 const struct ipt_entry_target *target,
+	 int numeric)
+{
+	const struct ipt_mark_target_info *markinfo =
+		(const struct ipt_mark_target_info *)target->data;
+	printf("MARK set ");
+	print_mark(markinfo->mark);
 }
 
-static struct iptables_match mark = { 
+/* Saves the union ipt_targinfo in parsable form to stdout. */
+static void
+save_v0(const struct ipt_ip *ip, const struct ipt_entry_target *target)
+{
+	const struct ipt_mark_target_info *markinfo =
+		(const struct ipt_mark_target_info *)target->data;
+
+	printf("--set-mark ");
+	print_mark(markinfo->mark);
+}
+
+/* Prints out the targinfo. */
+static void
+print_v1(const struct ipt_ip *ip,
+	 const struct ipt_entry_target *target,
+	 int numeric)
+{
+	const struct ipt_mark_target_info_v1 *markinfo =
+		(const struct ipt_mark_target_info_v1 *)target->data;
+
+	switch (markinfo->mode) {
+	case IPT_MARK_SET:
+		printf("MARK set ");
+		break;
+	case IPT_MARK_AND:
+		printf("MARK and ");
+		break;
+	case IPT_MARK_OR: 
+		printf("MARK or ");
+		break;
+	}
+	print_mark(markinfo->mark);
+}
+
+/* Saves the union ipt_targinfo in parsable form to stdout. */
+static void
+save_v1(const struct ipt_ip *ip, const struct ipt_entry_target *target)
+{
+	const struct ipt_mark_target_info_v1 *markinfo =
+		(const struct ipt_mark_target_info_v1 *)target->data;
+
+	switch (markinfo->mode) {
+	case IPT_MARK_SET:
+		printf("--set-mark ");
+		break;
+	case IPT_MARK_AND:
+		printf("--and-mark ");
+		break;
+	case IPT_MARK_OR: 
+		printf("--or-mark ");
+		break;
+	}
+	print_mark(markinfo->mark);
+}
+
+static
+struct iptables_target mark_v0 = {
 	.next		= NULL,
-	.name		= "mark",
+	.name		= "MARK",
 	.version	= IPTABLES_VERSION,
-	.size		= IPT_ALIGN(sizeof(struct ipt_mark_info)),
-	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_mark_info)),
+	.revision	= 0,
+	.size		= IPT_ALIGN(sizeof(struct ipt_mark_target_info)),
+	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_mark_target_info)),
 	.help		= &help,
-	.parse		= &parse,
+	.init		= &init,
+	.parse		= &parse_v0,
 	.final_check	= &final_check,
-	.print		= &print,
-	.save		= &save,
+	.print		= &print_v0,
+	.save		= &save_v0,
+	.extra_opts	= opts
+};
+
+static
+struct iptables_target mark_v1 = {
+	.next		= NULL,
+	.name		= "MARK",
+	.version	= IPTABLES_VERSION,
+	.revision	= 1,
+	.size		= IPT_ALIGN(sizeof(struct ipt_mark_target_info_v1)),
+	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_mark_target_info_v1)),
+	.help		= &help,
+	.init		= &init,
+	.parse		= &parse_v1,
+	.final_check	= &final_check,
+	.print		= &print_v1,
+	.save		= &save_v1,
 	.extra_opts	= opts
 };
 
 void _init(void)
 {
-	register_match(&mark);
+	register_target(&mark_v0);
+	register_target(&mark_v1);
 }
