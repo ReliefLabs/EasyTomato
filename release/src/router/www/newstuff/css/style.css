@@ -408,7 +408,6 @@ th, td, caption {
 .pretty_table{
 	border: 1px solid #DCECFC;
 	outline: 1px solid #0088de;
-	width: 458px !important; 
 	margin-top: 20px;
 }
 .pretty_table h4{
@@ -805,6 +804,11 @@ padding: 3px 0;
 	border: 1px solid #DCECFC;
 	outline: 1px solid #0088de;
 }
+
+#overview .pretty_table{
+	width: 458px !important; 
+}
+
 .usage_header{
 	background: #DCECFC;
 	text-align: left;
@@ -853,8 +857,6 @@ padding: 3px 0;
 	color: white;
 
 }
-
-
 
 
 
