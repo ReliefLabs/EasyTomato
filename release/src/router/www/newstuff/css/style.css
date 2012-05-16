@@ -742,6 +742,78 @@ padding: 3px 0;
 
 
 
+/*--------- Rules: Add/Edit lightbox ------------*/
+.lightbox_content{
+ 	display: none;
+ 	width: 600px;
+ 	height: 310px;
+ }
+#ruleformbox{
+	
+}
+
+#ruleformbox .custom_block_box{
+margin-top:20px;
+}
+#ruleformbox .custom_block_box label{
+font-size: 11pt;
+}
+#ruleformbox .custom_block_box .block_all{
+	margin: 0;
+}
+
+#ruleformbox form{
+
+}
+
+form .green_button {
+	background: url("../img/sprite.png") repeat-x scroll 0px -380px 
+	transparent;
+	border: 1px solid 
+	#00B54D;
+	outline: 1px solid 
+	#006838;
+	margin: 20px 0 10px 243px;
+	padding: 6px 20px;
+	font-size: 12pt;
+	color: 
+	white;
+	text-decoration: none;
+	font-weight: bold;
+	display: block;
+	width: 75px;
+	text-shadow: black 0px 1px 0px;
+}
+
+form .grid_row{margin-bottom: 10px;}
+
+#ruleformbox input{
+border: 1px #CCC solid;
+padding: 3px 5px;
+
+}
+#ruleformbox input.check{
+margin-left: 15px;
+}
+
+#ruleformbox input.rule_name{width:495px;}
+#ruleformbox label{}
+#ruleformbox span{}
+#ruleformbox .start_time_hour{
+margin-left: 35px;}
+
+#ruleformbox textarea{
+display: block;
+width: 99%;
+height: 75px;
+}
+
+#ruleformbox .section_name{
+	font-size: 13pt;
+	font-weight: bold;
+}
+
+
 
 
 

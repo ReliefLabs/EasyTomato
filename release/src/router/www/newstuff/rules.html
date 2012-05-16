@@ -31,6 +31,15 @@
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr-2.5.3.min.js"></script>
+  <script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
+  <link rel="stylesheet" href="js/libs/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+
+  <script type="text/javascript">
+	$(function() {
+  		$('.fancybox').fancybox();
+  	});
+  </script>
+  
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -102,7 +111,7 @@
 			<p class="extra_info">Click the checkboxes to enable/disable</p>
 			<div class="sub_actions">
 				<a href="javascript:void(0);" class="rules_tut_trig">How Rules Work</a>
-				<a href="javascript:void(0);" class="new_rule_trig"><span class="add_button">New Rule</span</a>
+				<a href="#ruleformbox" class="fancybox new_rule_trig" title="Add/Edit Rule Form"><span class="add_button">New Rule</span</a>
 
 			</div>
 		</div>	 
@@ -156,7 +165,81 @@
 		  <div class="clear"></div>
 	  </div>
 	  <!-- end #content -->
-	  
+	
+	
+
+	<div id="ruleformbox" class="lightbox_content">
+		<form>
+			<div class="grid_row">
+				<span class="section_name">Rule Name</span>
+				<input type="text" class="rule_name" name="rule_name" />
+			</div>
+			
+			<div class="grid_row">
+				<span class="section_name">Days</span>
+				<input type="checkbox" class="check" name="every_day"/>
+				<label for="every_day">Every Day</label>
+				
+				<input type="checkbox" class="check" name="sunday"/>
+				<label for="sunday">Sun</label>
+
+				<input type="checkbox" class="check" name="monday"/>
+				<label for="monday">Mon</label>
+				
+				<input type="checkbox" class="check" name="tuesday"/>
+				<label for="tuesday">Tue</label>
+				
+				<input type="checkbox" class="check" name="wednesday"/>
+				<label for="wednesday">Wed</label>
+				
+				<input type="checkbox" class="check" name="thursday"/>
+				<label for="thursday">Thu</label>
+				
+				<input type="checkbox" class="check" name="friday"/>
+				<label for="friday">Fri</label>
+				
+				<input type="checkbox" class="check" name="saturday"/>
+				<label for="saturday">Sat</label>
+			</div>
+			
+			<div class="grid_row">
+				<span class="section_name">Time</span>
+				<input type="checkbox" class="check" name="all_day"/>
+				<label for="all_day">All Day</label>
+				
+				<select class="hourcombo combo start_time_hour" name="start_time_hour"><option value="0" selected="selected">00</option><option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option><option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option></select>
+				
+				<select class="mincombo combo" name="start_time_min"><option value="0" selected="selected">00</option><option value="5">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option></select>
+				
+				<span>to</span>
+				
+				<select class="hourcombo combo" name="end_time_hour"><option value="0" selected="selected">00</option><option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option><option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option></select>
+				
+				<select class="mincombo combo" name="end_time_min"><option value="0" selected="selected">00</option><option value="5">05</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option></select>
+			</div>
+			
+			<div class="grid_row custom_block_box">
+			
+				<input type="checkbox" class="check block_all" name="block_all"/>
+				<label for="block_all" style="font-weight:bold;">Block All Internet Access</label>
+				
+				<input type="checkbox" class="check" name="block_social"/>
+				<label for="block_social">Social Media</label>
+				
+				<input type="checkbox" class="check" name="block_stream"/>
+				<label for="block_stream">Streaming Video</label>
+			</div>
+
+			<div class="grid_row">
+				<span class="section_name">Blocked Websites</span>
+				<textarea name="block_sites"></textarea>
+			</div>
+			
+			<a href="javascript:void(0);" class="green_button">Save Rule</a>
+
+		</form>
+	</div>	  
+
   </div>
   <!-- end #main -->
 
@@ -166,8 +249,9 @@
 
 
   <!-- JavaScript at the bottom for fast page loading -->
-  <script type="text/javascript" src="/ender.min.js"></script>
-  <script type="text/javascript" src="/newstuff/js/rules.js"></script>
+  <script type="text/javascript" src="js/libs/fancybox/source/jquery.fancybox.js"></script>
+  <script type="text/javascript" src="js/rules.js"></script>
+  
   <!-- end scripts -->
 
 </body>
