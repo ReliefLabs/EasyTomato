@@ -475,7 +475,7 @@ th, td, caption {
 #topnav ul li a {
 	font-size: 14px;
 	font-weight: bold;
-	color: #777;
+	color: #555;
 	text-shadow: 0 1px white;
 	text-decoration: none;
 	padding: 4px 20px 3px 20px;
@@ -559,7 +559,7 @@ th, td, caption {
 
 .sidenav .sidenav_header .extra_info {
 	font-size: 11px;
-	font-weight: normal;
+	font-weight: bold;
 }
 
 .sidenav .sidenav_header p {
@@ -714,9 +714,13 @@ th, td, caption {
 
 
 /*--------- Rules: Top Bar ------------*/
-#rules .content_bar{ background: none;}
+#rules .content_bar{ 
+	background: none;
+}
 
-#rules .content_bar .back_trigger_box{ text-align: center;}
+#rules .content_bar .back_trigger_box{ 
+	text-align: center;
+}
 #rules .content_bar .back_trigger{
 	padding: 5px 15px;
 	background-position-y: -1795px;
@@ -732,11 +736,11 @@ th, td, caption {
 }
 
 #rules .content_bar .rules_title {
-text-align: center;
-background: #E6E6E6;
-border: 1px #EFEFEF solid;
-outline: 1px #CCC solid;
-padding: 3px 0;
+	text-align: center;
+	background: #E6E6E6;
+	border: 1px #EFEFEF solid;
+	outline: 1px #CCC solid;
+	padding: 3px 0;
 }
 #rules .content_bar .rules_title h4{ margin: 0;}
 
@@ -753,10 +757,10 @@ padding: 3px 0;
 }
 
 #ruleformbox .custom_block_box{
-margin-top:20px;
+	margin-top:20px;
 }
 #ruleformbox .custom_block_box label{
-font-size: 11pt;
+	font-size: 11pt;
 }
 #ruleformbox .custom_block_box .block_all{
 	margin: 0;
@@ -785,27 +789,32 @@ form .green_button {
 	text-shadow: black 0px 1px 0px;
 }
 
-form .grid_row{margin-bottom: 10px;}
+form .grid_row{
+	margin-bottom: 10px;
+}
 
 #ruleformbox input{
-border: 1px #CCC solid;
-padding: 3px 5px;
-
+	border: 1px #CCC solid;
+	padding: 3px 5px;
 }
+
 #ruleformbox input.check{
-margin-left: 15px;
+	margin-left: 15px;
 }
 
-#ruleformbox input.rule_name{width:495px;}
+#ruleformbox input.rule_name{
+	width:495px;
+}
 #ruleformbox label{}
 #ruleformbox span{}
 #ruleformbox .start_time_hour{
-margin-left: 35px;}
+	margin-left: 35px;
+}
 
 #ruleformbox textarea{
-display: block;
-width: 99%;
-height: 75px;
+	display: block;
+	width: 99%;
+	height: 75px;
 }
 
 #ruleformbox .section_name{
@@ -932,7 +941,56 @@ height: 75px;
 
 
 
+/*--------- Settings: Content Bar ------------*/
+#settings .content_bar .top_title {
+text-align: center;
+background: #E6E6E6;
+border: 1px #EFEFEF solid;
+outline: 1px #CCC solid;
+padding: 3px 0;
+}
+#settings .content_bar .top_title h4{ margin: 0;}
 
+
+/*--------- Settings: Settings Form ------------*/
+#settings .inputs_box{}
+#settings .inputs_box input{
+	display: block;
+	margin-bottom: 35px;
+	border: 1px #CCC solid;
+	padding: 3px 5px;
+	width: 150px;
+}
+#settings .inputs_box input.check{
+	display: inline;
+	width: auto;
+	margin: 5px 0 0 0;
+}
+
+#settings .inputs_box input.net_pw{margin-bottom:0;}
+
+#settings .inputs_box input.router_pw{margin-top:15px;}
+
+#settings .inputs_box select{
+	display: block;
+	margin-top: 15px;
+}
+
+#settings .labels_box{
+	font-size: 14pt;
+	font-weight: bold;
+	text-align: right;
+
+}
+#settings .labels_box p{
+	margin-bottom: 30px;
+}
+
+#settings .settings_form{margin-top:50px;}
+#settings .settings_form .green_button{
+	margin-left: 415px;
+	width: 105px;
+}
 
 
 
