@@ -1,18 +1,16 @@
 
-var groups = {},
+var groups = [],
 	rules = [],
 	groups_nvram_id = 'easytomato_scratch_0';
 
 var load_groups = function(callback) {
-	$.ajax({
-		url: '/nvram/nvram.cgi?var=' + groups_nvram_id,
-		method: 'get',
-		success: function(data) {
+	$.getJSON('/nvram/nvram.cgi?var=' + groups_nvram_id,
+		function(data) {
+			console.log(data);
 			groups = data;
 			if(callback) callback(data);
-		},
-		type: 'js'
-	})
+		}
+	);
 }
 
 var build_group_string = function(addrs, except) {
@@ -32,7 +30,7 @@ var build_rule = function(def) {
 
 	//days of week
 	var days = 0,
-		daymap = {'sun': 1, 'mon': 2, 'tue': 4, 'wed': 8, 'thu': 16, 'fri': 32: 'sat': 64};
+		daymap = {'sun': 1, 'mon': 2, 'tue': 4, 'wed': 8, 'thu': 16, 'fri': 32, 'sat': 64};
 	$.map(def.days, function(d) {
 		if(d in daymap) days += daymap[d];
 	});
@@ -66,10 +64,15 @@ var apply = function(callback) {
 	$.each(groups, function(g) {
 		rules.concat(g.rules);
 	});
-	$.each(rules, function(rule, i) {
+	
+	for (var i=0; i < 100; i++) {
 		var key = 'rrule' + i;
-		data[key] = build_rule(rule);
-	});
+		if (i < rules.length) {
+			data[key] = build_rule(rule);
+		} else {
+			data[key] = null;
+		}
+	}
 
 	$.ajax({
 		url: '/tomato.cgi',
@@ -78,3 +81,33 @@ var apply = function(callback) {
 		type: 'string'
 	});
 }
+
+groups = [
+	{
+		'name': 'Unassigned Devices',
+		'unassigned': true
+	},
+	{
+		'name': 'nurses station 1',
+		'computers': [],
+	}, {
+		'name': 'nurses station 2',
+		'computers': []
+	}
+]
+
+var render_groups = function() {
+
+	group_template = $('#group_template').html()
+	$('.group_boxes').html(Mustache.render(group_template, {'groups': groups.slice(1)}));
+}
+
+$(document).ready(function() {
+//load_groups(function() {
+
+	
+
+	render_groups();
+
+//});	
+});
