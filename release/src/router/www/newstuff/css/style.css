@@ -511,6 +511,8 @@ th, td, caption {
 	border: 1px #0088DE solid;
 	text-shadow: 0 1px white;
 	position: relative;
+	background-color: #DCECFC;
+	z-index: 2;
 }
 .sidenav .device_list li .box_handle {
 	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
@@ -645,6 +647,7 @@ th, td, caption {
 /*--------- Groups: Groups boxes ------------*/
 .group_boxes{}
 
+
 .group_boxes .devices_box {
 	border: 1px #CCC solid;
 	background: white;
@@ -677,8 +680,12 @@ th, td, caption {
 }
 .group_boxes .devices_box li .info_trig{}
 .group_boxes .devices_box li.shademe{
-	background: #EEE;
 }
+
+
+.group_boxes .devices_box li:nth-child(odd) {  }
+.group_boxes .devices_box li:nth-child(even) { 	background: #EEE; }
+
 
 .group_boxes .devices_box li span{}
 
@@ -690,6 +697,10 @@ th, td, caption {
 	width: 210px;
 	text-align: center;
 	margin: 0 20px 25px 0px;
+}
+
+.group_boxes .group_box_hover{
+	box-shadow: 0px 0px 5px red;
 }
 
 .group_boxes .group_box.omega {
