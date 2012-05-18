@@ -520,7 +520,6 @@ th, td, caption {
 	text-shadow: 0 1px white;
 	position: relative;
 	background-color: #DCECFC;
-	cursor: pointer;
 }
 .sidenav .device_list li .box_handle {
 	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
@@ -579,6 +578,10 @@ th, td, caption {
 	font-size: 13pt;
 }
 
+/*--------- Groups: General ------------*/
+#groups .sidenav .device_list li {
+	cursor: pointer;
+}
 
 
 /*--------- Groups: Content ------------*/
