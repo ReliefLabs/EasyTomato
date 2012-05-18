@@ -39,6 +39,15 @@
   <script type="text/javascript">
 	$(function() {
 /*   		$('.fancybox').fancybox(); */
+/*   		
+	o move devices from unassigned to group, vice versa
+	o move devices between groups
+	o create group adds a new devices_box
+	o hover states where needed
+	o checkbox click image switch
+	- edit name group
+
+ */
 		//group box hover crap
 		$('.devices_box li').live({
 		        mouseenter:
@@ -54,37 +63,80 @@
 		       
 		});
 	
+		
+		// Create group
+		$('.content_bar .new_group_trig').click(function(){
+			var $group_box_template = $('.group_box.templateme').clone();
+			$group_box_template.appendTo('.group_boxes .grid_12');
+			
+			
+			//calculate alpha, omega classes
+			if ($group_box_template.prev('.group_box').hasClass('omega')){
+				$group_box_template.addClass('alpha');
+			}
+			
+			if (!$group_box_template.prev('.group_box').hasClass('alpha') &&  
+				!$group_box_template.prev('.group_box').hasClass('omega')){
+				$group_box_template.addClass('omega');
+			}
+			
+			//cleanup, bind droppable
+			$group_box_template.removeClass('templateme hideme').trigger('start_droppable');
+			
+		});
+		
+	
 	
 		// Drag & drop of devices into groups
-		$( ".draggable" ).draggable({
-  			revert: true,
-			start: function(event, ui) {
-				$( this )
-					.data({
-						'name':$( this ).find('.device_name').text(),
-						'id' : '{#colinfigureitout}'
+		$( ".draggable" ).live({
+		
+			mouseenter:
+		           function()
+		           {
+		           	$(this).draggable({
+		           		scroll: false,
+			  			revert: true,
+						start: function(event, ui) {
+							$( this )
+								.css('z-index','2')
+								.data({
+									'name':$( this ).find('.device_name').text(),
+									'ip':$( this ).find('.device_ip').text(),
+									'id' : '{#colinfigureitout}'
+								});
+							}
 					});
+		           }
+		});
+		
+		//Bind custom event so new groups can call it to on their creation
+		$( ".droppable" ).live('start_droppable', function(){
+		
+			$(this).droppable({
+				hoverClass: "droppable_hover",
+	
+				
+				drop: function( event, ui ) {
+					var $new_device = $( this ).find( ".templateme" ).clone();
+					
+					$new_device
+						.removeClass('templateme hideme')
+						.find('.device_name')
+							.text(ui.draggable.data('name'))
+							.end()
+						.find('.device_ip')
+							.text(ui.draggable.data('ip'))
+							.end()
+						.appendTo($(this).find('ul'));
+					
+					ui.draggable.remove();
+					
+					$('#apply_trigger').fadeIn();	
 				}
 			});
-		$( ".droppable" ).droppable({
-			hoverClass: "group_box_hover",
-
-			
-			drop: function( event, ui ) {
-				var $new_device = $( this ).find( ".templateme" ).clone();
-				
-				$new_device
-					.removeClass('templateme hideme')
-					.find('.device_name')
-						.text(ui.draggable.data('name'))
-						.end()
-					.appendTo($(this).find('ul'));
-				
-				ui.draggable.remove();
-				
-				$('#apply_trigger').fadeIn();	
-			}
 		});
+		//instantiate now for existing droppables
+		$( ".droppable" ).trigger('start_droppable');
   	});
   </script>
 
@@ -141,13 +193,15 @@
 		  <!-- end .bar_title -->
 		  <div class="grid_10 bar_options">
 		  	<span class="univ_block_box">
-		  		<a href="javascript:void(0);" class="pretty_check pretty_check_off">Block Adult Content</a>
+		  		<input type="checkbox" name="block_adult" class="check"/>
+<!-- 		  		<a href="javascript:void(0);" class="pretty_check pretty_check_off">Block Adult Content</a> -->
 		  		Block Adult Content
 		  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 		  	</span>
 		  	
 		  	<span class="univ_block_box">
-		  		<a href="javascript:void(0);" class="pretty_check pretty_check_on">Block Advertisements</a>
+		  		<input type="checkbox" name="block_ads" class="check"/>
+<!-- 		  		<a href="javascript:void(0);" class="pretty_check pretty_check_on">Block Advertisements</a> -->
 		  		Block Advertisements
 		  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 		  	</span>
@@ -164,31 +218,37 @@
 	  
 	 
 	  
-	  <div id="groups_sidenav" class="grid_4 alpha sidenav">
+	  <div id="groups_sidenav" class="grid_4 alpha sidenav droppable">
 	  	<div class="sidenav_header">
 			<p>Unassigned Devices</p>
 			<p class="extra_info">Drag the devices below to assign them to a group</p>
 		</div>	 
 		<a href="javascript:void(0);" id="apply_trigger" style="display:none;">Apply Changes</a> 	
 		
-		<ul class="device_list">
+		<ul class="device_list ">
+			<li class="draggable hideme templateme">
+		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+		  		<p class="device_name">device_name</p>
+		  		<span class="float_right device_ip">192.168.10.110</span>
+		  		<span>IP Address</span>
+			</li>
 			<li class="draggable">
 		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
 		  		<p class="device_name">Dell D620000</p>
-		  		<span class="float_right">192.168.10.110</span>
+		  		<span class="float_right device_ip">192.168.10.110</span>
 		  		<span>IP Address</span>
 			</li>
-			<li class="hoverme draggable">
+			<li class="draggable">
 		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
 		  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 		  		<p class="device_name">Ariel Laptop</p>
-		  		<span class="float_right">192.168.10.22</span>
+		  		<span class="float_right device_ip">192.168.10.22</span>
 		  		<span>IP Address</span>
 			</li>
 			<li class="draggable">
 		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
 		  		<p class="device_name">Elliot Phone</p>
-		  		<span class="float_right">192.168.10.10</span>
+		  		<span class="float_right device_ip">192.168.10.10</span>
 		  		<span>IP Address</span>
 			</li>
 		</ul>
@@ -206,69 +266,93 @@
 	  
 	  <div class="content_body group_boxes">
 	  	<div class="grid_12 omega">
+	  	<div class="grid_4 group_box droppable templateme hideme">
+		    <p>group_name</p>
+		    
+		    <div class="devices_box ">
+	    		<ul>
+	    			<li class="draggable hideme templateme">
+				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+				  		<span class="device_name">device_name</span>
+				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
+					</li>
+				</ul>
+		    </div>
+		 </div>
+	  	
 		  <div class="grid_4 group_box alpha droppable">
 		    <p>Nurses Stations 1</p>
 		    
 		    <div class="devices_box ">
 	    		<ul>
-	    			<li class="hideme templateme">
+	    			<li class="draggable hideme templateme">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
 				  		<span class="device_name">device_name</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
 	    		
-					<li>
+					<li class="draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
 				  		<span class="device_name">Dell D6201</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
-					<li class="shademe">
+					<li class="draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
-					<li>
+					<li class="draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
-					<li class="shademe">
+					<li class="draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 				</ul>
 		    </div>
+		    <!--
+<a href="javascript:void(0);" class="device_box_actions del_group_trig"></a>
+		    <a href="javascript:void(0);" class="device_box_actions edit_group_trig"></a>
+-->
+
 		    
 		  </div>
 		  <!-- end .grid_4 -->
 		  
-		  <div class="grid_4 group_box">
+		  <div class="grid_4 group_box droppable">
 		    <p>Nurses Stations 2</p>
 		    
 		    <div class="devices_box">
 	    		<ul>
-					<li>
+	    			<li class="draggable hideme templateme">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">device_name</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
-					<li class="shademe">
+	    		
+					<li class="draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D6201</span>
+				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
+					</li>
+					<li class="draggable">
+				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
-					<li>
+					<li class="draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
-					<li class="shademe">
+					<li class="draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
-					
 				</ul>
 		    </div>		  
 		  </div>
@@ -281,22 +365,22 @@
 	    		<ul>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 				</ul>
@@ -312,22 +396,22 @@
 	    		<ul>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 				</ul>
@@ -342,22 +426,22 @@
 	    		<ul>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 				</ul>
@@ -372,22 +456,22 @@
 	    		<ul>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li>
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 					<li class="shademe">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-				  		<span>Dell D620</span>
+				  		<span class="device_name">Dell D620</span>
 				  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 					</li>
 				</ul>

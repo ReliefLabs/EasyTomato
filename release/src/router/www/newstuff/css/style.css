@@ -512,7 +512,6 @@ th, td, caption {
 	text-shadow: 0 1px white;
 	position: relative;
 	background-color: #DCECFC;
-	z-index: 2;
 }
 .sidenav .device_list li .box_handle {
 	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
@@ -524,7 +523,7 @@ th, td, caption {
 	top: 15px;
 	left: 10px;
 }
-.sidenav .device_list li.hoverme{
+.sidenav .device_list li:hover{
 	background: #FFF6A6;
 	border-color: #FFCF2F;
 	z-index: 1;
@@ -656,8 +655,8 @@ th, td, caption {
 	margin: 4px 0;
 }
 .group_boxes .devices_box ul{
-	height: 160px;
-	overflow-y: auto;
+	min-height: 160px;
+/* 	overflow-y: auto; */
 }
 
 .group_boxes .devices_box li{
@@ -699,8 +698,17 @@ th, td, caption {
 	margin: 0 20px 25px 0px;
 }
 
-.group_boxes .group_box_hover{
-	box-shadow: 0px 0px 5px red;
+.group_boxes .group_box  .del_group_trig{
+	float: right;
+}
+.group_boxes .group_box  .edit_group_trig{
+}
+.group_boxes .group_box .device_box_actions{
+	
+}
+
+.droppable_hover{
+	box-shadow: 0px 0px 5px red !important;
 }
 
 .group_boxes .group_box.omega {
