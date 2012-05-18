@@ -247,19 +247,12 @@ body{
     font-size: 10pt;
 }
 
-.mini_close{
-	display: block;
-	height: 12px;
-	width: 12px;
-	background: url("../img/sprite.png") no-repeat scroll -10px -1250px transparent;
+.borderme{
+	border: 1px #CCC solid !important;
+	padding: 0px 2px;
+	background-color: #FFF;
 }
-
-.main{
-    background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
-    border: 1px #AAA solid;
-    border-top: 0;
-    padding-bottom: 20px;
-}
+.del_button{ background: url("../img/sprite.png") no-repeat scroll -374px -899px transparent; color: #990013; }
 
 .fade { opacity: .6 !important; }
 .fade:hover { opacity: .6 !important; }
@@ -280,6 +273,21 @@ body{
 }
 .invisible{visibility: hidden;}
 .lock_arrow_button{ background: url("../img/sprite.png") no-repeat scroll -10px -649px transparent; }
+
+.main{
+    background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
+    border: 1px #AAA solid;
+    border-top: 0;
+    padding-bottom: 20px;
+}
+
+.mini_close{
+	display: block;
+	height: 12px;
+	width: 12px;
+	background: url("../img/sprite.png") no-repeat scroll -10px -1250px transparent;
+}
+
 
 .pretty_check{
     background:url("../img/sprite.png") no-repeat scroll -10px -550px transparent;
@@ -512,6 +520,7 @@ th, td, caption {
 	text-shadow: 0 1px white;
 	position: relative;
 	background-color: #DCECFC;
+	cursor: pointer;
 }
 .sidenav .device_list li .box_handle {
 	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
@@ -662,9 +671,10 @@ th, td, caption {
 .group_boxes .devices_box li{
 	position: relative;
 	padding: 5px 0 5px 25px;
-	margin: 2px 0;
+	margin: 0;
 	font-weight: bold;
 	text-shadow: 0 1px white;
+	cursor: pointer;
 }
 
 .group_boxes .devices_box li a.box_handle{
@@ -701,10 +711,20 @@ th, td, caption {
 .group_boxes .group_box  .del_group_trig{
 	float: right;
 }
+
+.group_boxes .group_box .edit_group_name{
+	border: 1px solid #CCC;
+	padding: 2px 3px;
+	width: 96%;
+	margin-top: 2px;
+	font-size: 12pt;
+	display: none;
+}
+
 .group_boxes .group_box  .edit_group_trig{
 }
 .group_boxes .group_box .device_box_actions{
-	
+	margin: 3px 4px 4px 2px;
 }
 
 .droppable_hover{
@@ -720,7 +740,11 @@ th, td, caption {
 	text-shadow: 0 1px #FFF;
 	margin: 2px 0;
 }
-
+.group_boxes p.group_name{
+	border: 1px #EEE solid;
+	padding: 1px 0px;
+	word-wrap: break-word;
+}
 
 
 
