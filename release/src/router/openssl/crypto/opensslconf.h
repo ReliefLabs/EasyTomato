@@ -35,6 +35,9 @@
 #ifndef OPENSSL_NO_EC
 # define OPENSSL_NO_EC
 #endif
+#ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
+# define OPENSSL_NO_EC_NISTP_64_GCC_128
+#endif
 #ifndef OPENSSL_NO_ECDH
 # define OPENSSL_NO_ECDH
 #endif
@@ -95,6 +98,9 @@
 #ifndef OPENSSL_NO_RMD160
 # define OPENSSL_NO_RMD160
 #endif
+#ifndef OPENSSL_NO_SCTP
+# define OPENSSL_NO_SCTP
+#endif
 #ifndef OPENSSL_NO_SEED
 # define OPENSSL_NO_SEED
 #endif
@@ -106,12 +112,6 @@
 #endif
 #ifndef OPENSSL_NO_STORE
 # define OPENSSL_NO_STORE
-#endif
-#ifndef OPENSSL_NO_TLS1
-# define OPENSSL_NO_TLS1
-#endif
-#ifndef OPENSSL_NO_TLSEXT
-# define OPENSSL_NO_TLSEXT
 #endif
 #ifndef OPENSSL_NO_TS
 # define OPENSSL_NO_TS
@@ -163,6 +163,9 @@
 # endif
 # if defined(OPENSSL_NO_EC) && !defined(NO_EC)
 #  define NO_EC
+# endif
+# if defined(OPENSSL_NO_EC_NISTP_64_GCC_128) && !defined(NO_EC_NISTP_64_GCC_128)
+#  define NO_EC_NISTP_64_GCC_128
 # endif
 # if defined(OPENSSL_NO_ECDH) && !defined(NO_ECDH)
 #  define NO_ECDH
@@ -224,6 +227,9 @@
 # if defined(OPENSSL_NO_RMD160) && !defined(NO_RMD160)
 #  define NO_RMD160
 # endif
+# if defined(OPENSSL_NO_SCTP) && !defined(NO_SCTP)
+#  define NO_SCTP
+# endif
 # if defined(OPENSSL_NO_SEED) && !defined(NO_SEED)
 #  define NO_SEED
 # endif
@@ -235,12 +241,6 @@
 # endif
 # if defined(OPENSSL_NO_STORE) && !defined(NO_STORE)
 #  define NO_STORE
-# endif
-# if defined(OPENSSL_NO_TLS1) && !defined(NO_TLS1)
-#  define NO_TLS1
-# endif
-# if defined(OPENSSL_NO_TLSEXT) && !defined(NO_TLSEXT)
-#  define NO_TLSEXT
 # endif
 # if defined(OPENSSL_NO_TS) && !defined(NO_TS)
 #  define NO_TS

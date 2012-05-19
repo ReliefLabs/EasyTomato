@@ -85,6 +85,6 @@
 #define TCONFIG_USERPPTP 1
   #define IF_TCONFIG_USERPPTP(...) __VA_ARGS__
   #define IF_NOT_TCONFIG_USERPPTP(...)
-#undef TCONFIG_PPTPD
-  #define IF_TCONFIG_PPTPD(...)
-  #define IF_NOT_TCONFIG_PPTPD(...) __VA_ARGS__
+#define TCONFIG_PPTPD 1
+  #define IF_TCONFIG_PPTPD(...) __VA_ARGS__
+  #define IF_NOT_TCONFIG_PPTPD(...)
