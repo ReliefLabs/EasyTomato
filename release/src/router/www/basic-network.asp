@@ -733,7 +733,7 @@ function verifyFields(focused, quiet)
 		_lan_ipaddr: 1,
 		_lan_netmask: 1,
 /* NOVLAN-END */
-		_f_family_shield_enable: 1,
+		_f_familyshield_enable: 1,
 		_f_dns_1: 1,
 		_f_dns_2: 1,
 		_f_dns_3: 1,

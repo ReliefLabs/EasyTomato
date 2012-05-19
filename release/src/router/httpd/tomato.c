@@ -33,7 +33,7 @@ static void wo_service(char *url);
 static void wo_shutdown(char *url);
 static void wo_nvcommit(char *url);
 //	static void wo_logout(char *url);
-
+static void easytomato_devlist();
 
 // ----------------------------------------------------------------------------
 
@@ -236,12 +236,59 @@ static void wo_nvram2(char *url)
 
   // If this is a "special case", handle it first
   if(strcmp(p,"devlist")==0) {
-    asp_devlist(0, NULL);
+    easytomato_devlist();
     return;
   }
 
   // If this wasn't a special case, just call the generic nvram2 handler 
   asp_nvram2(1, &p);
+}
+
+static void easytomato_devlist() {
+  /*
+    {
+    "devlist" : [[ device 1 info here ], [ device 2 info here ]],
+    "http_id" : "TID40f64174e74cbbc2"
+    }
+  */
+
+  web_puts("{\n");
+  web_puts("\t\"devlist\" : [");
+
+  FILE *f;
+  char buf[1024];
+  char comma;
+  unsigned long expires;
+  char mac[32];
+  char ip[32];
+  char hostname[256];
+  char *host;
+
+#ifdef TCONFIG_VLAN
+  if ((nvram_match("lan_proto", "dhcp")) || (nvram_match("lan1_proto", "dhcp")) || (nvram_match("lan2_proto", "dhcp")) || (nvram_match("lan3_proto", "dhcp")) ) {
+#else
+    if (nvram_match("lan_proto", "dhcp")) {
+#endif
+
+      if ((f = fopen("/var/lib/misc/dnsmasq.leases", "r")) != NULL) {
+	comma = ' ';
+	while (fgets(buf, sizeof(buf), f)) {
+	  if (sscanf(buf, "%lu %17s %15s %255s", &expires, mac, ip, hostname) != 4) continue;
+	  host = js_string((hostname[0] == '*') ? "" : hostname);
+	  web_printf("%c['%s','%s','%s','%s']", comma,
+		     (host ? host : ""), ip, mac, ((expires == 0) ? "non-expiring" : reltime(buf, expires)));
+	  free(host);
+	  comma = ',';
+	}
+	fclose(f);
+      }
+    }
+    web_puts("],\n");
+
+    web_puts("\t\"http_id\": \""); // AB multiSSID
+    web_putj(nvram_safe_get("http_id"));
+    web_puts("\"\n}");
+
 }
 
 static void wo_iptables(char *url)
