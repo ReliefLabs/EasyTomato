@@ -1,109 +1,74 @@
-/* TTL modification target for IP tables
- * (C) 2000 by Harald Welte <laforge@gnumonks.org>
+/* IP tables module for matching the value of the TTL 
  *
- * Version: $Revision: 1.1 $
+ * ipt_ttl.c,v 1.5 2000/11/13 11:16:08 laforge Exp
  *
- * This software is distributed under the terms of GNU GPL
+ * (C) 2000,2001 by Harald Welte <laforge@gnumonks.org>
+ *
+ * This software is distributed under the terms  GNU GPL
  */
 
 #include <linux/module.h>
 #include <linux/skbuff.h>
-#include <linux/ip.h>
-#include <net/checksum.h>
 
+#include <linux/netfilter_ipv4/ipt_ttl.h>
 #include <linux/netfilter_ipv4/ip_tables.h>
-#include <linux/netfilter_ipv4/ipt_TTL.h>
 
 MODULE_AUTHOR("Harald Welte <laforge@gnumonks.org>");
-MODULE_DESCRIPTION("IP tables TTL modification module");
+MODULE_DESCRIPTION("IP tables TTL matching module");
 MODULE_LICENSE("GPL");
 
-static unsigned int ipt_ttl_target(struct sk_buff **pskb, unsigned int hooknum,
-		const struct net_device *in, const struct net_device *out,
-		const void *targinfo, void *userinfo)
+static int match(const struct sk_buff *skb, const struct net_device *in,
+		 const struct net_device *out, const void *matchinfo,
+		 int offset, const void *hdr, u_int16_t datalen,
+		 int *hotdrop)
 {
-	struct iphdr *iph = (*pskb)->nh.iph;
-	const struct ipt_TTL_info *info = targinfo;
-	u_int16_t diffs[2];
-	int new_ttl;
-			 
+	const struct ipt_ttl_info *info = matchinfo;
+	const struct iphdr *iph = skb->nh.iph;
+
 	switch (info->mode) {
-		case IPT_TTL_SET:
-			new_ttl = info->ttl;
+		case IPT_TTL_EQ:
+			return (iph->ttl == info->ttl);
 			break;
-		case IPT_TTL_INC:
-			new_ttl = iph->ttl + info->ttl;
-			if (new_ttl > 255)
-				new_ttl = 255;
+		case IPT_TTL_NE:
+			return (!(iph->ttl == info->ttl));
 			break;
-		case IPT_TTL_DEC:
-			new_ttl = iph->ttl - info->ttl;
-			if (new_ttl < 0)
-				new_ttl = 0;
+		case IPT_TTL_LT:
+			return (iph->ttl < info->ttl);
+			break;
+		case IPT_TTL_GT:
+			return (iph->ttl > info->ttl);
 			break;
 		default:
-			new_ttl = iph->ttl;
-			break;
+			printk(KERN_WARNING "ipt_ttl: unknown mode %d\n", 
+				info->mode);
+			return 0;
 	}
 
-	if (new_ttl != iph->ttl) {
-		diffs[0] = htons(((unsigned)iph->ttl) << 8) ^ 0xFFFF;
-		iph->ttl = new_ttl;
-		diffs[1] = htons(((unsigned)iph->ttl) << 8);
-		iph->check = csum_fold(csum_partial((char *)diffs,
-						    sizeof(diffs),
-				 	            iph->check^0xFFFF));
-									                	(*pskb)->nfcache |= NFC_ALTERED;
-	}
-
-	return IPT_CONTINUE;
+	return 0;
 }
 
-static int ipt_ttl_checkentry(const char *tablename,
-		const struct ipt_entry *e,
-		void *targinfo,
-		unsigned int targinfosize,
-		unsigned int hook_mask)
+static int checkentry(const char *tablename, const struct ipt_ip *ip,
+		      void *matchinfo, unsigned int matchsize,
+		      unsigned int hook_mask)
 {
-	struct ipt_TTL_info *info = targinfo;
-
-	if (targinfosize != IPT_ALIGN(sizeof(struct ipt_TTL_info))) {
-		printk(KERN_WARNING "TTL: targinfosize %u != %Zu\n",
-				targinfosize,
-				IPT_ALIGN(sizeof(struct ipt_TTL_info)));
-		return 0;	
-	}	
-
-	if (strcmp(tablename, "mangle")) {
-		printk(KERN_WARNING "TTL: can only be called from \"mangle\" table, not \"%s\"\n", tablename);
+	if (matchsize != IPT_ALIGN(sizeof(struct ipt_ttl_info)))
 		return 0;
-	}
 
-	if (info->mode > IPT_TTL_MAXMODE) {
-		printk(KERN_WARNING "TTL: invalid or unknown Mode %u\n", 
-			info->mode);
-		return 0;
-	}
-
-	if ((info->mode != IPT_TTL_SET) && (info->ttl == 0)) {
-		printk(KERN_WARNING "TTL: increment/decrement doesn't make sense with value 0\n");
-		return 0;
-	}
-	
 	return 1;
 }
 
-static struct ipt_target ipt_TTL = { { NULL, NULL }, "TTL", 
-	ipt_ttl_target, ipt_ttl_checkentry, NULL, THIS_MODULE };
+static struct ipt_match ttl_match = { { NULL, NULL }, "ttl", &match,
+		&checkentry, NULL, THIS_MODULE };
 
 static int __init init(void)
 {
-	return ipt_register_target(&ipt_TTL);
+	return ipt_register_match(&ttl_match);
 }
 
 static void __exit fini(void)
 {
-	ipt_unregister_target(&ipt_TTL);
+	ipt_unregister_match(&ttl_match);
+
 }
 
 module_init(init);

@@ -32,11 +32,155 @@
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr-2.5.3.min.js"></script>
   <script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="js/libs/jquery-ui-1.8.20/js/jquery-ui-1.8.20.custom.min.js"></script>
+  <script type="text/javascript" src="js/libs/fullcalendar/fullcalendar.min.js"></script>
+   
+
+  <link rel="stylesheet" href="js/libs/jquery-ui-1.8.20/css/blitzer/jquery-ui-1.8.20.custom.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="js/libs/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <link rel="stylesheet" href="js/libs/fullcalendar/fullcalendar.css" type="text/css" media="screen" />
 
   <script type="text/javascript">
 	$(function() {
   		$('.fancybox').fancybox();
+  		
+/*  
+		
+KNOWN BUGS (x = done)		
+	
+
+TO-DO (x = done)		
+	- CRUD rules (colin)
+	- Create/Update rule updates calendar (colin)
+	x Enable/disable rule
+	- $('#apply_trigger').fadeIn(); whenever needed	(colin)
+
+*/
+
+
+
+		
+		
+		
+		
+		
+  		
+  		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+		
+		//Make the rules display in the weekly calendar view in the proper day of week, irrespective of what actual date it is today.
+		function gimmeWeekDay(tgt_weekday){
+  			var today = date.getDay();			
+			var delta = tgt_weekday - today;
+			
+			return delta;			
+		}
+		
+		var calendar = $('#calendar').fullCalendar({
+			header: false,
+			defaultView: 'basicWeek', //MM- i like agendaWeek too, not sure which one to use
+			selectable: false,
+			selectHelper: true,
+			select: function(start, end, allDay) {
+				var title = prompt('Event Title:');
+				if (title) {
+					calendar.fullCalendar('renderEvent',
+						{
+							title: title,
+							start: start,
+							end: end,
+							allDay: allDay
+						},
+						true // make the event "stick"
+					);
+				}
+				calendar.fullCalendar('unselect');
+			},
+			editable: false,
+			events: [
+				{
+					title: 'Single day event',
+					start: new Date(y, m, 1)
+				},
+				{
+					title: 'Youtube Block',
+					start: new Date(y, m, d + gimmeWeekDay(1)),
+					end: new Date(y, m, d + gimmeWeekDay(3))
+				},
+				/*
+{
+					id: 999,
+					title: 'No Social Media Event',
+					start: new Date(y, m, d-3, 16, 0),
+					end:new Date(y, m, d-3, 16, 30),
+					allDay: false
+				},
+				{
+					id: 999,
+					title: 'Repeating Eventz',
+					start: new Date(y, m, d-2, 16, 0),
+					end:new Date(y, m, d-2, 16, 30),
+					allDay: false
+				},
+*/
+				{
+					title: 'Meeting',
+					start: new Date(y, m, d, 10, 30),
+					allDay: false
+				},
+				{
+					title: 'Lunch',
+					start: new Date(y, m, d, 12, 0),
+					end: new Date(y, m, d, 14, 0),
+					allDay: false
+				},
+				{
+					title: 'Birthday Party',
+					start: new Date(y, m, d+1, 19, 0),
+					end: new Date(y, m, d+1, 22, 30),
+					allDay: false
+				},
+				{
+					title: 'Click for Google',
+					start: new Date(y, m, 28),
+					end: new Date(y, m, 29),
+					url: 'http://google.com/'
+				}
+			]
+		});
+  		
+  		
+  		
+		//toggle display of calendar entry on check click
+		$('.device_list .box_handle').live({
+	        click:
+	           function()
+	           {
+		           	if ($(this).attr('checked')){
+		           		calendar.fullCalendar('addEventSource',  
+							[
+								{
+									id: 999,
+									title: 'Repeating Eventz',
+									start: new Date(y, m, d-2, 16, 0),
+									end:new Date(y, m, d-2, 16, 30),
+									allDay: false
+								}
+							]
+						);
+						$('#apply_trigger').fadeIn();
+					}
+					else{
+						calendar.fullCalendar('removeEvents', 999);
+						$('#apply_trigger').fadeIn();						
+					}
+	           }
+	       
+		});
+  		
+  		
   	});
   </script>
   
@@ -115,34 +259,56 @@
 
 			</div>
 		</div>	 
-		<a href="javascript:void(0);" id="apply_trigger">Apply Changes</a> 	
+		<a href="javascript:void(0);" id="apply_trigger" style="display:none;">Apply Changes</a> 	
 		
 		<ul class="device_list">
-			<li>
-		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-		  		<p>Youtube Block</p>
-		  		<span>Every Day</span>
-			</li>
-			<li class="hoverme">
-		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-		  		<p>No Internet Sunday</p>
-		  		<span>Sunday</span>
+			<li class="hideme templateme">
+		  		<input type="checkbox" class="check box_handle" name="rule_toggle" />
+		  		<p class="rule_name">rule_name</p>
+		  		<span class="rule_date">Every Day</span>
 		  		<div class="rule_actions_box">
 		  			<a href="javascript:void(0);" class="delete_rule_trig rule_actions">Remove</a>
 		  			<a href="javascript:void(0);" class="edit_rule_trig rule_actions">Edit Rule</a>
 		  		</div>
 			</li>
+			
+			
 			<li>
-		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-		  		<p>No Social Media</p>
-		  		<span>Mon, Tue, Wed, Thu</span>
+		  		<input type="checkbox" class="check box_handle" name="rule_toggle" />
+		  		<p class="rule_name">No Social Media</p>
+		  		<span class="rule_date">Mon, Tue, Wed, Thu</span>
+		  		<div class="rule_actions_box">
+		  			<a href="javascript:void(0);" class="delete_rule_trig rule_actions">Remove</a>
+		  			<a href="javascript:void(0);" class="edit_rule_trig rule_actions">Edit Rule</a>
+		  		</div>
+			</li>
+			
+			<li>
+		  		<input type="checkbox" class="check box_handle" name="rule_toggle" />
+		  		<p class="rule_name">Youtube block</p>
+		  		<span class="rule_date">Every Day</span>
+		  		<div class="rule_actions_box">
+		  			<a href="javascript:void(0);" class="delete_rule_trig rule_actions">Remove</a>
+		  			<a href="javascript:void(0);" class="edit_rule_trig rule_actions">Edit Rule</a>
+		  		</div>
+			</li>
+			
+			<li>
+		  		<input type="checkbox" class="check box_handle" name="rule_toggle" />
+		  		<p class="rule_name">No Internet Sunday</p>
+		  		<span class="rule_date">Sunday</span>
+		  		<div class="rule_actions_box">
+		  			<a href="javascript:void(0);" class="delete_rule_trig rule_actions">Remove</a>
+		  			<a href="javascript:void(0);" class="edit_rule_trig rule_actions">Edit Rule</a>
+		  		</div>
 			</li>
 		</ul>
 		
-
+<!--
 	  	<div class="sidenav_footer">
-	  		<a href="javascript:void(0);" class="nicebutton edit_rules_trig"><span class="lock_arrow_button">Edit Rule</span></a>
+ 	  		<a href="javascript:void(0);" class="nicebutton edit_rules_trig"><span class="lock_arrow_button">Edit Rule</span></a> 
   		</div>
+-->
 	  </div>
 	  <!-- end .sidenav -->
 	  
@@ -152,7 +318,8 @@
 	  
 	  <div class="content_body rules_calendar">
 	  	<div class="grid_12 omega">
-		  		  COLIN, PUT THE CALENDAR HERE. DO IT!
+		<div id='calendar'></div>
+
 		</div>
 		
 		  <div class="clear"></div>

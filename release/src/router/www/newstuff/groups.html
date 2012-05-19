@@ -31,6 +31,177 @@
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr-2.5.3.min.js"></script>
+   <script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
+   <script type="text/javascript" src="js/libs/jquery-ui-1.8.20/js/jquery-ui-1.8.20.custom.min.js"></script>
+  <link rel="stylesheet" href="js/libs/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <link rel="stylesheet" href="js/libs/jquery-ui-1.8.20/css/blitzer/jquery-ui-1.8.20.custom.css" type="text/css" media="screen" />
+
+  <script type="text/javascript">
+	$(function() {
+/*   		$('.fancybox').fancybox(); */
+/*   
+KNOWN BUGS (x = done)		
+	- if you drag a group onto the same box, apply changes still gets fired
+	- overflow-y on group boxes to make them have a reasonable size messes with draggable
+
+TO-DO (x = done)		
+	x move devices from unassigned to group, vice versa
+	x move devices between groups
+	x create group adds a new devices_box
+	x hover states where needed
+	x checkbox click image switch
+	x edit name group
+
+ */
+		//group box hover crap
+		$('.devices_box li').live({
+	        mouseenter:
+	           function()
+	           {
+				$(this).find('.info_trig').removeClass('hideme');
+	           },
+	        mouseleave:
+	           function()
+	           {
+				$(this).find('.info_trig').addClass('hideme');
+	           }
+		       
+		});
+		
+		//group box hover, edit behavior
+		$('.group_box .group_name').live({
+	        mouseenter:
+	           function()
+	           {
+				$(this).addClass('borderme');
+	           },
+	           
+	        mouseleave:
+	           function()
+	           {
+				$(this).removeClass('borderme');
+	           },
+	           
+	        click:
+	           function()
+	           {
+				$(this).hide().siblings('.edit_group_name').show().focus();
+	           }
+	       
+		});
+
+		//group name edit behavior
+		$('.group_box .edit_group_name').live({
+	        /*
+focus:
+	           function()
+	           {
+	           	var new_group_name = $(this).val();
+				$(this).hide().siblings('.group_name').show().text(new_group_name);
+	           },
+*/				
+			 keypress:
+			 	function(e)
+		        {
+		            code= (e.keyCode ? e.keyCode : e.which);
+		            if (code == 13) {
+		            	$(this).trigger('blur');
+		        	}
+		        },
+	        
+	        blur:
+	           function()
+	           {
+				var new_group_name = ($.trim($(this).val()).length !== 0) ? $(this).val() : $(this).siblings('.group_name').text();
+				if($.trim($(this).val()).length !== 0 && $.trim($(this).val()) !== $(this).siblings('.group_name').text()) $('#apply_trigger').fadeIn();	
+				
+				$(this).hide().siblings('.group_name').text(new_group_name).show();
+
+	           }
+       
+		});
+
+		
+		
+	
+		
+		// Create group
+		$('.content_bar .new_group_trig').click(function(){
+			var $group_box_template = $('.group_box.templateme').clone();
+			$group_box_template.appendTo('.group_boxes .grid_12');
+			
+			
+			//calculate alpha, omega classes
+			if ($group_box_template.prev('.group_box').hasClass('omega')){
+				$group_box_template.addClass('alpha');
+			}
+			
+			if (!$group_box_template.prev('.group_box').hasClass('alpha') &&  
+				!$group_box_template.prev('.group_box').hasClass('omega')){
+				$group_box_template.addClass('omega');
+				$group_box_template.append('<div class="clear"></div>');
+			}
+			
+			//cleanup, bind droppable
+			$group_box_template.removeClass('templateme hideme').trigger('start_droppable');
+			
+		});
+		
+	
+	
+		// Drag & drop of devices into groups
+		$( ".draggable" ).live({
+		
+			mouseenter:
+		           function()
+		           {
+		           	$(this).draggable({
+		           		scroll: false,
+			  			revert: true,
+						start: function(event, ui) {
+							$( this )
+								.css('z-index','2')
+								.data({
+									'name':$( this ).find('.device_name').text(),
+									'ip':$( this ).find('.device_ip').text(),
+									'id' : '{#colinfigureitout}'
+								});
+							}
+					});
+		           }
+		});
+		
+		//Bind custom event so new groups can call it to on their creation
+		$( ".droppable" ).live('start_droppable', function(){
+		
+			$(this).droppable({
+				hoverClass: "droppable_hover",
+	
+				
+				drop: function( event, ui ) {
+					var $new_device = $( this ).find( ".templateme" ).clone();
+					
+					$new_device
+						.removeClass('templateme hideme')
+						.find('.device_name')
+							.text(ui.draggable.data('name'))
+							.end()
+						.find('.device_ip')
+							.text(ui.draggable.data('ip'))
+							.end()
+						.appendTo($(this).find('ul'));
+					
+					ui.draggable.remove();
+					
+					$('#apply_trigger').fadeIn();	
+				}
+			});
+		});
+		//instantiate now for existing droppables
+		$( ".droppable" ).trigger('start_droppable');
+  	});
+  </script>
+
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -84,15 +255,17 @@
 		  <!-- end .bar_title -->
 		  <div class="grid_10 bar_options">
 		  	<span class="univ_block_box">
-		  		<a href="javascript:void(0);" class="pretty_check pretty_check_off">Block Adult Content</a>
+		  		<input type="checkbox" name="block_adult" class="check"/>
+<!-- 		  		<a href="javascript:void(0);" class="pretty_check pretty_check_off">Block Adult Content</a> -->
 		  		Block Adult Content
-		  		<a href="javascript:void(0);" class="info_trig">more info</a>
+		  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 		  	</span>
 		  	
 		  	<span class="univ_block_box">
-		  		<a href="javascript:void(0);" class="pretty_check pretty_check_on">Block Advertisements</a>
+		  		<input type="checkbox" name="block_ads" class="check"/>
+<!-- 		  		<a href="javascript:void(0);" class="pretty_check pretty_check_on">Block Advertisements</a> -->
 		  		Block Advertisements
-		  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
+		  		<a href="javascript:void(0);" class="info_trig hideme hideme">more info</a>
 		  	</span>
 			
 		  </div>
@@ -107,38 +280,44 @@
 	  
 	 
 	  
-	  <div id="groups_sidenav" class="grid_4 alpha sidenav">
+	  <div id="groups_sidenav" class="grid_4 alpha sidenav droppable">
 	  	<div class="sidenav_header">
 			<p>Unassigned Devices</p>
 			<p class="extra_info">Drag the devices below to assign them to a group</p>
 		</div>	 
-		<a href="javascript:void(0);" id="apply_trigger">Apply Changes</a> 	
+		<a href="javascript:void(0);" id="apply_trigger" style="display:none;">Apply Changes</a> 	
 		
-		<ul class="device_list">
-			<li>
+		<ul class="device_list ">
+			<li class="draggable hideme templateme">
 		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-		  		<p>Dell D620</p>
-		  		<span class="float_right">192.168.10.110</span>
+		  		<p class="device_name">device_name</p>
+		  		<span class="float_right device_ip">192.168.10.110</span>
 		  		<span>IP Address</span>
 			</li>
-			<li class="hoverme">
+			<li class="draggable">
 		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-		  		<a href="javascript:void(0);" class="info_trig">more info</a>
-		  		<p>Ariel Laptop</p>
-		  		<span class="float_right">192.168.10.22</span>
+		  		<p class="device_name">Dell D620000</p>
+		  		<span class="float_right device_ip">192.168.10.110</span>
 		  		<span>IP Address</span>
 			</li>
-			<li>
+			<li class="draggable">
 		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-		  		<p>Elliot Phone</p>
-		  		<span class="float_right">192.168.10.10</span>
+		  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
+		  		<p class="device_name">Ariel Laptop</p>
+		  		<span class="float_right device_ip">192.168.10.22</span>
+		  		<span>IP Address</span>
+			</li>
+			<li class="draggable">
+		  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+		  		<p class="device_name">Elliot Phone</p>
+		  		<span class="float_right device_ip">192.168.10.10</span>
 		  		<span>IP Address</span>
 			</li>
 		</ul>
 		
 
 	  	<div class="sidenav_footer">
-	  		<a href="javascript:void(0);" class="nicebutton edit_rules_trig"><span class="lock_arrow_button">Edit Rule</span></a>
+	  		<a href="javascript:void(0);" class="nicebutton edit_rules_trig"><span class="lock_arrow_button">Edit Rules</span></a>
   		</div>
 	  </div>
 	  <!-- end .sidenav -->
@@ -148,8 +327,8 @@
 	  
 	  
 	  <div class="content_body group_boxes">
-		
-	  </div>
+		  
+  	  </div>
 	  <!-- end .content_body -->
 	  
 	  

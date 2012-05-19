@@ -247,19 +247,12 @@ body{
     font-size: 10pt;
 }
 
-.mini_close{
-	display: block;
-	height: 12px;
-	width: 12px;
-	background: url("../img/sprite.png") no-repeat scroll -10px -1250px transparent;
+.borderme{
+	border: 1px #CCC solid !important;
+	padding: 0px 2px;
+	background-color: #FFF;
 }
-
-.main{
-    background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
-    border: 1px #AAA solid;
-    border-top: 0;
-    padding-bottom: 20px;
-}
+.del_button{ background: url("../img/sprite.png") no-repeat scroll -374px -899px transparent; color: #990013; }
 
 .fade { opacity: .6 !important; }
 .fade:hover { opacity: .6 !important; }
@@ -280,6 +273,21 @@ body{
 }
 .invisible{visibility: hidden;}
 .lock_arrow_button{ background: url("../img/sprite.png") no-repeat scroll -10px -649px transparent; }
+
+.main{
+    background:url("../img/contentbg.png") repeat scroll 0px 0px transparent;
+    border: 1px #AAA solid;
+    border-top: 0;
+    padding-bottom: 20px;
+}
+
+.mini_close{
+	display: block;
+	height: 12px;
+	width: 12px;
+	background: url("../img/sprite.png") no-repeat scroll -10px -1250px transparent;
+}
+
 
 .pretty_check{
     background:url("../img/sprite.png") no-repeat scroll -10px -550px transparent;
@@ -475,7 +483,7 @@ th, td, caption {
 #topnav ul li a {
 	font-size: 14px;
 	font-weight: bold;
-	color: #777;
+	color: #555;
 	text-shadow: 0 1px white;
 	text-decoration: none;
 	padding: 4px 20px 3px 20px;
@@ -511,6 +519,7 @@ th, td, caption {
 	border: 1px #0088DE solid;
 	text-shadow: 0 1px white;
 	position: relative;
+	background-color: #DCECFC;
 }
 .sidenav .device_list li .box_handle {
 	background: url("../img/sprite.png") no-repeat scroll -377px -650px transparent;
@@ -522,7 +531,7 @@ th, td, caption {
 	top: 15px;
 	left: 10px;
 }
-.sidenav .device_list li.hoverme{
+.sidenav .device_list li:hover{
 	background: #FFF6A6;
 	border-color: #FFCF2F;
 	z-index: 1;
@@ -559,7 +568,7 @@ th, td, caption {
 
 .sidenav .sidenav_header .extra_info {
 	font-size: 11px;
-	font-weight: normal;
+	font-weight: bold;
 }
 
 .sidenav .sidenav_header p {
@@ -569,6 +578,10 @@ th, td, caption {
 	font-size: 13pt;
 }
 
+/*--------- Groups: General ------------*/
+#groups .sidenav .device_list li {
+	cursor: pointer;
+}
 
 
 /*--------- Groups: Content ------------*/
@@ -645,6 +658,7 @@ th, td, caption {
 /*--------- Groups: Groups boxes ------------*/
 .group_boxes{}
 
+
 .group_boxes .devices_box {
 	border: 1px #CCC solid;
 	background: white;
@@ -653,16 +667,17 @@ th, td, caption {
 	margin: 4px 0;
 }
 .group_boxes .devices_box ul{
-	height: 160px;
-	overflow-y: auto;
+	min-height: 160px;
+/* 	overflow-y: auto; */
 }
 
 .group_boxes .devices_box li{
 	position: relative;
 	padding: 5px 0 5px 25px;
-	margin: 2px 0;
+	margin: 0;
 	font-weight: bold;
 	text-shadow: 0 1px white;
+	cursor: pointer;
 }
 
 .group_boxes .devices_box li a.box_handle{
@@ -677,8 +692,12 @@ th, td, caption {
 }
 .group_boxes .devices_box li .info_trig{}
 .group_boxes .devices_box li.shademe{
-	background: #EEE;
 }
+
+
+.group_boxes .devices_box li:nth-child(odd) {  }
+.group_boxes .devices_box li:nth-child(even) { 	background: #EEE; }
+
 
 .group_boxes .devices_box li span{}
 
@@ -692,6 +711,29 @@ th, td, caption {
 	margin: 0 20px 25px 0px;
 }
 
+.group_boxes .group_box  .del_group_trig{
+	float: right;
+}
+
+.group_boxes .group_box .edit_group_name{
+	border: 1px solid #CCC;
+	padding: 2px 3px;
+	width: 96%;
+	margin-top: 2px;
+	font-size: 12pt;
+	display: none;
+}
+
+.group_boxes .group_box  .edit_group_trig{
+}
+.group_boxes .group_box .device_box_actions{
+	margin: 3px 4px 4px 2px;
+}
+
+.droppable_hover{
+	box-shadow: 0px 0px 5px red !important;
+}
+
 .group_boxes .group_box.omega {
 	margin-right: 0;
 }
@@ -701,7 +743,11 @@ th, td, caption {
 	text-shadow: 0 1px #FFF;
 	margin: 2px 0;
 }
-
+.group_boxes p.group_name{
+	border: 1px #EEE solid;
+	padding: 1px 0px;
+	word-wrap: break-word;
+}
 
 
 
@@ -714,9 +760,13 @@ th, td, caption {
 
 
 /*--------- Rules: Top Bar ------------*/
-#rules .content_bar{ background: none;}
+#rules .content_bar{ 
+	background: none;
+}
 
-#rules .content_bar .back_trigger_box{ text-align: center;}
+#rules .content_bar .back_trigger_box{ 
+	text-align: center;
+}
 #rules .content_bar .back_trigger{
 	padding: 5px 15px;
 	background-position-y: -1795px;
@@ -732,11 +782,11 @@ th, td, caption {
 }
 
 #rules .content_bar .rules_title {
-text-align: center;
-background: #E6E6E6;
-border: 1px #EFEFEF solid;
-outline: 1px #CCC solid;
-padding: 3px 0;
+	text-align: center;
+	background: #E6E6E6;
+	border: 1px #EFEFEF solid;
+	outline: 1px #CCC solid;
+	padding: 3px 0;
 }
 #rules .content_bar .rules_title h4{ margin: 0;}
 
@@ -753,10 +803,10 @@ padding: 3px 0;
 }
 
 #ruleformbox .custom_block_box{
-margin-top:20px;
+	margin-top:20px;
 }
 #ruleformbox .custom_block_box label{
-font-size: 11pt;
+	font-size: 11pt;
 }
 #ruleformbox .custom_block_box .block_all{
 	margin: 0;
@@ -785,27 +835,32 @@ form .green_button {
 	text-shadow: black 0px 1px 0px;
 }
 
-form .grid_row{margin-bottom: 10px;}
+form .grid_row{
+	margin-bottom: 10px;
+}
 
 #ruleformbox input{
-border: 1px #CCC solid;
-padding: 3px 5px;
-
+	border: 1px #CCC solid;
+	padding: 3px 5px;
 }
+
 #ruleformbox input.check{
-margin-left: 15px;
+	margin-left: 15px;
 }
 
-#ruleformbox input.rule_name{width:495px;}
+#ruleformbox input.rule_name{
+	width:495px;
+}
 #ruleformbox label{}
 #ruleformbox span{}
 #ruleformbox .start_time_hour{
-margin-left: 35px;}
+	margin-left: 35px;
+}
 
 #ruleformbox textarea{
-display: block;
-width: 99%;
-height: 75px;
+	display: block;
+	width: 99%;
+	height: 75px;
 }
 
 #ruleformbox .section_name{
@@ -932,7 +987,56 @@ height: 75px;
 
 
 
+/*--------- Settings: Content Bar ------------*/
+#settings .content_bar .top_title {
+text-align: center;
+background: #E6E6E6;
+border: 1px #EFEFEF solid;
+outline: 1px #CCC solid;
+padding: 3px 0;
+}
+#settings .content_bar .top_title h4{ margin: 0;}
 
+
+/*--------- Settings: Settings Form ------------*/
+#settings .inputs_box{}
+#settings .inputs_box input{
+	display: block;
+	margin-bottom: 35px;
+	border: 1px #CCC solid;
+	padding: 3px 5px;
+	width: 150px;
+}
+#settings .inputs_box input.check{
+	display: inline;
+	width: auto;
+	margin: 5px 0 0 0;
+}
+
+#settings .inputs_box input.net_pw{margin-bottom:0;}
+
+#settings .inputs_box input.router_pw{margin-top:15px;}
+
+#settings .inputs_box select{
+	display: block;
+	margin-top: 15px;
+}
+
+#settings .labels_box{
+	font-size: 14pt;
+	font-weight: bold;
+	text-align: right;
+
+}
+#settings .labels_box p{
+	margin-bottom: 30px;
+}
+
+#settings .settings_form{margin-top:50px;}
+#settings .settings_form .green_button{
+	margin-left: 415px;
+	width: 105px;
+}
 
 
 
