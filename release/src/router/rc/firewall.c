@@ -559,8 +559,6 @@ static void mangle_table(void)
 	if (wanup) {
 
 		ipt_qos();
-		//1 for mangle
-		ipt_qoslimit(1);
 
 		p = nvram_safe_get("nf_ttl");
 		if (strncmp(p, "c:", 2) == 0) {
@@ -638,9 +636,6 @@ static void nat_table(void)
 		":OUTPUT ACCEPT [0:0]\n"
 		":%s - [0:0]\n",
 		chain_wan_prerouting);
-	
-	//2 for nat
-	ipt_qoslimit(2);
 	
 	if (gateway_mode) {
 		strlcpy(lanaddr, nvram_safe_get("lan_ipaddr"), sizeof(lanaddr));
@@ -923,10 +918,17 @@ static void filter_input(void)
 
 	// ICMP request from WAN interface
 	if (nvram_match("block_wan", "0")) {
-		// allow ICMP packets to be received, but restrict the flow to avoid ping flood attacks
-		ipt_write("-A INPUT -p icmp -m limit --limit 1/second -j %s\n", chain_in_accept);
-		// allow udp traceroute packets
-		ipt_write("-A INPUT -p udp --dport 33434:33534 -m limit --limit 5/second -j %s\n", chain_in_accept);
+		if (nvram_match("block_wan_limit", "0")) {
+			// allow ICMP packets to be received
+			ipt_write("-A INPUT -p icmp -j %s\n", chain_in_accept);
+			// allow udp traceroute packets
+			ipt_write("-A INPUT -p udp --dport 33434:33534 -j %s\n", chain_in_accept);
+		} else {
+			// allow ICMP packets to be received, but restrict the flow to avoid ping flood attacks
+			ipt_write("-A INPUT -p icmp -m limit --limit %d/second -j %s\n", nvram_get_int("block_wan_limit_icmp"), chain_in_accept);
+			// allow udp traceroute packets, but restrict the flow to avoid ping flood attacks
+			ipt_write("-A INPUT -p udp --dport 33434:33534 -m limit --limit %d/second -j %s\n", nvram_get_int("block_wan_limit_tr"), chain_in_accept);
+		}
 	}
 
 	/* Accept incoming packets from broken dhcp servers, which are sending replies
@@ -969,6 +971,26 @@ static void filter_input(void)
 				ipt_write("-A INPUT -p tcp %s --dport %s -j %s\n",
 					s, nvram_safe_get("ftp_port"), chain_in_accept);
 			}
+			if (!c) break;
+			p = c + 1;
+		} while (*p);
+	}
+#endif
+
+
+#ifdef TCONFIG_SNMP
+	if( nvram_match( "snmp_enable", "1" ) && nvram_match("snmp_remote", "1"))
+	{
+		strlcpy(t, nvram_safe_get("snmp_remote_sip"), sizeof(t));
+		p = t;
+		do {
+			if ((c = strchr(p, ',')) != NULL) *c = 0;
+
+			if (ipt_source(p, s, "snmp", "remote")) {
+				ipt_write("-A INPUT -p udp %s --dport %s -j %s\n",
+						s, nvram_safe_get("snmp_port"), chain_in_accept);
+			}
+
 			if (!c) break;
 			p = c + 1;
 		} while (*p);
@@ -1626,8 +1648,7 @@ int start_firewall(void)
 	modprobe("nf_conntrack_ipv6");
 	modprobe("ip6t_REJECT");
 #endif
-	/*Deon Thomas attempt to start xt_IMQ and imq */
-	/*shibby - fix modprobing IMQ for kernel 2.4 */
+	/*Start xt_IMQ and imq */
 	modprobe("imq");
 #ifdef LINUX26
 	modprobe("xt_IMQ");

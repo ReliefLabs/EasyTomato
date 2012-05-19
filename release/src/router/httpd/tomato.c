@@ -378,6 +378,7 @@ const aspapi_t aspapi[] = {
 	{ "lanip",				asp_lanip			},
 	{ "layer7",				asp_layer7			},
 	{ "link_uptime",		asp_link_uptime		},
+	{ "link_starttime",		asp_link_starttime	},
 	{ "lipp",				asp_lipp			},
 	{ "netdev",				asp_netdev			},
 	{ "iptraffic",			asp_iptraffic		},
@@ -728,6 +729,9 @@ static const nvset_t nvset_list[] = {
 
 // advanced-firewall
 	{ "block_wan",			V_01				},
+	{ "block_wan_limit",		V_01				},
+	{ "block_wan_limit_icmp",	V_RANGE(1, 300)			},
+	{ "block_wan_limit_tr",		V_RANGE(1, 300)			},
 	{ "multicast_pass",		V_01				},
 #ifdef TCONFIG_VLAN
 	{ "multicast_lan",		V_01				},
@@ -860,8 +864,7 @@ static const nvset_t nvset_list[] = {
 	{ "wlx_hpamp",			V_01				},
 	{ "wlx_hperx",			V_01				},
 	{ "wl_reg_mode",		V_LENGTH(1, 3)			},	// !!TB - Regulatory: off, h, d
-	{ "wl_mitigation",		V_RANGE(0, 3)			},	// Interference Mitigation Mode (0|1|2|3)
-
+	{ "wl_mitigation",		V_RANGE(0, 4)			},	// Interference Mitigation Mode (0|1|2|3|4)
 	{ "wl_nmode_protection",	V_WORD,				},	// off, auto
 	{ "wl_nmcsidx",			V_RANGE(-2, 32),	},	// -2 - 32
 	{ "wl_obss_coex",		V_01			},
@@ -916,6 +919,7 @@ static const nvset_t nvset_list[] = {
 	{ "https_crt_gen",		V_TEMP				},
 	{ "remote_management",	V_01				},
 	{ "remote_mgt_https",	V_01				},
+	{ "remote_mgt_nodefault",	V_01				},
 	{ "http_lanport",		V_PORT				},
 	{ "https_lanport",		V_PORT				},
 	{ "web_wl_filter",		V_01				},
@@ -1074,6 +1078,9 @@ static const nvset_t nvset_list[] = {
 
 #ifdef TCONFIG_SNMP
 	{ "snmp_enable",		V_RANGE(0, 1)			},
+	{ "snmp_port",			V_RANGE(0, 65535)		},
+	{ "snmp_remote",		V_RANGE(0, 1)			},
+	{ "snmp_remote_sip",		V_LENGTH(0, 512)		},
 	{ "snmp_location",		V_LENGTH(0, 20)			},
 	{ "snmp_contact",		V_LENGTH(0, 20)			},
 	{ "snmp_ro",			V_LENGTH(0, 20)			},
@@ -1129,19 +1136,6 @@ static const nvset_t nvset_list[] = {
 	{ "ne_valpha",			V_NUM				},
 	{ "ne_vbeta",			V_NUM				},
 	{ "ne_vgamma",			V_NUM				},
-
-// qos-bw-limiter
-	{ "qosl_enable",        	 V_01                   },
-	{ "qosl_rules",          	  V_LENGTH(0, 4096)      },
-	{ "qosl_denable",                 V_01                   },					
-	{ "qosl_dulr",                    V_RANGE(0, 999999)     },
-	{ "qosl_dulc",                    V_RANGE(0, 999999)     },
-	{ "qosl_ddlr",                    V_RANGE(0, 999999)     },
-	{ "qosl_ddlc",                    V_RANGE(0, 999999)     },	
-	{ "qosl_dtcp",                    V_RANGE(0, 1000)       },
-	{ "qosl_dudp",                    V_RANGE(0, 100)        },
-	/*qosl_ibw unused - qos_ibw shared*/
-	/*qosl_obw unused - qos_obw shared*/
 
 //NoCatSplash. Victek.
 #ifdef TCONFIG_NOCAT
