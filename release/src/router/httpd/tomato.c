@@ -233,6 +233,14 @@ static void wo_nvram2(char *url)
 {
   char *p;
   p = webcgi_get("var");
+
+  // If this is a "special case", handle it first
+  if(strcmp(p,"devlist")==0) {
+    asp_devlist(0, NULL);
+    return;
+  }
+
+  // If this wasn't a special case, just call the generic nvram2 handler 
   asp_nvram2(1, &p);
 }
 
