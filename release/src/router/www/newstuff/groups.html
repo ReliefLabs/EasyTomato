@@ -112,14 +112,14 @@
 	  
 	 
 	  
-	  <div id="groups_sidenav" class="grid_4 alpha sidenav droppable">
+	  <div id="groups_sidenav" class="grid_4 alpha sidenav unassigned_group_box">
 	  	<div class="sidenav_header">
 			<p>Unassigned Devices</p>
 			<p class="extra_info">Drag the devices below to assign them to a group</p>
 		</div>	 
 		<a href="javascript:void(0);" id="apply_trigger" style="display:none;">Apply Changes</a> 	
 		
-		<ul class="device_list ">
+		<ul class="device_list">
 		</ul>
 		
 
@@ -129,11 +129,8 @@
 	  </div>
 	  <!-- end .sidenav -->
 	  
-	  
-
-	  
-	  
-	  <div class="content_body group_boxes">
+	
+	  <div class="content_body group_boxes grid_12">
 		  
   	  </div>
 	  <!-- end .content_body -->
@@ -163,21 +160,23 @@
 
   <!-- templates -->
   <script id="group_template" type="text/mustache-template">
-      <div class="grid_12 omega"></div>
       {{#groups}}
-		  <div class="grid_4 group_box alpha group_box">
-            <p>{{name}}</p>
+		  <div class="grid_4 group_box group_box">
+            <p class="group_name">{{name}}</p>
+		    <input type="text" class="edit_group_name" />
 		    <div class="devices_box droppable">
 	    		<ul>
-                    {{#computers}}
-					<li class="computer draggable">
+                    {{#devices}}
+					<li class="device draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-                        <span>{{name}}</span>
-				  		<a href="javascript:void(0);" class="info_trig">more info</a>
+                        <span class="device_name">{{name}}</span>
+				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
 					</li>
-                    {{/computers}}
+                    {{/devices}}
 				</ul>
 		    </div>
+			<a href="javascript:void(0);" class="device_box_actions nicebutton del_group_trig"><span class="del_button">Ungroup</span></a>
+			<a href="javascript:void(0);" class="device_box_actions nicebutton edit_group_trig"><span class="lock_arrow_button">Edit Rules</span></a>
 		  </div>
 		  <!-- end .grid_4 -->
       {{/groups}}
@@ -186,14 +185,14 @@
   </script>  
 
   <script id="device_list_template" type="text/mustache-template">
-	{{#computers}}
-		<li class="computer draggable">
+	{{#devices}}
+		<li class="device draggable">
 			<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-			<p>{{name}}</p>
-			<span class="float_right">{{ip}}</span>
+			<p class="device_name">{{name}}</p>
+			<span class="float_right device_ip">{{ip}}</span>
 			<span>IP Address</span>
 		</li>
-	{{/computers}}
+	{{/devices}}
 </script>
   <!-- end templates -->
 

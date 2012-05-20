@@ -749,11 +749,7 @@ th, td, caption {
 	word-wrap: break-word;
 }
 
-
-
-
-
-
+.group_box:nth-child(3n) { margin-right: 0; }
 
 
 
@@ -831,7 +827,7 @@ form .green_button {
 	text-decoration: none;
 	font-weight: bold;
 	display: block;
-	width: 75px;
+	width: 80px;
 	text-shadow: black 0px 1px 0px;
 }
 

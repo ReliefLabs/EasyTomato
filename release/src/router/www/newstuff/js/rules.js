@@ -1,15 +1,15 @@
 
-var render_rules_list = function() {
+var render_rules_list = function(calendar) {
 	
 	var template = $('#rules_list_template').html(),
 		rules = [];
 
 	$.each(groups, function() {	rules.concat(this.rules); });
 	$('.rules_list').html(Mustache.render_template(template, rules))
-		.find('rule').each(function(index, element) {
-
+		.find('.rule').each(function(i, e) {
+			$this = $(this);
+			$this.data('rule', rules[i]);				
 		});
-
 }
 
 $(function() {
@@ -28,10 +28,11 @@ x Enable/disable rule
 
 */
 
-	var date = new Date();
-	var d = date.getDate();
-	var m = date.getMonth();
-	var y = date.getFullYear();
+	var date = new Date(),
+		d = date.getDate(),
+		m = date.getMonth(),
+		y = date.getFullYear(),
+		next_calendar_id = 0;
 	
 	//Make the rules display in the weekly calendar view in the proper day of week, irrespective of what actual date it is today.
 	function gimmeWeekDay(tgt_weekday){
@@ -62,16 +63,7 @@ x Enable/disable rule
 			calendar.fullCalendar('unselect');
 		},
 		editable: false,
-		events: [
-			{
-				title: 'Single day event',
-				start: new Date(y, m, 1)
-			},
-			{
-				title: 'Youtube Block',
-				start: new Date(y, m, d + gimmeWeekDay(1)),
-				end: new Date(y, m, d + gimmeWeekDay(3))
-			},
+		events: [],
 			/*
 {
 				id: 999,
@@ -88,30 +80,6 @@ x Enable/disable rule
 				allDay: false
 			},
 */
-			{
-				title: 'Meeting',
-				start: new Date(y, m, d, 10, 30),
-				allDay: false
-			},
-			{
-				title: 'Lunch',
-				start: new Date(y, m, d, 12, 0),
-				end: new Date(y, m, d, 14, 0),
-				allDay: false
-			},
-			{
-				title: 'Birthday Party',
-				start: new Date(y, m, d+1, 19, 0),
-				end: new Date(y, m, d+1, 22, 30),
-				allDay: false
-			},
-			{
-				title: 'Click for Google',
-				start: new Date(y, m, 28),
-				end: new Date(y, m, 29),
-				url: 'http://google.com/'
-			}
-		]
 	});
 	
 	
@@ -122,13 +90,14 @@ x Enable/disable rule
 		   function()
 		   {
 				if ($(this).attr('checked')){
+						rule = $(this).data('rule');
 					calendar.fullCalendar('addEventSource',  
 						[
 							{
 								id: 999,
 								title: 'Repeating Eventz',
 								start: new Date(y, m, d-2, 16, 0),
-								end:new Date(y, m, d-2, 16, 30),
+								end: new Date(y, m, d-2, 16, 30),
 								allDay: false
 							}
 						]

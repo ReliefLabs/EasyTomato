@@ -1,7 +1,4 @@
 
-unassigned = [
-	{'name': 'eata', 'ip': '192.168.1.135', 'mac': '00:1E:64:0D:12:C2'}
-]
 
 var render_groups = function() {
 	var group_template = $('#group_template').html(),
@@ -17,11 +14,12 @@ var render_groups = function() {
 		$this.find('.droppable').droppable({
 			hoverClass: "droppable_hover",
 			drop: function( event, ui ) {
-				var computer = ui.draggable.data('computer'),
+				var device = ui.draggable.data('device'),
 					old_group = ui.draggable.data('group');	
 
-				if(old_group) old_group.computers.splice($.inArray(computer, old_group.computers));
-				group.computers.push(computer);
+				if(old_group) old_group.devices.splice($.inArray(device, old_group.devices), 1);
+				else unassigned.splice($.inArray(device, unassigned), 1);
+				group.devices.push(device);
 
 				ui.draggable.remove();
 				render_groups();
@@ -31,8 +29,8 @@ var render_groups = function() {
 			}
 		});
 
-		$this.find('.computer').each(function(i, element) {
-			$(this).data('computer', unassigned[i]);
+		$this.find('.device').each(function(j, element) {
+			$(this).data('device', group.devices[j]);
 			$(this).data('group', group);
 			$(this).draggable({
 				scroll: false,
@@ -42,6 +40,76 @@ var render_groups = function() {
 				}
 			});
 		});
+		
+		//group box hover, edit behavior
+		$this.find('.group_name').bind({
+			mouseenter:
+			   function()
+			   {
+				$(this).addClass('borderme');
+			   },
+			   
+			mouseleave:
+			   function()
+			   {
+				$(this).removeClass('borderme');
+			   },
+			   
+			click:
+			   function()
+			   {
+				$(this).hide().siblings('.edit_group_name').show().focus();
+			   }
+		});
+
+		//group name edit behavior
+		$this.find('.edit_group_name').bind({	
+			keypress: function(e) {
+				code= (e.keyCode ? e.keyCode : e.which);
+				if (code == 13) {
+					$(this).trigger('blur');
+				}
+			},
+			blur: function() {
+				var $this = $(this),
+					value = $.trim($this.val()) || $this.siblings('.group_name').text();
+
+				$this.hide().siblings('.group_name').text(value).show();
+				group.name = value;
+				set_rules()
+				$('#apply_trigger').fadeIn();
+		   }
+		});
+		
+		//group box hover crap
+		$this.find('.devices_box li').bind({
+			mouseenter:
+			   function()
+			   {
+				$(this).find('.info_trig').removeClass('hideme');
+			   },
+			mouseleave:
+			   function()
+			   {
+				$(this).find('.info_trig').addClass('hideme');
+			   }
+			   
+		});
+
+		$this.find('.del_button').bind('click', function() {
+			groups.splice(i, 1);
+			$.each(group.devices, function() {
+				unassigned.push(this);
+				
+			});
+			
+			$this.remove();
+			render_devices();
+
+			set_rules();
+			$('#apply_trigger').fadeIn();
+		});	
+		
 	});
 
 
@@ -51,9 +119,9 @@ var render_devices = function() {
 	dev_list_template = $('#device_list_template').html();
 	$target = $('.device_list');
 
-	$('.device_list').html(Mustache.render(dev_list_template, {'computers': unassigned}))
-		.find('.computer').each(function(i, element) {
-			$(this).data('computer', unassigned[i]);
+	$('.device_list').html(Mustache.render(dev_list_template, {'devices': unassigned}))
+		.find('.device').each(function(i, element) {
+			$(this).data('device', unassigned[i]);
 			$(this).draggable({
 				scroll: false,
 				revert: true,
@@ -62,87 +130,40 @@ var render_devices = function() {
 				}
 			});
 		});
+		
+		
 }
 
 $(document).ready(function() {
 
-	load_groups().then(function() {
+	$.when(load_groups(), load_devices()).then(function() {
 		render_groups();
 		render_devices();
 	});
 
-/*   		$('.fancybox').fancybox(); */
 /*   
 KNOWN BUGS (x = done)		
 - if you drag a group onto the same box, apply changes still gets fired
 - overflow-y on group boxes to make them have a reasonable size messes with draggable
 */
 
-	//group box hover crap
-	$('.devices_box li').live({
-		mouseenter:
-		   function()
-		   {
-			$(this).find('.info_trig').removeClass('hideme');
-		   },
-		mouseleave:
-		   function()
-		   {
-			$(this).find('.info_trig').addClass('hideme');
-		   }
-		   
-	});
-	
-	//group box hover, edit behavior
-	$('.group_box .group_name').live({
-		mouseenter:
-		   function()
-		   {
-			$(this).addClass('borderme');
-		   },
-		   
-		mouseleave:
-		   function()
-		   {
-			$(this).removeClass('borderme');
-		   },
-		   
-		click:
-		   function()
-		   {
-			$(this).hide().siblings('.edit_group_name').show().focus();
-		   }
-	   
-	});
+	// Sidenav droppable magic
+	$('.unassigned_group_box').droppable({
+		hoverClass: "droppable_hover",
+		drop: function( event, ui ) {
+			var device = ui.draggable.data('device'),
+				old_group = ui.draggable.data('group');	
 
-	//group name edit behavior
-	$('.group_box .edit_group_name').live({
-		/*
-focus:
-		   function()
-		   {
-			var new_group_name = $(this).val();
-			$(this).hide().siblings('.group_name').show().text(new_group_name);
-		   },
-*/				
-		 keypress:
-			function(e)
-			{
-				code= (e.keyCode ? e.keyCode : e.which);
-				if (code == 13) {
-					$(this).trigger('blur');
-				}
-			},
-		
-		blur:
-		   function() {
-				var new_group_name = ($.trim($(this).val()).length !== 0) ? $(this).val() : $(this).siblings('.group_name').text();
-				if($.trim($(this).val()).length !== 0 && $.trim($(this).val()) !== $(this).siblings('.group_name').text()) $('#apply_trigger').fadeIn();
-				
-				$(this).hide().siblings('.group_name').text(new_group_name).show();
+			if(old_group) old_group.devices.splice($.inArray(device, old_group.devices), 1);
+			unassigned.push(device);
 
-		   }
-   
+			ui.draggable.remove();
+			render_devices();
+
+			set_rules();
+			render_devices();
+			$('#apply_trigger').fadeIn();
+		}
 	});
 
 	
@@ -154,7 +175,7 @@ focus:
 	
 	// Create group
 	$('.content_bar .new_group_trig').click(function(){
-		groups.push({'name': 'Untitled Group', 'computers': []});
+		groups.push({'name': 'Untitled Group', 'devices': []});
 		render_groups();
 		$('#apply_trigger').fadeIn();
 	});

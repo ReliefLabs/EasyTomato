@@ -29,7 +29,35 @@ var tomato_env = {
 //groups and rules
 
 var groups = [],
+	devices = [],
+	unassigned = [],
 	groups_nvram_id = 'easytomato_scratch_0';
+
+var load_devices = function() {
+	return tomato_env.get('devlist').then(function() {
+		var mac_addrs = {};
+
+		$.each(tomato_env.vars['devlist'], function() {
+			var mac = this[2],
+				device = {'name': this[0], 'ip': this[1], 'mac': this[2]};
+
+			devices.push(device);
+			unassigned.push(device);		
+			mac_addrs[mac] = device;
+		});
+
+		$.each(groups, function(i, group) {
+			$.each(group.devices, function(j, device) {
+				this_device = mac_addrs[device.mac];
+				if(this_device) {
+					group.devices[j] = this_device;
+					unassigned.splice($.inArray(this_device, unassigned), 1);
+				}
+			});
+		});		
+	});
+
+}
 
 var load_groups = function() {
 	return tomato_env.get(groups_nvram_id).then(function() {
