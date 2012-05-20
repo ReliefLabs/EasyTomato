@@ -96,11 +96,10 @@ var render_groups = function() {
 			   
 		});
 
-		$this.find('.del_button').bind('click', function() {
+		$this.find('.del_group_trig').bind('click', function() {
 			groups.splice(i, 1);
 			$.each(group.devices, function() {
 				unassigned.push(this);
-				
 			});
 			
 			$this.remove();
@@ -109,6 +108,8 @@ var render_groups = function() {
 			set_rules();
 			$('#apply_trigger').fadeIn();
 		});	
+
+		$this.find('.edit_group_trig').attr('href', 'rules.html?g='+i);
 		
 	});
 
@@ -135,6 +136,12 @@ var render_devices = function() {
 }
 
 $(document).ready(function() {
+
+	$('#apply_trigger').fancybox({
+		helpers:  { overlay : {closeClick: false} },
+        closeBtn : false 
+	});
+
 
 	$.when(load_groups(), load_devices()).then(function() {
 		render_groups();

@@ -31,7 +31,9 @@ var tomato_env = {
 var groups = [],
 	devices = [],
 	unassigned = [],
-	groups_nvram_id = 'easytomato_scratch_0';
+	unassigned_rules = [],
+	groups_nvram_id = 'easytomato_scratch_0',
+	unassigned_rules_nvram_id = 'easytomato_scratch_1';
 
 var load_devices = function() {
 	return tomato_env.get('devlist').then(function() {
@@ -60,29 +62,46 @@ var load_devices = function() {
 }
 
 var load_groups = function() {
-	return tomato_env.get(groups_nvram_id).then(function() {
+	return $.when(tomato_env.get(groups_nvram_id), tomato_env.get(unassigned_rules_nvram_id))
+			.then(function() {
 		try {
 			groups = JSON.parse(unescape(tomato_env.vars[groups_nvram_id])) || [];
 		} catch(e) {
 			console.log('failed to load groups');
 			groups = [];
 		}
+
+		try {
+			unassigned_rules = JSON.parse(unescape(tomato_env.vars[unassigned_rules_nvram_id])) || [];
+		} catch(e) {
+			console.log('failed to load unassigned rules');
+			unassigned_rules = [];
+		}
 	});
 }
 
 var set_rules = function() {
 
-	var rules = [];
-	$.each(groups.concat([unassigned]), function(g) {
-		rules.concat(g.rules);
+	var rules = [],
+		saved = 0;
+
+	$.each(groups, function(i, g) {
+		$.each(g.rules, function(i, r) {
+			var key = 'rrule' + saved;
+			tomato_env.set(key, build_rule(rule));
+			saved++;
+		});
+	});
+	$.each(unassigned_rules, function(i, r) {
+		var key = 'rrule' + saved;
+		tomato_env.set(key, build_rule(rule, true));
+		saved++;
 	});
 	
 	tomato_env.set(groups_nvram_id, escape(JSON.stringify(groups)));
 
-	for (var i=0; i < 100; i++) {
-		var key = 'rrule' + i;
+	for (saved; saved < 100; saved++) {
 		if (i < rules.length) {
-			tomato_env.set(key, build_rule(rule));
 		} else {
 			tomato_env.set(key, null);
 		}
@@ -94,7 +113,7 @@ var build_group_string = function(computers, except) {
 	return prefix + addrs.join('>');
 }
 
-var build_rule = function(def) {
+var build_rule = function(def, except) {
 	var out = [];
 
 	//enabled	
@@ -114,10 +133,10 @@ var build_rule = function(def) {
 
 	//what mac addresses
 	var group_string;
-	if (def.unassigned) {
+	if (except) {
 		var assigned_addrs = [];
 		$.each(groups, function() {
-			$.each(this.computers, function() {
+			$.each(this.devices, function() {
 				assigned_addrs.push(this.mac);
 			});
 		});
@@ -146,3 +165,8 @@ var build_rule = function(def) {
 	return out.join('|')
 }
 
+function getParamByName(name) {
+	var match = RegExp('[?&]' + name + '=([^&]*)')
+		.exec(window.location.search);
+	return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}

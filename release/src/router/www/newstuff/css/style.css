@@ -242,6 +242,15 @@ td { vertical-align: top; }
 
 }
 
+.apply_changes_box{
+	font-size: 16pt;
+	font-weight: bold;
+	background: url("../img/ajax-loader.gif")no-repeat scroll 0px 41px 	transparent;
+	padding: 35px 0 0 25px;
+}
+
+#block_page{display: none;}
+
 body{
     background:url("../img/bodybg.png") repeat-x scroll 0px 0px transparent;
     font-size: 10pt;
@@ -1016,6 +1025,7 @@ padding: 3px 0;
 #settings .inputs_box select{
 	display: block;
 	margin-top: 15px;
+	max-width: 350px;
 }
 
 #settings .labels_box{

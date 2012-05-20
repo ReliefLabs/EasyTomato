@@ -46,7 +46,7 @@
 		  </div>
 		  <!-- end .grid_2 -->
 		  <div class="advanced_box">
-		    <p>  <a href="javascript:void(0);">[+] advanced tomato</a> </p>
+		    <p>  <a href="/">[+] advanced tomato</a> </p>
 		    <p> Tuesday, June 3 14:30 </p>
 		  </div>
 	
@@ -59,17 +59,19 @@
 	  
 	  <div id="topnav">
 		<ul>
-			<li>
+			<!--
+<li>
 				<a href="javascript:void(0);">Overview</a>
 			</li>
+-->
 			<li class="active_tab">
-				<a href="javascript:void(0);">Groups</a>
+				<a href="/newstuff/groups.html">Groups</a>
 			</li>
 			<li>
-				<a href="javascript:void(0);">Computers</a>
+				<a href="/newstuff/computers.html">Computers</a>
 			</li>
 			<li>
-				<a href="javascript:void(0);">Settings</a>
+				<a href="/newstuff/settings.html">Settings</a>
 			</li>
 		</ul>		
 		    
@@ -117,7 +119,7 @@
 			<p>Unassigned Devices</p>
 			<p class="extra_info">Drag the devices below to assign them to a group</p>
 		</div>	 
-		<a href="javascript:void(0);" id="apply_trigger" style="display:none;">Apply Changes</a> 	
+		<a href="#block_page" id="apply_trigger" style="display:none;">Apply Changes</a> 	
 		
 		<ul class="device_list">
 		</ul>
@@ -150,9 +152,14 @@
   </footer>
 
 
+	<div id="block_page" class="apply_changes_box">Applying Changes…</div>
+
+
+
   <!-- JavaScript at the bottom for fast page loading -->
   <script type="text/javascript" src="/newstuff/js/libs/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="/newstuff/js/libs/jquery-ui-1.8.20/js/jquery-ui-1.8.20.custom.min.js"></script>
+  <script type="text/javascript" src="js/libs/fancybox/source/jquery.fancybox.js"></script>
   <script type="text/javascript" src="/newstuff/js/libs/mustache.js"></script>
   <script type="text/javascript" src="/newstuff/js/easytomato.js"></script>
   <script type="text/javascript" src="/newstuff/js/groups.js"></script>
