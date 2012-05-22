@@ -313,7 +313,7 @@ body{
 	width: 16px;
 }
 a.nicebutton {
-	background: url("../img/sprite.png") repeat-x scroll 0 -1800px transparent;
+	background: url("../img/sprite.png") repeat-x scroll 0 -1797px transparent;
 	border: 1px solid #777;
 	border-radius: 5px 5px 5px 5px;
 	display: inline-block;

@@ -49,7 +49,7 @@ const defaults_t defaults[] = {
 
 	// LAN TCP/IP parameters
 	{ "lan_dhcp",			"0"				},	// DHCP client [static|dhcp]
-	{ "lan_proto",			"static"			},	// DHCP server [static|dhcp]  //start with DISABLED dhcp if nvram corrupted
+	{ "lan_proto",			"dhcp"   			},	// DHCP server [static|dhcp]  //start with DISABLED dhcp if nvram corrupted
 	{ "lan_ipaddr",			"192.168.1.1"			},	// LAN IP address
 	{ "lan_netmask",		"255.255.255.0"			},	// LAN netmask
 	{ "lan_wins",			""				},	// x.x.x.x x.x.x.x ...

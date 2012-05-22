@@ -436,7 +436,9 @@ static void handle_request(void)
 	}
 
 	if ((file[0] == 0) || (strcmp(file, "index.asp") == 0)) {
-		file = "status-overview.asp";
+	  // Change the default page to the groups page for EasyTomato...
+	  //file = "status-overview.asp";
+	  file = "newstuff/groups.html";
 	}
 	else if ((strcmp(file, "ext/") == 0) || (strcmp(file, "ext") == 0)) {
 		file = "ext/index.asp";
