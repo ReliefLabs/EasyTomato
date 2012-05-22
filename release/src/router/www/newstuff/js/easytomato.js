@@ -101,7 +101,8 @@ var set_rules = function() {
 	tomato_env.set(groups_nvram_id, escape(JSON.stringify(groups)));
 
 	for (saved; saved < 100; saved++) {
-		if (i < rules.length) {
+		var key = 'rrule' + saved;
+		if (saved < rules.length) {
 		} else {
 			tomato_env.set(key, null);
 		}

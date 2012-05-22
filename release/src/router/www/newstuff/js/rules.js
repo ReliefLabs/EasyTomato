@@ -13,40 +13,67 @@ x Enable/disable rule
 - $('#apply_trigger').fadeIn(); whenever needed	(colin)
 
 */
-	var date = new Date();
+	var rules,
+		unassigned = false,
+		day_map = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6},
+		date = new Date(),
+		next_calendar_id;
 
 	//Make the rules display in the weekly calendar view in the proper day of week, irrespective of what actual date it is today.
 	function normalizedDate(weekday, minutes){
-		return new Date(date.getFullYear(), date.getMonth, date.getDate() + (weekday - date.getDay()), 0, minutes);
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate() + (weekday - date.getDay()), 0, minutes);
 	}
 	
+	var event_generator = function(start, end, callback) {
+		if(!rules) return;
+		var blocks = [];
+
+		$.each(rules, function(i, rule) {
+			if (!rule.enabled) return true //continue
+
+			var actual_days = (rule.days === -1) ? ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] : rule.days;
+			$.each(actual_days, function(i, day) {
+				var dow = day_map[day];
+				if(rule.start_mins === -1 || rule.end_mins === -1) {
+					blocks.push({
+						'title': rule.name,
+						'allDay': true
+					});
+				} else if(rule.end_mins < rule.start_mins) {
+					blocks.push({
+						'title': rule.name,
+						'allDay': false,
+						'start': normalizedDate(dow, rule.start_mins),
+						'end': normalizedDate(dow, 24*60)
+					});
+					blocks.push({
+						'title': rule.name,
+						'allDay': false,
+						'start': normalizedDate((dow + 1) % 7, 0),
+						'end': normalizedDate((dow + 1) % 7, rule.end_mins)
+					});
+				} else {
+					blocks.push({
+						'title': rule.name,
+						'allDay': false,
+						'start': normalizedDate(dow, rule.start_mins),
+						'end': normalizedDate(dow, rule.end_mins)
+					});
+				}
+			});
+		});	
+
+		callback(blocks);
+	}
+
 	var calendar = $('#calendar').fullCalendar({
 		header: false,
-		defaultView: 'basicWeek', //MM- i like agendaWeek too, not sure which one to use
+		defaultView: 'agendaWeek', //MM- i like agendaWeek too, not sure which one to use
 		selectable: false,
-		selectHelper: true,
-		select: function(start, end, allDay) {
-			var title = prompt('Event Title:');
-			if (title) {
-				calendar.fullCalendar('renderEvent',
-					{
-						title: title,
-						start: start,
-						end: end,
-						allDay: allDay
-					},
-					true // make the event "stick"
-				);
-			}
-			calendar.fullCalendar('unselect');
-		},
 		editable: false,
-		events: []
+		eventSources: [event_generator]
 	});
 		
-	var rules,
-		unassigned = false,
-		day_map = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6};
 
 	var render_rules_list = function() {
 		
@@ -55,43 +82,12 @@ x Enable/disable rule
 		$('.rules_list').html(Mustache.render(template, {'rules': rules}))
 			.find('.rule').each(function(i, e) {
 				var $this = $(this),
-					rule = rules[i],
-					blocks = [];
+					rule = rules[i];
 
-				$.each(rule.days, function(i, day) {
-					var dow = day_map[day];
-					if(rules.end_mins < rules.start_mins) {
-						blocks.push({
-							'title': rule.name,
-							'start': normalizedDate(dow, rule.start_mins),
-							'end': normalizedDate(dow, 24*60)
-						});
-						blocks.push({
-							'title': rule.name,
-							'start': normalizedDate((dow + 1) % 7, 0),
-							'end': normalizedDate((dow + 1) % 7, rule.end_mins)
-						});
-					} else {
-						blocks.push({
-							'title': rule.name,
-							'start': normalizedDate(dow, rule.start_mins),
-							'end': normalizedDate(dow, rule.end_mins)
-						});
-					}
+				$this.find('.check[name="rule_toggle"]').bind('change', function() {
+					rule.enabled = !rule.enabled;
+					calendar.fullCalendar('refetchEvents');	
 				});
-
-				var draw_self = function() {
-					if ($(this).attr('checked')) {
-						calendar.fullCalendar('addEventSource', blocks);
-						$('#apply_trigger').fadeIn();
-					} else{
-						calendar.fullCalendar('removeEventSource', blocks);
-						$('#apply_trigger').fadeIn();						
-					}
-				}
-
-				draw_self();
-				$this.find('.rule_toggle').bind('click', draw_self);
 				
 				$this.find('.edit_rule_trig').click(function() {
 					render_rule_form(rule);
@@ -115,10 +111,19 @@ x Enable/disable rule
 			data = {'rule': {}};
 		}
 
-		var start_hour = data.rule.start_mins ? Math.floor(data.rule.start_mins / 60) : -1,
-			end_hour = data.rule.end_mins ? Math.floor(data.rule.end_mins / 60) : -1,
-			start_min = data.rule.start_mins ? data.rule.start_mins - (start_hour * 60) : -1,
-			end_min = data.rule.end_mins ? data.rule.end_mins - (end_hour * 60) : -1;
+		var start_hour, end_hour, start_min, end_min;
+
+		if(!rule || rule.start_mins === -1 || rule.end_mins === -1) {
+			start_hour = -1;
+			end_hour = -1;
+			start_min = -1;
+			end_min = -1;
+		} else {
+			start_hour = Math.floor(rule.start_mins / 60);
+			end_hour = Math.floor(rule.end_mins / 60);
+			start_min = rule.start_mins % 60;
+			end_min = rule.end_mins % 60;
+		}
 
 		data.rule.start_hours = []
 		data.rule.end_hours = []
@@ -180,6 +185,7 @@ x Enable/disable rule
 			tomato_env.apply();
 			$.fancybox.close();
 			render_rules_list();
+			calendar.fullCalendar('refetchEvents')
 		});
 
 		$.fancybox.open($target);
@@ -212,21 +218,7 @@ x Enable/disable rule
 			'start_mins': 375
 		}];
 		render_rules_list();
+		calendar.fullCalendar('refetchEvents');	
 	});
-
-	rules = [{
-		'all_day' :true,
-		'block_all':true,
-		'block_sites': 'http://facebook.com, http://pr0nz.com',
-		'block_social':true,
-		'block_stream':true,
-		'days': ['mon','wed','fri'],
-		'enabled':true,
-		'end_mins': 625,
-		'every_day' : true,
-		'name':'happiness',
-		'start_mins': 375
-	}];
-	render_rules_list();
 
 });
