@@ -34,6 +34,7 @@ static void wo_shutdown(char *url);
 static void wo_nvcommit(char *url);
 //	static void wo_logout(char *url);
 static void easytomato_devlist();
+static void asp_include(int argc, char **argv);
 
 // ----------------------------------------------------------------------------
 
@@ -242,6 +243,23 @@ static void wo_nvram2(char *url)
 
   // If this wasn't a special case, just call the generic nvram2 handler 
   asp_nvram2(1, &p);
+}
+
+static void asp_include(int argc, char **argv) {
+  // We only expect a single argument to this function
+  if (argc != 1) return;
+
+  FILE *f;
+  char buf[1024];
+
+  // Open up a file to use as an include
+  if ((f = fopen(argv[0], "r")) != NULL) {
+    // Just print the contents of the file
+    while (fgets(buf, sizeof(buf), f)) {
+      web_printf("%s", buf);
+    }
+    fclose(f);
+  }
 }
 
 static void easytomato_devlist() {
@@ -471,8 +489,9 @@ const aspapi_t aspapi[] = {
 #ifdef TCONFIG_USB
 	{ "usbdevices",			asp_usbdevices	},	//!!TB - USB Support
 #endif
-	{ "css",				asp_css				},
-	{ NULL,					NULL				}
+	{ "css",			asp_css		},
+	{ "include",                    asp_include     },
+	{ NULL,				NULL     	}
 };
 
 // -----------------------------------------------------------------------------
