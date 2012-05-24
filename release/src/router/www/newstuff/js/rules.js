@@ -1,5 +1,4 @@
 
-
 $(function() {
 /*  
 	
@@ -13,6 +12,7 @@ x Enable/disable rule
 - $('#apply_trigger').fadeIn(); whenever needed	(colin)
 
 */
+
 	var rules,
 		unassigned = false,
 		day_map = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6},
@@ -188,7 +188,7 @@ x Enable/disable rule
 			calendar.fullCalendar('refetchEvents')
 		});
 
-		$.fancybox.open($target);
+		$.fancybox.open($target, {'minHeight':340, 'minWidth':600});
 	}
 
 	$('.new_rule_trig').click(function() { render_rule_form(); });

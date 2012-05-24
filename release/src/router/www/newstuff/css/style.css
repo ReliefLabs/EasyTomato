@@ -313,7 +313,7 @@ body{
 	width: 16px;
 }
 a.nicebutton {
-	background: url("../img/sprite.png") repeat-x scroll 0 -1797px transparent;
+	background: url("../img/sprite.png") repeat-x scroll 0 -1800px transparent;
 	border: 1px solid #777;
 	border-radius: 5px 5px 5px 5px;
 	display: inline-block;
@@ -774,7 +774,7 @@ th, td, caption {
 }
 #rules .content_bar .back_trigger{
 	padding: 5px 15px;
-	background-position-y: -1795px;
+	background-position:0 -1795px !important;
 }
 
 #rules .content_bar .back_trigger:hover{
