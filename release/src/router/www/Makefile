@@ -253,7 +253,3 @@ endif
 	for F in $(wildcard *.js *.jsx); do \
 		[ -f $(INSTALLDIR)/www/$$F ] && $(TOP)/www/remcoms2.sh $(INSTALLDIR)/www/$$F c; \
 	done
-
-# TEMPORARY HACK HACK HACK - Use Marco's newstuff dir for now
-	mkdir -p $(INSTALLDIR)/www/newstuff
-	cp -r newstuff/* $(INSTALLDIR)/www/newstuff/.
