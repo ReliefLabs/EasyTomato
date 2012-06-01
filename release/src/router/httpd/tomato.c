@@ -249,6 +249,9 @@ static void asp_include(int argc, char **argv) {
   // We only expect a single argument to this function
   if (argc != 1) return;
 
+  parse_asp(argv[0]);
+
+  /*
   FILE *f;
   char buf[1024];
 
@@ -260,6 +263,7 @@ static void asp_include(int argc, char **argv) {
     }
     fclose(f);
   }
+  */
 }
 
 static void easytomato_devlist() {
