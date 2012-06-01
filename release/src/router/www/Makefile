@@ -253,3 +253,11 @@ endif
 	for F in $(wildcard *.js *.jsx); do \
 		[ -f $(INSTALLDIR)/www/$$F ] && $(TOP)/www/remcoms2.sh $(INSTALLDIR)/www/$$F c; \
 	done
+
+# Copy over the directories needed for the new EasyTomato stuff (img, css and js)
+	mkdir -p $(INSTALLDIR)/www/img
+	cp -r img/* $(INSTALLDIR)/www/img/.
+	mkdir -p $(INSTALLDIR)/www/css
+	cp -r css/* $(INSTALLDIR)/www/css/.
+	mkdir -p $(INSTALLDIR)/www/js
+	cp -r js/* $(INSTALLDIR)/www/js/.
