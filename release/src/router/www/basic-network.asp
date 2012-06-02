@@ -1707,7 +1707,7 @@ createFieldTable('', [
 	{ title: 'Subnet Mask', name: 'lan_netmask', type: 'text', maxlen: 15, size: 17, value: nvram.lan_netmask },
 /* NOVLAN-END */
 	{ title: 'Default Gateway', name: 'lan_gateway', type: 'text', maxlen: 15, size: 17, value: nvram.lan_gateway },
-        { title: 'Use OpenDNS Family Shield', name: '_f_familyshield_enable', type: 'checkbox', value: nvram.familyshield, suffix: ' <b><small>*** WARNING *** </b>- This will override any existing DNS settings </small>' },
+        { title: 'Use OpenDNS Family Shield', name: 'f_familyshield_enable', type: 'checkbox', value: nvram.familyshield, suffix: ' <b><small>*** WARNING *** </b>- This will override any existing DNS settings </small>' },
 	{ title: 'Static DNS', suffix: '&nbsp; <i>(IP:port)</i>', name: 'f_dns_1', type: 'text', maxlen: 21, size: 25, value: dns[0] || '0.0.0.0' },
 	{ title: '', name: 'f_dns_2', type: 'text', maxlen: 21, size: 25, value: dns[1] || '0.0.0.0' },
 	{ title: '', name: 'f_dns_3', type: 'text', maxlen: 21, size: 25, value: dns[2] || '0.0.0.0' },
