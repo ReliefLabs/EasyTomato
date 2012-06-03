@@ -181,6 +181,7 @@ x Enable/disable rule
 				rules.push(result);
 			}	
 
+		    tomato_env.set(unassigned_rules_nvram_id, escape(JSON.stringify(rules)));
 			set_rules();
 			tomato_env.apply();
 			$.fancybox.close();
@@ -204,21 +205,8 @@ x Enable/disable rule
 			unassigned = true;
 		}
 		
-		rules = [{
-			'all_day' :true,
-			'block_all':true,
-			'block_sites': 'http://facebook.com, http://pr0nz.com',
-			'block_social':true,
-			'block_stream':true,
-			'days': ['mon','wed','fri'],
-			'enabled':true,
-			'end_mins': 625,
-			'every_day' : true,
-			'name':'happiness',
-			'start_mins': 375
-		}];
-		render_rules_list();
-		calendar.fullCalendar('refetchEvents');	
+	    render_rules_list();
+	    calendar.fullCalendar('refetchEvents');	
 	});
 
 });
