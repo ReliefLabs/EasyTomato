@@ -86,15 +86,17 @@ var set_rules = function() {
 		saved = 0;
 
 	$.each(groups, function(i, g) {
+	    if (g.rules != null) {
 		$.each(g.rules, function(i, r) {
-			var key = 'rrule' + saved;
-			tomato_env.set(key, build_rule(rule));
-			saved++;
+		    var key = 'rrule' + saved;
+		    tomato_env.set(key, build_rule(rule));
+		    saved++;
 		});
+	    }
 	});
 	$.each(unassigned_rules, function(i, r) {
 		var key = 'rrule' + saved;
-		tomato_env.set(key, build_rule(rule, true));
+		tomato_env.set(key, build_rule(r, true));
 		saved++;
 	});
 	
@@ -109,9 +111,9 @@ var set_rules = function() {
 	}
 
 }
-var build_group_string = function(computers, except) {
+var build_group_string = function(devices, except) {
  	var prefix = except ? '!>' : '';
-	return prefix + addrs.join('>');
+	return prefix + devices.join('>');
 }
 
 var build_rule = function(def, except) {
@@ -144,7 +146,7 @@ var build_rule = function(def, except) {
 		group_string = build_group_string(assigned_addrs, true); 
 	} else {
 		var addrs = [];
-		$.each(def.group.computers, function() {
+		$.each(def.group.devices, function() {
 		   addrs.push(this.mac);	
 		});
 		group_string = build_group_string(addrs, false);
