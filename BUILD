@@ -17,6 +17,6 @@ Set up all the dependencies needed to build TomatoUSB/EasyTomato:
 5) source ~/.profile
 
 Build the firmware image:
-1) cd ~/EasyTomato/release/src
+1) cd ~/EasyTomato/release/src-rt
 2) make <target> V1=# V2=<name>
-       - I think it should be "make s V1=0 V2=ALPHA" (the "s" is the important thing)
+       - It should be "make r2m V1=0 V2=ALPHA" (the "r2m" is the important thing)
