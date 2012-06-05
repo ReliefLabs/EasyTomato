@@ -928,7 +928,9 @@ form .grid_row{
 	text-shadow: 0 1px black;
 }
 
-
+#rules_sidenav .check.box_handle {                                              
+        top: 8px;
+}
 
 
 /*--------- Overview: Internet Usage ------------*/
