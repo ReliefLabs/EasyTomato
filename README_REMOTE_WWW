@@ -1,0 +1,24 @@
+How to install Samba and set up the router to fetch web content remotely:
+
+Install & Setup Samba (run all these steps on the linux host):
+	1) Install Samba
+		sudo apt-get install samba
+	2) Create a samba user (this is seperate from linux username/password)
+		sudo smbpasswd -a easydev
+	3) Create a folder that will hold the webpages in your user directory
+		mkdir /home/<username>/remote_www
+	4) Make a backup of the default Samba configuration file
+		sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.default
+	5) Append to the Samba config file to add the directory to share (this is all a single command):
+		sudo cat << EOF >> /etc/samba/smb.conf
+		[remote_www]
+		path = /home/<username>/remote_www
+		available = yes
+		read only = no
+		browsable = yes
+		public = yes
+		writable = yes
+		follow symlinks = yes
+		wide links = yes
+	6) Restart Samba Server
+		sudo restart smbd
