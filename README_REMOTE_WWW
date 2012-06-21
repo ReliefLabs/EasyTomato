@@ -4,7 +4,7 @@ Install & Setup Samba (run all these steps on the linux host):
 	1) Install Samba
 		sudo apt-get install samba
 	2) Create a samba user (this is seperate from linux username/password)
-		sudo smbpasswd -a easydev
+		sudo smbpasswd -a $USER
 	3) Create a folder that will hold the webpages in your user directory and make it writable by all
 		mkdir /home/$USER/remote_www
 		chmod a+w /home/$USER/remote_www
@@ -13,7 +13,7 @@ Install & Setup Samba (run all these steps on the linux host):
 	5) Append to the Samba config file to add the directory to share (this is all a single command):
 		sudo cat << EOF >> /etc/samba/smb.conf
 		[remote_www]
-		path = /home/<username>/remote_www
+		path = /home/$USER/remote_www
 		available = yes
 		read only = no
 		browsable = yes
@@ -29,8 +29,8 @@ Connect to share from the router:
 	7) Under Administration | CIFS Client, set the following settings:
 		Enable: <check>
 		UNC: \\192.168.1.2\remote_www  (or whatever the IP of the linux machine is)
-		Username: easydev
-	   	Password: easydev
+		Username: easydev (whatever your linux username is)
+	   	Password: easydev (whatever the samba password you made is)
 	   	Security: None
 	8) Save the settings
 
@@ -44,5 +44,10 @@ Log in to the router and change httpd to fetch files from share:
 	12) Restart the webserver from the cifs1 directory
 	    	 cd /cifs1
 		 httpd
+	13) Exit the router using the exit command
+	    	 exit
+	14) Change the permissions on the newly copied files so you can edit them
+	    	 cd /home/$USER/remote_www
+		 sudo chown -R $USER *
 
 Everything should now be served up from your linux machine and you are free to edit things!   
