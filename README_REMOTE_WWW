@@ -11,7 +11,7 @@ Install & Setup Samba (run all these steps on the linux host):
 	4) Make a backup of the default Samba configuration file
 		sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.default
 	5) Append to the Samba config file to add the directory to share (this is all a single command):
-		sudo cat << EOF >> /etc/samba/smb.conf
+		sudo sh -c 'cat << EOF >> /etc/samba/smb.conf
 		[remote_www]
 		path = /home/$USER/remote_www
 		available = yes
@@ -21,7 +21,7 @@ Install & Setup Samba (run all these steps on the linux host):
 		writable = yes
 		follow symlinks = yes
 		wide links = yes
-		EOF
+		EOF'
 	6) Restart Samba Server
 		sudo restart smbd
 
@@ -36,7 +36,8 @@ Connect to share from the router:
 
 Log in to the router and change httpd to fetch files from share:
 	9) Log in to the router using SSH (this may have to be enabled through the GUI, I would also suggest adding your an ssh key for passwordless login)
-	       ssh root@192.168.1.1 (or whatever your router's ip address is)
+	       ssh root@192.168.1.1 (or whatever your router's ip address is) 
+               (password is your router's admin password)
 	10) Copy all the existing files to the share
 	    	 cp -r /www/* /cifs1/.
 	11) Kill the existing webserver
