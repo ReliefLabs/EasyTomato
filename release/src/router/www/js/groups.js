@@ -175,8 +175,10 @@ KNOWN BUGS (x = done)
 
 	
 	$('#apply_trigger').click(function() {
-		tomato_env.apply();
-		$(this).fadeOut();
+		$.when(tomato_env.apply()).then(function() {
+			$('#apply_trigger').fadeOut();
+			$.fancybox.close();
+		});
 	});
 
 	
