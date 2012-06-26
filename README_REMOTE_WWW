@@ -11,7 +11,7 @@ Install & Setup Samba (run all these steps on the linux host):
 	4) Make a backup of the default Samba configuration file
 		sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.default
 	5) Append to the Samba config file to add the directory to share (this is all a single command):
-		sudo cat << EOF >> /etc/samba/smb.conf
+		cat << EOF | sudo tee -a /etc/samba/smb.conf
 		[remote_www]
 		path = /home/$USER/remote_www
 		available = yes
