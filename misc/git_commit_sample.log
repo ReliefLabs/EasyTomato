@@ -1,0 +1,55 @@
+Script started on Mon 25 Jun 2012 11:54:46 PM EDT
+[01;32measydev@easydev[01;34m ~/EasyTomato/release/src-rt/router/httpd $[00m git status -uno
+# On branch EasyTomato-RT
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   ../../../../README_REMOTE_WWW
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+[01;32measydev@easydev[01;34m ~/EasyTomato/release/src-rt/router/httpd $[00m git status -uno[Kgit status -uno[Kgit commit -am "Testing\!" --dry-run
+# On branch EasyTomato-RT
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   ../../../../README_REMOTE_WWW
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	../../../../easytomato.diff
+#	../../../../easytomato_commits.log
+#	../../../src-rt/emf/emf/.emf_linux.o.cmd
+SKIP A WHOLE LOT OF FILES
+#	../zlib/zlib.pc
+#	../zlib/zutil.lo
+#	../zlib/zutil.o
+#	../../../../setup_remote_www.sh
+[01;32measydev@easydev[01;34m ~/EasyTomato/release/src-rt/router/httpd $[00m git diff
+[?1h=diff --git a/README_REMOTE_WWW b/README_REMOTE_WWW[m
+index d65648b..42fdc9f 100644[m
+--- a/README_REMOTE_WWW[m
++++ b/README_REMOTE_WWW[m
+@@ -11,7 +11,7 @@ Install & Setup Samba (run all these steps on the linux host):[m
+        4) Make a backup of the default Samba configuration file[m
+                sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.default[m
+        5) Append to the Samba config file to add the directory to share (this is all a single comma[m
+-               sudo cat << EOF >> /etc/samba/smb.conf[m
++               cat << EOF | sudo tee -a /etc/samba/smb.conf[m
+                [remote_www][m
+                path = /home/$USER/remote_www[m
+                available = yes[m
+[7m(END)[27m[K[K[?1l>[01;32measydev@easydev[01;34m ~/EasyTomato/release/src-rt/router/httpd $[00m git branch
+  EasyTomato
+* EasyTomato-RT
+  Toastman-IPT-ND
+[01;32measydev@easydev[01;34m ~/EasyTomato/release/src-rt/router/httpd $[00m git branch checkout[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kcheckout EasyTomato-RT 
+M	README_REMOTE_WWW
+Already on 'EasyTomato-RT'
+[01;32measydev@easydev[01;34m ~/EasyTomato/release/src-rt/router/httpd $[00m git commit -am "Changin[K[K[K[K[K[K[K[K"Fixing a problem with sud o cat in the remote [K_www instructions."
+[EasyTomato-RT 6b1d45e] Fixing a problem with sudo cat in the remote_www instructions.
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+[01;32measydev@easydev[01;34m ~/EasyTomato/release/src-rt/router/httpd $[00m exit
+
+Script done on Mon 25 Jun 2012 11:57:40 PM EDT
