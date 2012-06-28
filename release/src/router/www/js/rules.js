@@ -184,8 +184,8 @@ x Enable/disable rule
 			}	
 			// including rules in groups variable
 			var group_id = getParamByName('g');
-			groups[group_id].rules = rules;
-		   	if (group_id != null) {
+			if (group_id != null) {
+				groups[group_id].rules = rules;
 				tomato_env.set(groups_nvram_id, escape(JSON.stringify(groups)));
 			} else {
 				tomato_env.set(unassigned_rules_nvram_id, escape(JSON.stringify(rules)));
