@@ -67,6 +67,7 @@ var load_groups = function() {
 		try {
 			groups = JSON.parse(unescape(tomato_env.vars[groups_nvram_id])) || [];
 		} catch(e) {
+
 			console.log('failed to load groups');
 			groups = [];
 		}
@@ -89,7 +90,7 @@ var set_rules = function() {
 	    if (g.rules != null) {
 		$.each(g.rules, function(i, r) {
 		    var key = 'rrule' + saved;
-		    tomato_env.set(key, build_rule(rule));
+		    tomato_env.set(key, build_rule(r, true));
 		    saved++;
 		});
 	    }
@@ -156,8 +157,12 @@ var build_rule = function(def, except) {
 	//TODO protocol matching
 	out.push('');
 
-	//TODO desc matching?
-	out.push('');
+	// blocked sites separated by \x0d\x0a
+	if (def.block_all) {
+		out.push('');
+	} else {
+		out.push(def.block_sites.join('\x0d\x0a'));
+	}
 
 	//TODO flash, java, etc
 	out.push('0');

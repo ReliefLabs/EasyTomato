@@ -13,7 +13,8 @@ x Enable/disable rule
 
 */
 
-	var rules,
+
+	var rules=[],
 		unassigned = false,
 		day_map = {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6},
 		date = new Date(),
@@ -151,14 +152,15 @@ x Enable/disable rule
 
 			result.name = $.trim($form.find('.rule_name').val());
 
-			if($form.find('.check[name="every_day"]').attr('checked')) {
-				result.days = -1;
-			} else {
+			// Sum of all days even if every_day is checked.
+			//if($form.find('.check[name="every_day"]').attr('checked')) {
+			//	result.days = -1;
+			//} else {
 				result.days = [];
 				$form.find('.day:checked').each(function(i, d) {
 					result.days.push($(d).attr('name'));
 				});
-			}
+			//}
 
 			if($form.find('.check[name="all_day"]').attr('checked')) {
 				result.start_mins = -1;
@@ -180,8 +182,14 @@ x Enable/disable rule
 				result.enabled = true;
 				rules.push(result);
 			}	
-
-		    tomato_env.set(unassigned_rules_nvram_id, escape(JSON.stringify(rules)));
+			// including rules in groups variable
+			var group_id = getParamByName('g');
+			groups[group_id].rules = rules;
+		   	if (group_id != null) {
+				tomato_env.set(groups_nvram_id, escape(JSON.stringify(groups)));
+			} else {
+				tomato_env.set(unassigned_rules_nvram_id, escape(JSON.stringify(rules)));
+			}			
 			set_rules();
 			tomato_env.apply();
 			$.fancybox.close();
@@ -195,13 +203,16 @@ x Enable/disable rule
 	$('.new_rule_trig').click(function() { render_rule_form(); });
 
 	$.when(load_groups(), load_devices()).then(function() {
-		var group_id = Number(getParamByName('g'));
-		if(group_id) {
-			rules = groups[group_id].rules;
+		// group_id? = false when group_id = 0
+		// New condition separates correctly unassigned rules from group rules
+		var group_id_param = getParamByName('g'),
+			group_id = Number(group_id_param);
+		if(group_id_param != null && typeof group_id != 'undefined') {
+			rules = groups[group_id].rules || [];
 			group_name = groups[group_id].name;
 		} else {
 			rules = unassigned_rules;
-			group_name = unassigned_rules;
+			group_name = unassigned_rules; // Still Weird
 			unassigned = true;
 		}
 		
