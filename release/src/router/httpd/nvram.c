@@ -25,6 +25,21 @@ static int print_wlnv(int idx, int unit, int subunit, void *param)
 	return 1;
 }
 
+/* EasyTomato edit: Duplicating this function because jquery doesn't like the single quotes- duped so we don't break existing stuff... */
+static int print_wlnv2(int idx, int unit, int subunit, void *param)
+{
+	char *k = param;
+	char *nv;
+
+	nv = wl_nvname(k + 3, unit, subunit);
+	web_printf("\t\"%s\": \"", nv); // AB multiSSID
+	web_putj(nvram_safe_get(nv));
+	web_puts("\",\n");
+
+	return 1;
+}
+
+
 //	<% nvram("x,y,z"); %>	-> nvram = {'x': '1','y': '2','z': '3'};
 void asp_nvram(int argc, char **argv)
 {
@@ -87,7 +102,7 @@ void asp_nvram2(int argc, char **argv)
 		web_puts("\",\n");
 
 		if (strncmp(k, "wl_", 3) == 0) {
-			foreach_wif(1, k, print_wlnv);
+			foreach_wif(1, k, print_wlnv2);
 		}
 	}
 	free(list);
