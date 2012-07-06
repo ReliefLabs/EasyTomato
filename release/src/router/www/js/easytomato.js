@@ -41,7 +41,10 @@ var load_devices = function() {
 
 		$.each(tomato_env.vars['devlist'], function() {
 			var mac = this[2],
-				device = {'name': this[0], 'ip': this[1], 'mac': this[2]};
+				device = {
+				'name': this[0] !== "" ? this[0] : "device_"+this[2].substr(12),
+ 				'ip': this[1], 
+				'mac': this[2]};
 
 			devices.push(device);
 			unassigned.push(device);		
@@ -88,11 +91,11 @@ var set_rules = function() {
 
 	$.each(groups, function(i, g) {
 	    if (g.rules != null) {
-		$.each(g.rules, function(i, r) {
-		    var key = 'rrule' + saved;
-		    tomato_env.set(key, build_rule(r, true));
-		    saved++;
-		});
+			$.each(g.rules, function(i, r) {
+			    var key = 'rrule' + saved;
+			    tomato_env.set(key, build_rule(r, false, g.devices));
+			    saved++;
+			});
 	    }
 	});
 	$.each(unassigned_rules, function(i, r) {
@@ -117,7 +120,18 @@ var build_group_string = function(devices, except) {
 	return prefix + devices.join('>');
 }
 
-var build_rule = function(def, except) {
+/*!
+ * Builds the string to be sent to the backend
+ * if except, devices param are undefined. Every device assigned to any group is added to the rule 
+ * and the rule is of type all except in the back end.
+ *
+ * @param {Object} def
+ * @param {Boolean} except
+ * @param {Array} 
+ * @returns {String}
+ */
+
+var build_rule = function(def, except, devices) {
 	var out = [];
 
 	//enabled	
@@ -147,7 +161,7 @@ var build_rule = function(def, except) {
 		group_string = build_group_string(assigned_addrs, true); 
 	} else {
 		var addrs = [];
-		$.each(def.group.devices, function() {
+		$.each(devices, function() {
 		   addrs.push(this.mac);	
 		});
 		group_string = build_group_string(addrs, false);
