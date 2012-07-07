@@ -188,7 +188,7 @@ const defaults_t defaults[] = {
 	{ "wl_corerev",			""				},	// Current core revision
 	{ "wl_phytypes",		""				},	// List of supported wireless bands (e.g. "ga")
 	{ "wl_radioids",		""				},	// List of radio IDs
-	{ "wl_ssid",			"wireless"			},	// Service set ID (network name)
+	{ "wl_ssid",			"EasyTomato"			},	// Service set ID (network name)
 	{ "wl1_ssid",			"wireless1"			},
 	{ "wl_country_code",		"SG"		},		// Country (default obtained from driver)
 	{ "wl_radio",			"1"				},	// Enable (1) or disable (0) radio

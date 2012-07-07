@@ -5,6 +5,9 @@
 ## Updated by ~nephelim~, Syl, jochen, groosh, ng12345, ray123, mstombs
 ## base64 decoder by Danny Chouinard's
 
+echo "ADBLOCKING SCRIPT TEMPORARILY DISABLED!!"
+exit # remove this to reenable adblocking
+
 echo `cat /proc/uptime` >> /tmp/mylog
 echo "Starting adblocker.sh \n" >> /tmp/mylog
 
