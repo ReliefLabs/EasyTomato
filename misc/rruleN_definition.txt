@@ -1,0 +1,12 @@
+"1|1380|240|31|||google.com|0|awesome rule"
+
+enable | start_time (minutes) *-1 All day checked | end_time (minutes)  *-1 All day checked 
+| days of the week | List of MAC @ (separator >) | Always blank (Port/App blocking) 
+| blocked sites (empty if block all) | Always zero (HTTP Requested Files) | description
+
+
+
+
+!> mac address1 > mac address2 :: all except
+
+
