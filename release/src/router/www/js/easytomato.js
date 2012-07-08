@@ -32,8 +32,8 @@ var groups = [],
 	devices = [],
 	unassigned = [],
 	unassigned_rules = [],
-	groups_nvram_id = 'easytomato_scratch_0',
-	unassigned_rules_nvram_id = 'easytomato_scratch_1';
+	groups_nvram_id = 'easytomato_groups',
+	unassigned_rules_nvram_id = 'easytomato_rules';
 
 var load_devices = function() {
 	return tomato_env.get('devlist').then(function() {

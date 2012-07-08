@@ -237,8 +237,8 @@ static void wo_nvram2(char *url)
 
   // If this is a "special case", handle it first
   if(strcmp(p,"devlist")==0) {
-    easytomato_devlist();
-    return;
+	easytomato_devlist();
+	return;
   }
 
   // If this wasn't a special case, just call the generic nvram2 handler 
@@ -257,60 +257,67 @@ static void asp_include(int argc, char **argv) {
 
   // Open up a file to use as an include
   if ((f = fopen(argv[0], "r")) != NULL) {
-    // Just print the contents of the file
-    while (fgets(buf, sizeof(buf), f)) {
-      web_printf("%s", buf);
-    }
-    fclose(f);
+	// Just print the contents of the file
+	while (fgets(buf, sizeof(buf), f)) {
+	  web_printf("%s", buf);
+	}
+	fclose(f);
   }
   */
 }
 
 static void easytomato_devlist() {
-  /*
-    {
-    "devlist" : [[ device 1 info here ], [ device 2 info here ]],
-    "http_id" : "TID40f64174e74cbbc2"
-    }
-  */
-
-  web_puts("{\n");
-  web_puts("\t\"devlist\" : [");
-
-  FILE *f;
-  char buf[1024];
-  char comma;
-  unsigned long expires;
-  char mac[32];
-  char ip[32];
-  char hostname[256];
-  char *host;
-
-#ifdef TCONFIG_VLAN
-  if ((nvram_match("lan_proto", "dhcp")) || (nvram_match("lan1_proto", "dhcp")) || (nvram_match("lan2_proto", "dhcp")) || (nvram_match("lan3_proto", "dhcp")) ) {
-#else
-    if (nvram_match("lan_proto", "dhcp")) {
-#endif
-
-      if ((f = fopen("/var/lib/misc/dnsmasq.leases", "r")) != NULL) {
-	comma = ' ';
-	while (fgets(buf, sizeof(buf), f)) {
-	  if (sscanf(buf, "%lu %17s %15s %255s", &expires, mac, ip, hostname) != 4) continue;
-	  host = js_string((hostname[0] == '*') ? "" : hostname);
-	  web_printf("%c[\"%s\",\"%s\",\"%s\",\"%s\"]", comma,
-		     (host ? host : ""), ip, mac, ((expires == 0) ? "non-expiring" : reltime(buf, expires)));
-	  free(host);
-	  comma = ',';
+	/*
+	{
+	"devlist" : [[ device 1 info here ], [ device 2 info here ]],
+	"http_id" : "TID40f64174e74cbbc2"
 	}
-	fclose(f);
-      }
-    }
-    web_puts("],\n");
+	*/
+	web_puts("{\n");
 
-    web_puts("\t\"http_id\": \""); // AB multiSSID
-    web_putj(nvram_safe_get("http_id"));
-    web_puts("\"\n}");
+	FILE *f;
+	char buf[1024];
+	char comma;
+	unsigned long expires;
+	char mac[32];
+	char ip[32];
+	char hostname[256];
+	char *host;
+	char s[512];
+	unsigned int flags;
+	char dev[17];
 
+	comma = ' ';
+	web_puts("\t\"devlist\" : [");
+	if (nvram_match("lan_proto", "dhcp")) {
+		if ((f = fopen("/var/lib/misc/dnsmasq.leases", "r")) != NULL) {
+			while (fgets(buf, sizeof(buf), f)) {
+				if (sscanf(buf, "%lu %17s %15s %255s", &expires, mac, ip, hostname) != 4) continue;
+				host = js_string((hostname[0] == '*') ? "" : hostname);
+				web_printf("%c[\"%.20s\",\"%s\",\"%s\",\"%s\"]", comma,
+					(host ? host : ""), ip, mac, ((expires == 0) ? "non-expiring" : reltime(buf, expires)));
+				free(host);
+				comma = ',';
+			}
+			fclose(f);
+		}
+	}
+
+	if ((f = fopen("/proc/net/arp", "r")) != NULL) {
+		while (fgets(s, sizeof(s), f)) {
+			if (sscanf(s, "%15s %*s 0x%X %17s %*s %16s", ip, &flags, mac, dev) != 4) continue;
+			if ((strlen(mac) != 17) || (strcmp(mac, "00:00:00:00:00:00") == 0)) continue;
+			if (flags == 0) continue;
+			web_printf("%c[\"\",\"%s\",\"%s\",\"non-expiring\"]", comma, ip, mac);
+			comma = ',';
+		}
+		fclose(f);
+	}
+	web_puts("],\n");
+
+	web_puts("\t\"http_id\": \""); // AB multiSSID
+	web_putj(nvram_safe_get("http_id"));
+	web_puts("\"\n}");
 }
 
 static void wo_iptables(char *url)
@@ -1219,20 +1226,20 @@ static const nvset_t nvset_list[] = {
 #ifdef TCONFIG_NOCAT
 	{ "NC_enable",			V_01				},
 	{ "NC_Verbosity",		V_RANGE(0, 10)			},
-        { "NC_GatewayName",		V_LENGTH(0, 255)		},
+		{ "NC_GatewayName",		V_LENGTH(0, 255)		},
 	{ "NC_GatewayPort",		V_PORT				},
-        { "NC_ForcedRedirect",		V_01				},
-        { "NC_HomePage",		V_LENGTH(0, 255)		},
-        { "NC_DocumentRoot",		V_LENGTH(0, 255)		},
-        { "NC_SplashURL",		V_LENGTH(0, 255)		},
-        { "NC_LoginTimeout",		V_RANGE(0, 86400000)		},
-        { "NC_IdleTimeout",		V_RANGE(0, 86400000)		},
+		{ "NC_ForcedRedirect",		V_01				},
+		{ "NC_HomePage",		V_LENGTH(0, 255)		},
+		{ "NC_DocumentRoot",		V_LENGTH(0, 255)		},
+		{ "NC_SplashURL",		V_LENGTH(0, 255)		},
+		{ "NC_LoginTimeout",		V_RANGE(0, 86400000)		},
+		{ "NC_IdleTimeout",		V_RANGE(0, 86400000)		},
 	{ "NC_MaxMissedARP",		V_RANGE(0, 10)			},
 	{ "NC_PeerChecktimeout",	V_RANGE(0, 60)			},
-        { "NC_ExcludePorts",		V_LENGTH(0, 255)		},
-        { "NC_IncludePorts",		V_LENGTH(0, 255)		},
-        { "NC_AllowedWebHosts",		V_LENGTH(0, 255)		},
-        { "NC_MACWhiteList",		V_LENGTH(0, 255)		},
+		{ "NC_ExcludePorts",		V_LENGTH(0, 255)		},
+		{ "NC_IncludePorts",		V_LENGTH(0, 255)		},
+		{ "NC_AllowedWebHosts",		V_LENGTH(0, 255)		},
+		{ "NC_MACWhiteList",		V_LENGTH(0, 255)		},
 	{ "NC_SplashFile",		V_LENGTH(0, 8192)		},
 #endif
 
@@ -1430,6 +1437,9 @@ wl_ap_ssid
 	{ "pptp_client_stateless",V_01                  },
 
 	/* EasyTomato Variables */
+	{ "easytomato_groups", V_NONE },
+	{ "easytomato_rules", V_NONE },
+	{ "easytomato_wan_dns_save", V_LENGTH(0, 50) }, // See wan_dns
 	{ "easytomato_scratch_0", V_NONE },
 	{ "easytomato_scratch_1", V_NONE },
 	{ "easytomato_scratch_2", V_NONE },
@@ -1568,22 +1578,22 @@ static int save_variables(int write)
 				dirty = 1;
 				nvram_set("http_passwd", p1);
 			}
-  		}
-  		else {
+		}
+		else {
 			sprintf(s, msgf, "password");
 			resmsg_set(s);
 			return 0;
-  		}
+		}
 	}
 
 	for (n = 0; n < 50; ++n) {
 		sprintf(s, "rrule%d", n);
 		if ((p = webcgi_get(s)) != NULL) {
-	        	if (strlen(p) > 8192) {				//Toastman
+				if (strlen(p) > 8192) {				//Toastman
 				sprintf(s, msgf, s);
 				resmsg_set(s);
 				return 0;
-	        	}
+				}
 			if ((write) && (!nvram_match(s, p))) {
 				dirty = 1;
 				DEBUG_NVRAMSET(s, p);
