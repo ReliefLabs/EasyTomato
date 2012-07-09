@@ -22,6 +22,7 @@ var tomato_env = {
 	apply: function() {
 		data = this.vars_to_save;
 		data._http_id = this.http_id;
+		data._service = 'restrict-restart';
 		return $.post('/tomato.cgi', data);
 	}
 }
@@ -117,6 +118,9 @@ var set_rules = function() {
 }
 var build_group_string = function(devices, except) {
  	var prefix = except ? '!>' : '';
+ 	if (devices.length === 0) { 
+ 		devices[0]='00:00:00:00:00:00'; //Makes sure that rules in empty groups don't apply to all devices
+ 	}
 	return prefix + devices.join('>');
 }
 
