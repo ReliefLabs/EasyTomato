@@ -111,6 +111,29 @@ var render_groups = function() {
 
 		$this.find('.edit_group_trig').attr('href', 'rules.html?g='+i);
 		
+		//Changes the DNS servers over to OpenDNS' FamilyShield and back
+		$('input[name=block_adult]').click(function() {
+            if ($('input[name=block_adult]').is(':checked')){
+            	$.when(tomato_env.get('wan_dns'))
+            .then(function(){
+            		tomato_env.set('easytomato_scratch_2', tomato_env.vars['wan_dns']);
+            	    tomato_env.set('wan_dns', '208.67.222.123 208.67.220.123');	
+            		$('#apply_trigger').fadeIn();
+            	});
+            }
+            else{
+            	tomato_env.set('wan_dns', tomato_env.vars['easytomato_scratch_2']);
+            	$('#apply_trigger').fadeIn();
+            }
+            
+		});
+
+		if(block_adult_content_status){
+			$('input[name=block_adult]').attr('checked', true);
+			console.log('asdfasdfasdfdsaf');
+		}else{
+			$('input[name=block_adult]').attr('checked', false);
+		}
 	});
 
 
@@ -143,7 +166,7 @@ $(document).ready(function() {
 	});
 
 
-	$.when(load_groups(), load_devices()).then(function() {
+	$.when(load_groups(), load_devices(), load_adult_block()).then(function() {
 		render_groups();
 		render_devices();
 	});

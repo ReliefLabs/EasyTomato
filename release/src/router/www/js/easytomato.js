@@ -27,6 +27,8 @@ var tomato_env = {
 	}
 }
 
+//
+
 //groups and rules
 
 var groups = [],
@@ -34,7 +36,19 @@ var groups = [],
 	unassigned = [],
 	unassigned_rules = [],
 	groups_nvram_id = 'easytomato_groups',
-	unassigned_rules_nvram_id = 'easytomato_rules';
+	unassigned_rules_nvram_id = 'easytomato_rules',
+	block_adult_content_nvram_id = 'wan_dns',
+	block_adult_content_status = false;
+
+
+var load_adult_block = function(){
+	return $.when(tomato_env.get(block_adult_content_nvram_id),tomato_env.get('easytomato_scratch_2'))
+			.then(function() {
+			block_adult_content_status = tomato_env.vars[block_adult_content_nvram_id]=='208.67.222.123 208.67.220.123';	
+	});
+};
+
+
 
 var load_devices = function() {
 	return tomato_env.get('devlist').then(function() {
@@ -84,6 +98,7 @@ var load_groups = function() {
 		}
 	});
 }
+
 
 var set_rules = function() {
 
