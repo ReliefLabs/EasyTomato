@@ -118,11 +118,13 @@ var render_groups = function() {
             .then(function(){
             		tomato_env.set('easytomato_scratch_2', tomato_env.vars['wan_dns']);
             	    tomato_env.set('wan_dns', '208.67.222.123 208.67.220.123');	
+            		tomato_env.set('_service','*'); //Full restart on apply
             		$('#apply_trigger').fadeIn();
             	});
             }
             else{
             	tomato_env.set('wan_dns', tomato_env.vars['easytomato_scratch_2']);
+            	tomato_env.set('_service','*'); //Full restart on apply
             	$('#apply_trigger').fadeIn();
             }
             
@@ -130,7 +132,6 @@ var render_groups = function() {
 
 		if(block_adult_content_status){
 			$('input[name=block_adult]').attr('checked', true);
-			console.log('asdfasdfasdfdsaf');
 		}else{
 			$('input[name=block_adult]').attr('checked', false);
 		}
@@ -166,9 +167,11 @@ $(document).ready(function() {
 	});
 
 
-	$.when(load_groups(), load_devices(), load_adult_block()).then(function() {
+	$.when(load_groups()).then(function(){
+		$.when(load_devices(), load_adult_block()).then(function() {
 		render_groups();
 		render_devices();
+		});
 	});
 
 /*   

@@ -38,7 +38,8 @@ x Enable/disable rule
 				if(rule.start_mins === -1 || rule.end_mins === -1) {
 					blocks.push({
 						'title': rule.name,
-						'allDay': true
+						'allDay': true,
+						'start': normalizedDate(dow, 0)
 					});
 				} else if(rule.end_mins < rule.start_mins) {
 					blocks.push({
@@ -93,6 +94,7 @@ x Enable/disable rule
 				$this.find('.edit_rule_trig').click(function() {
 					render_rule_form(rule);
 				});
+				
 				$this.find('.delete_rule_trig').click(function() {
 					rules.splice(i,1);
 					render_rules_list();
@@ -104,11 +106,19 @@ x Enable/disable rule
 						tomato_env.set(unassigned_rules_nvram_id, escape(JSON.stringify(rules)));
 					}	
 					set_rules();
-					tomato_env.apply();
-					//$('#apply_trigger').fadeIn();
+					$.fancybox('<div class="apply_changes_box">Deleting Rule…</div>',{
+						helpers:  { overlay : {closeClick: false} },
+      					  closeBtn : false 
+						});
+					$.when(tomato_env.apply()).then(function() {
+			  		$.fancybox.close();
+					});
+					
 			});
 		});
 	}
+
+	
 
 	var render_rule_form = function(rule) {
 		var rule_form_template = $('#rule_form_template').html(),

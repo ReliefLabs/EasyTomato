@@ -22,12 +22,11 @@ var tomato_env = {
 	apply: function() {
 		data = this.vars_to_save;
 		data._http_id = this.http_id;
-		data._service = 'restrict-restart';
 		return $.post('/tomato.cgi', data);
 	}
 }
 
-//
+tomato_env.set('_service', 'restrict-restart'); //Default restart type for apply, DNS changes take '*'
 
 //groups and rules
 
@@ -57,22 +56,31 @@ var load_devices = function() {
 		$.each(tomato_env.vars['devlist'], function() {
 			var mac = this[2],
 				device = {
-				'name': this[0] !== "" ? this[0] : "device_"+this[2].substr(12),
+				'name': this[0] !== "" ? this[0] : "device_"+this[2].substr(12).toUpperCase(),
  				'ip': this[1], 
-				'mac': this[2]};
+				'mac': this[2].toLowerCase()};
 
 			devices.push(device);
 			unassigned.push(device);		
 			mac_addrs[mac] = device;
 		});
+		
 
 		$.each(groups, function(i, group) {
 			$.each(group.devices, function(j, device) {
-				this_device = mac_addrs[device.mac];
+				unassigned = unassigned.filter(function(a){
+					if(device.mac === a.mac){
+						return false;
+					}
+						return true;
+				})
+
+				/*this_device = mac_addrs[device.mac];
 				if(this_device) {
 					group.devices[j] = this_device;
 					unassigned.splice($.inArray(this_device, unassigned), 1);
-				}
+				}*/					
+
 			});
 		});		
 	});
@@ -109,14 +117,14 @@ var set_rules = function() {
 	    if (g.rules != null) {
 			$.each(g.rules, function(i, r) {
 			    var key = 'rrule' + saved;
-			    tomato_env.set(key, build_rule(r, false, g.devices));
+			    tomato_env.set(key, build_rule(g.name, r, false, g.devices));
 			    saved++;
 			});
 	    }
 	});
 	$.each(unassigned_rules, function(i, r) {
 		var key = 'rrule' + saved;
-		tomato_env.set(key, build_rule(r, true));
+		tomato_env.set(key, build_rule(undefined, r, true));
 		saved++;
 	});
 	
@@ -150,7 +158,7 @@ var build_group_string = function(devices, except) {
  * @returns {String}
  */
 
-var build_rule = function(def, except, devices) {
+var build_rule = function(groupname, def, except, devices) {
 	var out = [];
 
 	//enabled	
@@ -201,7 +209,7 @@ var build_rule = function(def, except, devices) {
 	out.push('0');
 	
 	//name
-	out.push('EasyTomato rule ' + def.name + ' for group ' + def.group_name);
+	out.push(groupname + ' - ' + def.name);
 
 	return out.join('|')
 }
