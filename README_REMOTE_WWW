@@ -51,4 +51,6 @@ Log in to the router and change httpd to fetch files from share:
 	    	 cd /home/$USER/remote_www
 		 sudo chown -R $USER *
 
-Everything should now be served up from your linux machine and you are free to edit things!   
+Everything should now be served up from your linux machine and you are free to edit things! 
+
+Warning! Saving some pages in tomato (or calles from EasyTomato to do this) will restart servies requiring you to do steps 9, 11-13 again.
