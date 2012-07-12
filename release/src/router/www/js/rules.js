@@ -73,6 +73,13 @@ x Enable/disable rule
 		defaultView: 'agendaWeek', //MM- i like agendaWeek too, not sure which one to use
 		selectable: false,
 		editable: false,
+		allDayText: 'All-Day',
+		axisFormat: 'H:mm',
+		timeFormat: 'H:mm{ - H:mm}',
+		slotMinutes: 60,
+		contentHeight: 999999999,
+		firstHour: 0,
+		aspectRatio: .5,
 		eventSources: [event_generator]
 	});
 		
@@ -112,6 +119,7 @@ x Enable/disable rule
 						});
 					$.when(tomato_env.apply()).then(function() {
 			  		$.fancybox.close();
+			  		calendar.fullCalendar('refetchEvents');
 					});
 					
 			});
@@ -175,6 +183,10 @@ x Enable/disable rule
 			var result = {}
 
 			result.name = $.trim($form.find('.rule_name').val());
+
+			if(result.name === ''){
+				result.name = 'No Rule Name';
+			}
 
 			// Sum of all days even if every_day is checked.
 			//if($form.find('.check[name="every_day"]').attr('checked')) {
@@ -240,7 +252,7 @@ x Enable/disable rule
 			group_name = 'Unassigned';
 			unassigned = true;
 		}
-		$('.rules_title h4').html(group_name + ' Computers Schedule');
+		$('.rules_title h4').html(group_name + ' Device Schedule');
 
 	    render_rules_list();
 	    calendar.fullCalendar('refetchEvents');	
