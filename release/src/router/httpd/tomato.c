@@ -241,6 +241,11 @@ static void wo_nvram2(char *url)
 	return;
   }
 
+  if(strcmp(p,"time")==0) {
+  	asp_time(0, NULL);
+  	return;
+  }
+
   // If this wasn't a special case, just call the generic nvram2 handler 
   asp_nvram2(1, &p);
 }
