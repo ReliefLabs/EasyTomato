@@ -307,7 +307,7 @@
 
 			<div class="grid_row">
 				<span class="section_name">Blocked Websites</span>
-				<textarea name="block_sites">{{block_sites}}</textarea>
+				<textarea name="block_sites">{{#block_sites}}{{.}}&#10;{{/block_sites}}</textarea>
 			</div>
 			
 			<a href="javascript:void(0);" class="green_button save_rule">Save Rule</a>
