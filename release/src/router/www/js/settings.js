@@ -1,4 +1,5 @@
 var wl_password_status = false;
+var PASSWORD_MIN_LENGTH =8;
 
 $(document).ready(function() {
 	$.when(tomato_env.get('wl0_ssid'), tomato_env.get('wl0_wpa_psk'), tomato_env.get('wl0_security_mode'),
@@ -19,7 +20,6 @@ $(document).ready(function() {
 					$('input[name=net_pw]').attr('disabled','disabled');
 				}
 				if(dst_status[0].tm_dst==='1'){
-					console.log('234324')
 					$('input[name=auto_daylight]').attr('checked', true);
 				}
 				$('select[name=tm_sel]').val(timezone[0].tm_sel);
@@ -36,25 +36,31 @@ $(document).ready(function() {
 	});
 
 	$('.save_settings').bind('click', function() {
-			console.log('23')
-			tomato_env.set('wl0_wpa_psk',$('input[name=net_pw]').val());
-			tomato_env.set('wl0_ssid',$('input[name=net_name]').val());
-			if(('.no_net_pw').attr('checked')){                      //Turns encryption on or off
-				tomato_env.set('wl0_security_mode','disabled');
+			
+			if($("input[name=net_pw]").val().length < PASSWORD_MIN_LENGTH) {
+				alert('Wireless password must be 8 or more characters long')
 			}else{
-				tomato_env.set('wl0_security_mode','wpa2_personal');
-			}
-			tomato_env.set('tm_sel', $('select[name=tm_sel]').val()); //Time Zone
-			if ($('.auto_daylight').attr('checked')) {
-				tomato_env.set('tm_dst','1');	
-			}else{
-				tomato_env.set('tm_dst','0');	
-			}                     
-			tomato_env.set('_service','*'); //Full restart on apply
-			$.fancybox('<div class="apply_changes_box">Saving Changes…</div>',{helpers:  { overlay : {closeClick: false} }, closeBtn : false });
-			$.when(tomato_env.apply()).then(function() {
-			  	$.fancybox.close();
+
+				tomato_env.set('wl0_ssid',$('input[name=net_name]').val());
+				if($('.no_net_pw').attr('checked')){                      //Turns encryption on or off
+					tomato_env.set('wl0_security_mode','disabled');
+				}else{
+					tomato_env.set('wl0_security_mode','wpa2_personal');
+					tomato_env.set('wl0_wpa_psk',$('input[name=net_pw]').val());
+				}
+					tomato_env.set('tm_sel', $('select[name=tm_sel]').val()); //Time Zone
+				if ($('.auto_daylight').attr('checked')) {
+					tomato_env.set('tm_dst','1');	
+				}else{
+					tomato_env.set('tm_dst','0');	
+				}                     
+					tomato_env.set('_service','*'); //Full restart on apply
+				$.fancybox('<div class="apply_changes_box">Saving Changes…</div>',{helpers:  { overlay : {closeClick: false} }, closeBtn : false });
+				$.when(tomato_env.apply()).then(function() {
+					setTimeout('$.fancybox.close()', 7000);
+			  	
 			  });
+		}
 	});
 
 	
