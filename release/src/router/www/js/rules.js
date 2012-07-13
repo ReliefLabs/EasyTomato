@@ -68,9 +68,10 @@ x Enable/disable rule
 		callback(blocks);
 	}
 
+//Settings for the Calendar
 	var calendar = $('#calendar').fullCalendar({
 		header: false,
-		defaultView: 'agendaWeek', //MM- i like agendaWeek too, not sure which one to use
+		defaultView: 'agendaWeek',
 		selectable: false,
 		editable: false,
 		allDayText: 'All-Day',
@@ -207,10 +208,17 @@ x Enable/disable rule
 			}
 
 			result.block_all = !!$form.find('.check[name="block_all"]').attr('checked');
-			result.block_social = !!$form.find('.check[name="block_social"]').attr('checked');
-			result.block_stream = !!$form.find('.check[name="block_stream"]').attr('checked');
+			//result.block_social = !!$form.find('.check[name="block_social"]').attr('checked');
+			//result.block_stream = !!$form.find('.check[name="block_stream"]').attr('checked');
 
-			result.block_sites = $form.find('textarea[name="block_sites"]').val().split(/\s+/);
+			//Grabs the blocked sites if there are any
+			result.block_sites = $form.find('textarea[name="block_sites"]').val() !== '' ?
+									$form.find('textarea[name="block_sites"]').val().split(/\s+/) : [];
+
+			if( result.block_sites.length == 0 && !result.block_all){
+				alert('You must either list a site(s) to block or block all internet')
+				return;
+			}
 
 			if(rule) {
 				$.extend(rule, result);
@@ -227,10 +235,16 @@ x Enable/disable rule
 				tomato_env.set(unassigned_rules_nvram_id, escape(JSON.stringify(rules)));
 			}			
 			set_rules();
-			tomato_env.apply();
-			$.fancybox.close();
+
+			$.fancybox('<div class="apply_changes_box">Saving Rule…</div>',{
+						helpers:  { overlay : {closeClick: false} },
+      					  closeBtn : false 
+						});
+					$.when(tomato_env.apply()).then(function() {
+			  		$.fancybox.close();
 			render_rules_list();
 			calendar.fullCalendar('refetchEvents')
+			});
 		});
 
 		$.fancybox.open($target, {'minHeight':340, 'minWidth':600});

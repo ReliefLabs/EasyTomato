@@ -51,7 +51,7 @@
 		  <!-- end .grid_2 -->
 		  <div class="advanced_box">
 		    <p>  <a href="status-overview.asp">[+] advanced tomato</a> </p>
-		    <p> Tuesday, June 3 14:30 </p>
+		    <div class="tomato_time">	<p>Time Not Availble</p>  </div>
 		  </div>
 	
 		    <h1> EasyTomato </h1>
@@ -200,22 +200,20 @@
 		
 		$('.all_day').live('click',function(){
 			if ($(this).attr('checked')){
-				$(this).siblings('.combo').attr({'disabled':'disabled'});
+				$(this).siblings('.combo').attr('disabled','disabled').css('background', '#f0f0f0').css('color', '#f0f0f0' );
 			}
 			else{
-			
-				$(this).siblings('.combo').removeAttr('disabled');
+				$(this).siblings('.combo').removeAttr('disabled').css('background', 'white').css('color', '#222222' );		
 			}
 		});
 		
-		
+		//Disables<->Enables blocked website textbox
 		$('.block_all').live('click',function(){
 			if ($(this).attr('checked')){
-				$(this).siblings('.block_types').attr({'disabled':'disabled', 'checked':'checked'});
+				$('textarea[name=block_sites]').attr('disabled','disabled').css('background', '#f0f0f0').css('color', '#f0f0f0' );
 			}
 			else{
-			
-				$(this).siblings('.block_types').removeAttr('disabled').removeAttr('checked');
+				$('textarea[name=block_sites]').removeAttr('disabled').css('background', 'white').css('color', '#222222' );
 			}
 		});
 		
@@ -297,16 +295,16 @@
 			
 				<input type="checkbox" class="check block_all" name="block_all" {{#block_all}}checked="checked"{{/block_all}}/>
 				<label for="block_all" style="font-weight:bold;">Block All Internet Access</label>
-				
+				<!-- 
 				<input type="checkbox" class="check block_types block_social" name="block_social" {{#block_social}}checked="checked"{{/block_social}}/>
 				<label for="block_social">Social Media</label>
 				
 				<input type="checkbox" class="check block_types block_stream" name="block_stream" {{#block_stream}}checked="checked"{{/block_stream}}/>
-				<label for="block_stream">Streaming Video</label>
+				<label for="block_stream">Streaming Video</label> -->
 			</div>
 
 			<div class="grid_row">
-				<span class="section_name">Blocked Websites</span>
+				<span class="section_name">Blocked Websites</span> <span style="float:right">List each website on a new line</span>
 				<textarea name="block_sites">{{#block_sites}}{{.}}&#10;{{/block_sites}}</textarea>
 			</div>
 			

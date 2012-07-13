@@ -1,4 +1,4 @@
-
+var full_restart_required = false;
 
 var render_groups = function() {
 	var group_template = $('#group_template').html(),
@@ -118,16 +118,15 @@ var render_groups = function() {
             .then(function(){
             		tomato_env.set('easytomato_scratch_2', tomato_env.vars['wan_dns']);
             	    tomato_env.set('wan_dns', '208.67.222.123 208.67.220.123');	
-            		tomato_env.set('_service','*'); //Full restart on apply
             		$('#apply_trigger').fadeIn();
             	});
             }
             else{
             	tomato_env.set('wan_dns', tomato_env.vars['easytomato_scratch_2']);
-            	tomato_env.set('_service','*'); //Full restart on apply
             	$('#apply_trigger').fadeIn();
             }
-            
+            tomato_env.set('_service','*'); //Full restart on apply
+            full_restart_required = true;  
 		});
 
 		if(block_adult_content_status){
@@ -167,6 +166,7 @@ $(document).ready(function() {
 	});
 
 
+
 	$.when(load_groups()).then(function(){
 		$.when(load_devices(), load_adult_block()).then(function() {
 		render_groups();
@@ -203,11 +203,14 @@ KNOWN BUGS (x = done)
 	$('#apply_trigger').click(function() {
 		$.when(tomato_env.apply()).then(function() {
 			$('#apply_trigger').fadeOut();
-			$.fancybox.close();
+			if(full_restart_required){
+				setTimeout('$.fancybox.close()', 7000);
+			}else{
+				$.fancybox.close();
+			}
 		});
 	});
-
-	
+		
 	// Create group
 	$('.content_bar .new_group_trig').click(function(){
 		groups.push({'name': 'Untitled Group', 'devices': []});

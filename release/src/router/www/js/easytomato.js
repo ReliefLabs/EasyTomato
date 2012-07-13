@@ -26,7 +26,17 @@ var tomato_env = {
 	}
 }
 
-tomato_env.set('_service', 'restrict-restart'); //Default restart type for apply, DNS changes take '*'
+//Default restart type for apply, DNS changes and settings take '*' restart
+tomato_env.set('_service', 'restrict-restart'); 
+
+// Display clock
+$(document).ready(function(){
+	$.when(tomato_env.get('time')) //{ testing : 1234}
+			.then(function(et_time){
+				console.log('1');
+				$('.tomato_time').html(et_time.time);
+			});
+});
 
 //groups and rules
 
