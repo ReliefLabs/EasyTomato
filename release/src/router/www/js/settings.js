@@ -10,12 +10,10 @@ $(document).ready(function() {
 			
 				//Set Wireless Password and check box
 				if(wl_password_status){
-					console.log('1')
 					$('input[name=no_net_pw]').attr('checked', false);
 					$('input[name=net_pw]').attr('value', data2[0].wl0_wpa_psk);
 					
 				}else{
-					console.log('2')
 					$('input[name=no_net_pw]').attr('checked', true);
 					$('input[name=net_pw]').attr('disabled','disabled');
 				}
@@ -69,7 +67,6 @@ $(document).ready(function() {
 				
 					//Save router password, if one set
 					if($('input[name=router_pw1]').val() != ''){   
-						console.log('pwset');
 						tomato_env.set('set_password_1',$('input[name=router_pw1]').val());
 						tomato_env.set('set_password_2',$('input[name=router_pw2]').val());
 					}

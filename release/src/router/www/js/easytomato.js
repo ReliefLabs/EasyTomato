@@ -33,7 +33,6 @@ tomato_env.set('_service', 'restrict-restart');
 $(document).ready(function(){
 	$.when(tomato_env.get('time')) //{ testing : 1234}
 			.then(function(et_time){
-				console.log('1');
 				$('.tomato_time').html(et_time.time);
 			});
 });
@@ -60,7 +59,7 @@ var load_adult_block = function(){
 
 
 var load_devices = function() {
-	return tomato_env.get('devlist').then(function() {
+	return $.when(tomato_env.get('lan_ipaddr'),tomato_env.get('devlist')).then(function() {
 		var mac_addrs = {};
 
 		$.each(tomato_env.vars['devlist'], function() {
@@ -83,17 +82,52 @@ var load_devices = function() {
 						return false;
 					}
 						return true;
-				})
-
-				/*this_device = mac_addrs[device.mac];
-				if(this_device) {
-					group.devices[j] = this_device;
-					unassigned.splice($.inArray(this_device, unassigned), 1);
-				}*/					
-
+				})			
 			});
-		});		
-	});
+		});
+		
+
+
+		//TEST AREA - Removes the duplicates from the dev list(dev list + arp list)  This will change, but works for now.
+		Array.prototype.unique = function(prop) {
+    		var temp = new Array();
+    		for( i = 0; i < this.length; i++) {
+        		if( typeof this[i] != "undefined" && !contains(temp, this[i], prop)) {
+            		temp.length += 1;
+            		temp[temp.length - 1] = this[i];
+        		}
+    		}
+    		return temp;
+		}
+    	
+    	// Will check for the Uniqueness
+		function contains(a, e, prop) {
+    		for( j = 0; j < a.length; j++) {
+        		if(prop) {
+            		if(a[j][prop] == e[prop]) {
+                		return true;
+           			}
+        		}
+        		if(a[j] == e) {
+            		return true;
+        		}
+    		}
+    		return false;
+		};
+
+		unassigned = unassigned.unique('mac');
+	
+		
+		//Removes Wan addresses - we may do this another way
+		var re = /[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}/;
+			var temp = tomato_env.vars['lan_ipaddr'].match(re)[0];
+				unassigned = unassigned.filter(function(a){
+					if( temp === a.ip.match(re)[0]){
+						return true;	
+					}
+						return false;
+				})					
+		});
 
 }
 
@@ -104,14 +138,14 @@ var load_groups = function() {
 			groups = JSON.parse(unescape(tomato_env.vars[groups_nvram_id])) || [];
 		} catch(e) {
 
-			console.log('failed to load groups');
+			//console.log('failed to load groups');
 			groups = [];
 		}
 
 		try {
 			unassigned_rules = JSON.parse(unescape(tomato_env.vars[unassigned_rules_nvram_id])) || [];
 		} catch(e) {
-			console.log('failed to load unassigned rules');
+			//console.log('failed to load unassigned rules');
 			unassigned_rules = [];
 		}
 	});
