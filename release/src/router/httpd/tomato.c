@@ -34,6 +34,7 @@ static void wo_shutdown(char *url);
 static void wo_nvcommit(char *url);
 //	static void wo_logout(char *url);
 static void easytomato_devlist();
+static void easytomato_time();
 static void asp_include(int argc, char **argv);
 
 // ----------------------------------------------------------------------------
@@ -242,8 +243,7 @@ static void wo_nvram2(char *url)
   }
 
   if(strcmp(p,"time")==0) {
-  	asp_time(0, NULL);
-  	return;
+  	easytomato_time(); // This will refresh the "time" nvram var and then we return that
   }
 
   // If this wasn't a special case, just call the generic nvram2 handler 
@@ -269,6 +269,21 @@ static void asp_include(int argc, char **argv) {
 	fclose(f);
   }
   */
+}
+
+static void easytomato_time()
+{
+	time_t t;
+	char s[64];
+
+	t = time(NULL);
+	if (t < Y2K) {
+		nvram_set("time", "Not Available");
+	}
+	else {
+		strftime(s, sizeof(s), "%a, %d %b %Y %H:%M:%S %z", localtime(&t));
+		nvram_set("time", s);
+	}
 }
 
 static void easytomato_devlist() {
@@ -1453,6 +1468,7 @@ wl_ap_ssid
 	{ "easytomato_scratch_5", V_NONE },
 	{ "easytomato_scratch_6", V_NONE },
 	{ "easytomato_scratch_7", V_NONE },
+	{ "time", V_TEXT(0,50) },
 
 	{ NULL }
 };
