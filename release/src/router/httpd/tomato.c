@@ -383,7 +383,7 @@ const struct mime_handler mime_handlers[] = {
 
 	{ "debug.js",		mime_javascript,			5,	wi_generic_noid,	wo_blank,		1 },	// while debugging
 	{ "cfe/*.bin",		mime_binary,				0,	wi_generic,			wo_cfe,			1 },
-	{ "nvram/nvram.cgi",	mime_javascript,			0,	wi_generic_noid,		wo_nvram2,		1 },
+	{ "nvram/nvram.cgi",	mime_json,			0,	wi_generic_noid,		wo_nvram2,		1 },
 	{ "nvram/*.txt",	mime_binary,				0,	wi_generic,			wo_nvram,		1 },
 	{ "ipt/*.txt",		mime_binary,				0,	wi_generic,			wo_iptables,	1 },
 #ifdef TCONFIG_IPV6

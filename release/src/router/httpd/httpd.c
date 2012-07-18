@@ -101,6 +101,7 @@ const char mime_plain[] = "text/plain";
 const char mime_javascript[] = "text/javascript";
 const char mime_binary[] = "application/tomato-binary-file";	// instead of "application/octet-stream" to make browser just "save as" and prevent automatic detection weirdness	-- zzz
 const char mime_octetstream[] = "application/octet-stream";
+const char mime_json[] = "application/json; charset=utf-8";
 
 static int match(const char* pattern, const char* string);
 static int match_one(const char* pattern, int patternlen, const char* string);

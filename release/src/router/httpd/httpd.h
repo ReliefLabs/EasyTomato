@@ -58,6 +58,7 @@ extern const char mime_plain[];
 extern const char mime_javascript[];
 extern const char mime_octetstream[];
 extern const char mime_binary[];
+extern const char mime_json[];
 extern int header_sent;
 
 extern void send_header(int status, const char *header, const char *mime, int cache);
