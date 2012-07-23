@@ -33,9 +33,23 @@ tomato_env.set('_service', 'restrict-restart');
 $(document).ready(function(){
 	$.when(tomato_env.get('time')) //{ testing : 1234}
 			.then(function(et_time){
-				$('.tomato_time').html(et_time.time);
+				if(et_time.time !== 'Not Available') {
+					updateClock();
+					setInterval(updateClock, 60000);
+				} else{
+					$('.tomato_time').html('Time Not Available');
+				}
 			});
 });
+
+function updateClock(){
+
+    date = new Date(tomato_env.vars['time']);
+    date.setMinutes(date.getMinutes()+1);
+    tomato_env.vars['time'] = date;
+    var re = /(Mon|Tue|...|Sun)\,\s\d{2}\s(Jan|Feb|...|Dec)\s\d{4}\s\d{2}:\d{2}/;
+    $('.tomato_time').html(date.toUTCString().match(re)[0]);
+}
 
 //groups and rules
 
