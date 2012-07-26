@@ -250,6 +250,213 @@ static void wo_nvram2(char *url)
   asp_nvram2(1, &p);
 }
 
+static void wo_easybandwidth(char *url)
+{
+	// Basing this code off of asp_ipt_bandwidth, except I want to post-process stuff into a json format
+	char *name = "/var/spool/cstats-speed.js";
+	//char *name = "/tmp/test_file.txt";
+
+	int sig = SIGUSR1;
+
+	unlink(name);
+	killall("cstats", sig);
+	f_wait_exists(name, 5);
+
+    // Open the original file
+	FILE *f_ptr;
+
+	char *mode = "r";
+
+	f_ptr = fopen(name,mode);
+	if (f_ptr == NULL) {
+		web_puts("Could not open the stats file...\n");
+		return;
+	}
+
+	char s[4096];
+
+	char ip[256][32];
+	unsigned int rx[256][720];
+	unsigned int rx_avg[256];
+	unsigned int rx_max[256];
+	unsigned int rx_total[256];
+	unsigned int tx[256][720];
+	unsigned int tx_avg[256];
+	unsigned int tx_max[256];
+	unsigned int tx_total[256];
+  
+    fgets(s, sizeof(s), f_ptr); // Skip the first line "speed_history = {"
+    int done = 0;
+    int i = 0;
+    while (!done) {
+        // Each IP grouping should be consistent, so make a lot of assumptions about what is one which line
+        // First line: get the IP address 		
+    	fgets(s, sizeof(s), f_ptr);
+
+    	//web_printf("Testing0: %s :: %d \n", __FUNCTION__, __LINE__);
+    	//web_printf("Testing1: %s \n", s);
+	   	//web_printf("Test: %d %s \n", strncmp(s, "_next", 5), s);
+
+    	if (strncmp(s, "_next", 5)==0) {
+    		done = 1;
+    		//web_printf("%s :: DONE! \n", s);
+    		break;
+    	}
+		
+    	sscanf(s, "'%[0-9.]': {", ip[i]);
+    	//web_printf("IP: %s\n", ip[i]);
+    	
+    	// Get all the rx data points
+    	unsigned int k = 0;
+    	char * pch;
+    	fgets(s, sizeof(s), f_ptr);
+    	// Skip ahead 5 characters to reach the data
+    	pch = strtok(&s[5], "[,]");
+    	while (k < 720) {
+    		sscanf(pch, "%d", &rx[i][k++]);
+    		pch = strtok(NULL, "[,]");
+      		//web_printf("%d::%d\n", k-1, rx[i][k-1]);
+    	}
+
+    	// Get rx_avg
+    	fgets(s, sizeof(s), f_ptr);
+    	sscanf(s, " rx_avg: %d,", &rx_avg[i]);
+	    //web_printf("my rx_avg: %d \n", rx_avg[i]);
+
+		// Get rx_max
+    	fgets(s, sizeof(s), f_ptr);
+    	sscanf(s, " rx_max: %d,", &rx_max[i]);
+		//web_printf("my rx_max: %d \n", rx_max[i]);
+
+    	// Get rx_total
+    	fgets(s, sizeof(s), f_ptr);
+    	sscanf(s, " rx_total: %d,", &rx_total[i]);
+    	//web_printf("my rx_total: %d \n", rx_total[i]);
+
+    	// Get all the tx data points
+    	k = 0;
+    	fgets(s, sizeof(s), f_ptr);
+    	// Skip ahead 5 characters to reach the data
+    	pch = strtok(&s[5], "[,]");
+    	while (k < 720) {
+    		sscanf(pch, "%d", &tx[i][k++]);
+    		pch = strtok(NULL, "[,]");
+      		//web_printf("%d::%d\n", k-1, tx[i][k-1]);
+    	}
+    	
+    	// Get tx_avg
+    	fgets(s, sizeof(s), f_ptr);
+    	sscanf(s, " tx_avg: %d,", &tx_avg[i]);
+    	//web_printf("my tx_avg: %d \n", tx_avg[i]);
+    
+    	// Get tx_max
+    	fgets(s, sizeof(s), f_ptr);
+    	sscanf(s, " tx_max: %d,", &tx_max[i]);
+    	//web_printf("my tx_max: %d \n", tx_max[i]);
+
+    	// Get tx_total
+    	fgets(s, sizeof(s), f_ptr);
+    	sscanf(s, " tx_total: %d },", &tx_total[i]);
+    	//web_printf("my tx_total: %d \n", tx_total[i]);
+    
+    	i++;
+    	//web_printf("Done loop \n");
+    }
+    fclose(f_ptr);
+
+	// Now we have all the data in nice arrays.  Let's build the json object now
+    web_printf("{\n");
+    char comma = ' ';
+
+	// Print out the names (in the case, each IP address we've got data for)
+    web_printf("\t\"names\":[");
+    for (i = 0; i < 256; i++) {
+    	if (ip[i][0] == '\0') break;
+    	web_printf("%c\"%s\"", comma, ip[i]);
+    	comma = ',';
+    }
+    web_printf("],\n");
+
+  	// Print out the targets (in this case, this is the average)
+    comma = ' ';
+    web_printf("\t\"targets\":[{");
+    for (i = 0; i < 256; i++) {
+    	if (ip[i][0] == '\0') break;
+    	web_printf("%c\"%s\":%d", comma, ip[i], rx_avg[i]);
+    	comma = ',';
+    }
+    web_printf("}],\n");
+
+	// Now assemble the big data array
+    unsigned int dp = 0;
+    comma = ' ';
+    web_printf("\t\"data\":[");
+   	for (dp = 0; dp < 720; dp++) {
+	    // Assemble a row
+   		web_printf("%c\n\t\t{\"x-axis\":\"%d\"", comma, dp);
+   		for (i = 0; i < 256; i++) {
+   			if (ip[i][0] == '\0') break;
+   			web_printf(",\"%s\": %d", ip[i], rx[i][dp]);
+   		}
+   		web_printf("}");
+   		comma = ',';
+   	}
+   	web_printf("\n\t]\n}\n");
+
+
+   	unlink(name);
+
+
+// The following code would be for realtime bandwidth
+#if 0
+	char *p;
+	char name[] = "/proc/net/ipt_account/lan";
+	char sa[256];
+
+	unsigned long tx[256];
+	unsigned long rx[256];
+	char ip[256][INET6_ADDRSTRLEN];
+	char comma = ' ';
+
+	// Collect all the data for each possible IP on the network
+	FILE *a;
+	a = fopen(name, "r");
+
+	int i = 0;
+	while (fgets(sa, sizeof(sa), a)) {
+		if(sscanf(sa, 
+			"ip = %s bytes_src = %lu %*u %*u %*u %*u packets_src = %*u %*u %*u %*u %*u bytes_dst = %lu %*u %*u %*u %*u packets_dst = %*u %*u %*u %*u %*u time = %*u",
+			ip[i], &tx[i], &rx[i]) != 3 ) continue;
+		i++;
+	}
+
+	p = webcgi_get("plot");
+	web_printf("plot: %s", p);
+
+	p = webcgi_get("startTime");
+	web_printf("startTime: %s", p);
+
+	p = webcgi_get("endTime");
+	web_printf("endTime: %s", p);
+
+	web_printf("{\n");
+	web_printf("\t\"names\" : [");
+
+	// Return data for any IP that has non-zero data for tx or rx
+	for (i=0; i < 256; i++) {
+		if ((tx[i] > 0) || (rx[i] > 0)) {
+			web_printf("%s\"%s\"", comma, ip[i]);
+			comma = ',';
+		}
+	}
+	web_printf("],\n");
+
+	// Print the data
+
+	// Add in code to return the running averages too...
+#endif
+}
+
 static void asp_include(int argc, char **argv) {
   // We only expect a single argument to this function
   if (argc != 1) return;
@@ -322,7 +529,9 @@ static void easytomato_devlist() {
 			fclose(f);
 		}
 	}
+	web_puts("],\n");
 
+	web_puts("\t\"arplist\" : [");
 	if ((f = fopen("/proc/net/arp", "r")) != NULL) {
 		while (fgets(s, sizeof(s), f)) {
 			if (sscanf(s, "%15s %*s 0x%X %17s %*s %16s", ip, &flags, mac, dev) != 4) continue;
@@ -383,7 +592,8 @@ const struct mime_handler mime_handlers[] = {
 
 	{ "debug.js",		mime_javascript,			5,	wi_generic_noid,	wo_blank,		1 },	// while debugging
 	{ "cfe/*.bin",		mime_binary,				0,	wi_generic,			wo_cfe,			1 },
-	{ "nvram/nvram.cgi",	mime_json,			0,	wi_generic_noid,		wo_nvram2,		1 },
+	{ "nvram/nvram.cgi",	mime_json,				0,	wi_generic_noid,	wo_nvram2,		1 },
+	{ "bandwidth.cgi",	mime_json,					0,	wi_generic_noid,	wo_easybandwidth,	1 },
 	{ "nvram/*.txt",	mime_binary,				0,	wi_generic,			wo_nvram,		1 },
 	{ "ipt/*.txt",		mime_binary,				0,	wi_generic,			wo_iptables,	1 },
 #ifdef TCONFIG_IPV6
