@@ -245,7 +245,7 @@ td { vertical-align: top; }
 .apply_changes_box{
 	font-size: 16pt;
 	font-weight: bold;
-	background: url("../img/ajax-loader.gif")no-repeat scroll 0px 41px 	transparent;
+	background: url("../spin.gif")no-repeat scroll 0px 41px 	transparent;
 	padding: 35px 0 0 25px;
 }
 
@@ -280,6 +280,16 @@ body{
 	height: 16px;
 	width: 16px;
 }
+
+.edit_trig {
+    background: url("../img/sprite.png") no-repeat scroll -10px -1000px transparent;
+    display: inline-block;
+    height: 16px;
+    text-indent: -9001em;
+    width: 16px;
+    float: right;
+}
+
 .invisible{visibility: hidden;}
 .lock_arrow_button{ background: url("../img/sprite.png") no-repeat scroll -10px -649px transparent; }
 
@@ -800,8 +810,6 @@ th, td, caption {
 /*--------- Rules: Add/Edit lightbox ------------*/
 .lightbox_content{
  	display: none;
- 	width: 600px;
- 	height: 310px;
  }
 #ruleformbox{
 	
@@ -828,16 +836,21 @@ form .green_button {
 	#00B54D;
 	outline: 1px solid 
 	#006838;
-	margin: 20px 0 10px 243px;
+	margin: 20px auto 10px auto;
 	padding: 6px 20px;
 	font-size: 12pt;
 	color: 
 	white;
 	text-decoration: none;
+	text-align: center;
 	font-weight: bold;
 	display: block;
 	width: 80px;
 	text-shadow: black 0px 1px 0px;
+}
+
+form.update_name_form a, form.update_name_form span.green_button { 
+	cursor: pointer;
 }
 
 form .grid_row{
@@ -868,7 +881,7 @@ form .grid_row{
 	height: 75px;
 }
 
-#ruleformbox .section_name{
+#ruleformbox .section_name, .section_name{
 	font-size: 13pt;
 	font-weight: bold;
 }

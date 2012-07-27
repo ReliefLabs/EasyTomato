@@ -177,7 +177,7 @@
 					<li class="device draggable">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
                         <span class="device_name">{{name}}</span>
-				  		<a href="javascript:void(0);" class="info_trig hideme">more info</a>
+				  		<a href="javascript:void(0);" class="edit_trig hideme">more info</a>
 					</li>
                     {{/devices}}
 				</ul>
@@ -195,13 +195,37 @@
 	{{#devices}}
 		<li class="device draggable">
 			<a href="javascript:void(0);" class="box_handle">Drag Me</a>
-			<p class="device_name">{{name}}</p>
+			<p class="device_name">{{name}} <a href="javascript:void(0);" class="edit_trig hideme">more info</a></p>
 			<span class="float_right device_ip">{{ip}}</span>
 			<span>IP Address</span>
 		</li>
 	{{/devices}}
 </script>
-  <!-- end templates -->
+
+  <!-- Edit Device Names -->
+<script id="device_name_template" type="text/mustache-template">
+		<form class="update_name_form">
+			<div class="grid_row">
+				<span class="section_name">Device Name:</span>
+				<span class="device_name_span">{{name}}</span>
+				<input style="display:none" type="text" class="device_name" name="device_name" value="{{name}}"/>
+				<a onclick="javascript:$('.update_name_form .device_name').show(); $('.update_name_form .device_name_span').hide(); $(this).hide(); $('.save_device_name').css('visibility','visible');">edit</a>
+
+			</div>
+			<div class="grid_row">
+				<span class="section_name">IP Address:</span>
+				<span>{{ip}}</span>
+			</div>
+			<div class="grid_row">
+				<span class="section_name">MAC Address:</span>
+				<span>{{mac}}</span>
+			</div>
+			<span style="visibility:hidden" class="green_button save_device_name">Done</span>
+			
+		</form>
+	</script>
+
+<!-- end templates -->
 
 </body>
 </html>

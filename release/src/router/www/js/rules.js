@@ -236,7 +236,7 @@ x Enable/disable rule
 			}			
 			set_rules();
 
-			$.fancybox('<div class="apply_changes_box">Saving Rule…</div>',{
+			$.fancybox('<div class="apply_changes_box">Saving&nbsp;Rule…</div>',{
 						helpers:  { overlay : {closeClick: false} },
       					  closeBtn : false 
 						});
@@ -247,7 +247,7 @@ x Enable/disable rule
 			});
 		});
 
-		$.fancybox.open($target, {'minHeight':340, 'minWidth':600});
+		$.fancybox.open($target, {});
 	}
 
 	$('.new_rule_trig').click(function() { render_rule_form(); });

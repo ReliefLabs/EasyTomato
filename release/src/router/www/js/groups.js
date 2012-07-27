@@ -5,6 +5,7 @@ var render_groups = function() {
 		$target = $('.group_boxes');
 	$target.html(Mustache.render(group_template, {'groups': groups}));
 
+	
 	$target.find('.group_box').each(function(i, element) {
 		var group = groups[i],
 			$this = $(this);
@@ -35,6 +36,7 @@ var render_groups = function() {
 			$(this).draggable({
 				scroll: false,
 				revert: true,
+				distance: 5, //Fixes listener issue in Ubuntu. Before always fires drag event after only clicking.
 				start: function(event, ui) {
 					$(this).css('z-index','2')
 				}
@@ -81,20 +83,21 @@ var render_groups = function() {
 		   }
 		});
 		
-		//group box hover crap
+		//group box hover stuff
 		$this.find('.devices_box li').bind({
 			mouseenter:
 			   function()
 			   {
-				$(this).find('.info_trig').removeClass('hideme');
+				$(this).find('.edit_trig').removeClass('hideme');
 			   },
 			mouseleave:
 			   function()
 			   {
-				$(this).find('.info_trig').addClass('hideme');
+				$(this).find('.edit_trig').addClass('hideme');
 			   }
 			   
 		});
+
 
 		$this.find('.del_group_trig').bind('click', function() {
 			groups.splice(i, 1);
@@ -108,6 +111,10 @@ var render_groups = function() {
 			set_rules();
 			$('#apply_trigger').fadeIn();
 		});	
+		//Edit Device Name
+		$this.find('.edit_trig').bind('click', function() {
+			device_name_form($(this).parents('li.device').data('device'));
+		});
 
 		$this.find('.edit_group_trig').attr('href', 'rules.html?g='+i);
 		
@@ -149,13 +156,50 @@ var render_devices = function() {
 			$(this).draggable({
 				scroll: false,
 				revert: true,
+				distance: 5,  //Fixes listener issue in Ubuntu. Before always fires drag event after only clicking.
 				start: function(event, ui) {
 					$(this).css('z-index','2')
 				}
 			});
 		});
+		$target.find('li').bind({
+			mouseenter:
+			   function()
+			   {
+				$(this).find('.edit_trig').removeClass('hideme');
+			   },
+			mouseleave:
+			   function()
+			   {
+				$(this).find('.edit_trig').addClass('hideme');
+			   }
+			   
+		});
+		$target.find('.edit_trig').bind({
+			click:
+				function()
+				{
+					device_name_form($(this).parents('li.device').data('device'));
+				}
+			});
+
+		}
 		
-		
+
+
+var device_name_form = function(device) {
+	$.fancybox({ content:Mustache.render($('#device_name_template').html(),device),
+		afterShow:function(){
+			$('.save_device_name').click(function(){
+			device.name = $('.update_name_form .device_name').val();
+			$.fancybox.close();
+			render_groups();
+			render_devices();
+			set_rules();
+			$('#apply_trigger').fadeIn();
+			});	
+		}
+	});
 }
 
 $(document).ready(function() {
@@ -187,15 +231,16 @@ KNOWN BUGS (x = done)
 			var device = ui.draggable.data('device'),
 				old_group = ui.draggable.data('group');	
 
-			if(old_group) old_group.devices.splice($.inArray(device, old_group.devices), 1);
-			unassigned.push(device);
+			if(old_group) {
+				old_group.devices.splice($.inArray(device, old_group.devices), 1);
+				unassigned.push(device);
+				ui.draggable.remove();
+				render_devices();
+				set_rules();
+				$('#apply_trigger').fadeIn();
+			}
 
-			ui.draggable.remove();
-			render_devices();
-
-			set_rules();
-			render_devices();
-			$('#apply_trigger').fadeIn();
+			
 		}
 	});
 
