@@ -27,6 +27,9 @@ Basics
 * Finding files: (find).		Operating on files matching certain
 					criteria.
 
+Miscellaneous
+* Bfd: (bfd).                   The Binary File Descriptor library.
+
 Miscellaneous:
 * Groff: (groff).			The GNU troff document formatting
 					system.
@@ -102,10 +105,14 @@ Information:
 * Debian menu: (menu).			The Debian menu system
 
 Software development
+* Annotate: (annotate).         The obsolete annotation interface.
 * Automake: (automake-1.10).		Making GNU standards-compliant
 					Makefiles.
 * Cpp: (cpp).				The GNU C preprocessor.
 * Cpplib: (cppinternals).		Cpplib internals.
+* Gdb: (gdb).                   The GNU debugger.
+* Gdb-Internals: (gdbint).      The GNU debugger's internals.
+* Stabs: (stabs).               The "stabs" debugging information format.
 * gcc: (gcc).				The GNU Compiler Collection.
 * gccinstall: (gccinstall).		Installing the GNU Compiler
 					Collection.
