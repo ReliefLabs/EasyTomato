@@ -284,8 +284,10 @@ static void wo_easybandwidth(char *url)
 	unsigned int tx_avg[256];
 	unsigned int tx_max[256];
 	unsigned int tx_total[256];
-  
-    fgets(s, sizeof(s), f_ptr); // Skip the first line "speed_history = {"
+
+	fgets(s, sizeof(s), f_ptr); // Skip the very first line which is just a \n
+	fgets(s, sizeof(s), f_ptr); // Skip the first line "speed_history = {"
+
     int done = 0;
     int i = 0;
     while (!done) {
