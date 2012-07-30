@@ -1,0 +1,65 @@
+New in 0.13 released 2004-09-19:
+ * Change exit code handling.  Return an error if the operation fail.
+ * New argument -k (--keepgoing) to not stop on first error.
+ * Improve test code.
+ * Fix typo in manual page.
+
+New in 0.12 released 2003-12-12:
+ * Use p_filesz instead p_memsz when checking if the elf
+   header exist.  This should get it working on Solaris.
+ * Try to get it compiling on Mac OS X / Darwin.
+
+New in 0.11 released 2003-09-15:
+ * Make chrpath work better on 64 bit arches.
+ * Try to make the test code more portable (choosing
+   -rpath/-R depending on arch).
+
+New in 0.10 released 2002-11-30:
+ * Avoid segfaulting when derefering a NULL pointer.
+ * Added simple self test code.
+ * Converted to use newer autoconf (2.53).
+
+New in 0.9 released 2002-10-28:
+ * Bugfix in option parsing.  Now only --replace takes a parameter.
+ * Port to Irix 6.5.
+ * Avoid compile warning on platforms without getopt_long().
+
+New in 0.8 released 2002-09-17:
+ * Handle platforms without runpath support (ie missing DT_RUNPATH).
+ * Fix compile problem on Solaris 2.6.
+
+New in 0.7 released 2002-08-01:
+ * Fixed small memleak.
+ * Fixed crash bug on Solaris, when reading unknown/broken formats.
+ * Fix typos in manpage (s/--remove/--replace/ and some s/ rpath/ chrpath/).
+ * Added runpath-support.
+
+New in 0.6 released 2002-05-05:
+ * Added manual page, thanks to Tollef Fog Heen.
+ * Fix file descriptor leak when elf_open fails.
+ * Update URLs and contact information in documentation.
+ * Added debian/ package scripts.
+
+New in 0.5 released 2001-11-03:
+ * Compile fixes for platforms without getopt_long().
+ * Handle more then one file on one run.
+
+New in 0.4 released 2001-10-25:
+
+ * Fixes for SPARC/Solaris.
+ * Corrected link to elfhack.
+
+New in 0.3 released 2001-10-16:
+
+ * Fix typo in ELF header reading.
+ * Get rid of some compiler warnings.
+
+New in 0.2 released 2001-10-12:
+
+ * Fixed some typos in option parsing.
+ * Added link to elfhack.
+
+New in 0.1 released 2001-03-01:
+
+ * First release
+ * Support deleting and modifying the rpath information

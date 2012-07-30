@@ -1,0 +1,377 @@
+2004-09-19 08:41  Petter Reinholdtsen <pere@hungry.com>
+
+	* Makefile.am, NEWS, configure.ac: Release version 0.13.
+
+2004-09-19 08:37  Petter Reinholdtsen <pere@hungry.com>
+
+	* testsuite/runtest.sh: Improve coverage.
+
+2004-09-19 08:36  Petter Reinholdtsen <pere@hungry.com>
+
+	* chrpath.1, main.c: New option -h (--help) showing usage info.
+
+2004-09-19 08:24  Petter Reinholdtsen <pere@hungry.com>
+
+	* testsuite/runtest.sh: New test to increase test coverage.
+
+2004-09-19 08:19  Petter Reinholdtsen <pere@hungry.com>
+
+	* Makefile.am, configure.ac, main.c, testsuite/runtest.sh: New
+	configure flag --with-coverage and new makefile target 'coverage'
+	to run coverage testing on the source.
+
+2004-09-19 07:44  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.1, main.c: Add proper exit code handling and new
+	argument --keepgoing (-k) to process all arguments before exiting
+	with an error.
+
+2004-09-19 07:15  Petter Reinholdtsen <pere@hungry.com>
+
+	* testsuite/Makefile.am: Get test working at least on linux.
+
+2004-09-19 07:14  Petter Reinholdtsen <pere@hungry.com>
+
+	* configure.ac: Use AM_MAINTAINER_MODE by default.
+
+2004-07-20 07:07  Petter Reinholdtsen <pere@hungry.com>
+
+	* chrpath.1: Fix typo in manpage (RPATH->CHRPATH).  Thanks to John
+	Morrissey.
+
+2003-12-12 15:03  Petter Reinholdtsen <pere@hungry.com>
+
+	* testsuite/Makefile.am: Handle empty LDRPATH variable.
+
+2003-12-12 15:03  Petter Reinholdtsen <pere@hungry.com>
+
+	* testsuite/runtest.sh: Handle archs where RUNPATH is the set by
+	default.
+
+2003-12-12 14:01  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.ac: Release version 0.12.
+
+2003-12-12 13:53  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, acinclude.m4: Try to get it compiling on Mac OS X / Darwin.
+
+2003-12-12 13:52  Petter Reinholdtsen <pere@hungry.com>
+
+	* protos.h: Make sure the definitions in config.h is used every
+	time this file is included.
+
+2003-12-12 13:50  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.c, elf.c: Use p_filesz instead p_memsz when
+	checking if the elf header exist.  This should get it working on
+	Solaris.
+
+2003-09-15 21:12  Petter Reinholdtsen <pere@hungry.com>
+
+	* AUTHORS, chrpath.1, main.c: Update my email address.
+
+2003-09-15 21:10  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS: New release 0.10.
+
+2003-09-15 21:01  Petter Reinholdtsen <pere@hungry.com>
+
+	* testsuite/runtest.sh: Try to make sure runtest.sh work on all
+	platforms, also the one without runpath and the ones where rpath is
+	unavailable at link time.
+
+2003-09-15 20:58  Petter Reinholdtsen <pere@hungry.com>
+
+	* acinclude.m4: Add support for more operating systems.
+
+2003-09-15 20:56  Petter Reinholdtsen <pere@hungry.com>
+
+	* elf.c: Avoid one last __WORDSIZE.
+
+2003-09-15 20:55  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Only understand -c options if DT_RUNPATH is known.
+
+2003-07-23 16:08  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, acinclude.m4, configure.ac, testsuite/Makefile.am: Try to
+	make the test code more portable (choosing -rpath/-R depending on
+	arch).
+
+2003-06-24 07:51  Petter Reinholdtsen <pere@hungry.com>
+
+	* protos.h: Drop non-standard header file <bits/wordsize.h>.
+
+2003-06-23 23:11  Petter Reinholdtsen <pere@hungry.com>
+
+	* configure.ac, protos.h: Avoid non-standard __WORDSIZE.
+
+2003-06-23 22:56  Petter Reinholdtsen <pere@hungry.com>
+
+	* deb/: changelog, rules: Update to match Debian package version
+	0.10-2.
+
+2003-06-23 22:56  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.c, configure.ac, elf.c, killrpath.c, protos.h: Make
+	chrpath work well on 64 bit arches.  Patch from Tollef Fog
+	Heen/Debian.
+
+2003-02-26 08:28  Petter Reinholdtsen <pere@hungry.com>
+
+	* deb/control: Fix typo in debian description.
+
+2003-02-26 08:28  Petter Reinholdtsen <pere@hungry.com>
+
+	* configure.ac: Add -Wcomments when compiling with GCC.
+
+2002-11-30 15:12  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS: New release 0.10.
+
+2002-11-30 15:07  Petter Reinholdtsen <pere@hungry.com>
+
+	* Makefile.am, configure.ac, testsuite/.cvsignore,
+	testsuite/Makefile.am, testsuite/prog.c, testsuite/runtest.sh: Add
+	simple self test code.
+
+2002-11-30 11:26  Petter Reinholdtsen <pere@hungry.com>
+
+	* deb/docs: Include more documentation in debian package.
+
+2002-11-30 11:24  Petter Reinholdtsen <pere@hungry.com>
+
+	* configure.ac, configure.in: Convert to newer autoconf.
+
+2002-11-30 11:18  Petter Reinholdtsen <pere@hungry.com>
+
+	* HACKING, configure.in, deb/.cvsignore, deb/Makefile.am,
+	deb/changelog, deb/control, deb/copyright, deb/dirs, deb/docs,
+	deb/rules, Makefile.am: Move debian package files from debian/ to
+	deb/.
+
+2002-11-23 21:17  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.c, configure.in: Avoid segfaulting when derefering
+	a NULL pointer.
+
+2002-10-28 17:05  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: New release 0.9
+
+2002-10-28 16:56  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Correct option handling.  Only -r takes a parameter, the
+	rest do not.
+
+2002-09-17 11:07  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Avoid compile warning on platforms without getopt_long().
+
+2002-09-17 11:00  Petter Reinholdtsen <pere@hungry.com>
+
+	* chrpath.c, configure.in, killrpath.c: Make <link.h> optional.  It
+	is missing on Irix 6.5.
+
+2002-09-17 07:51  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS: New release 0.8.
+
+2002-09-17 07:49  Petter Reinholdtsen <pere@hungry.com>
+
+	* Makefile.am: Change target name for generating new ChangeLog, to
+	avoid build problems on hosts with clock skew.
+
+2002-09-17 07:45  Petter Reinholdtsen <pere@hungry.com>
+
+	* configure.in, elf.c: Include <sys/link.h> in present, to get the
+	source to compile on Solaris 2.6.
+
+2002-08-01 17:22  Petter Reinholdtsen <pere@hungry.com>
+
+	* AUTHORS: Add names of people sending me patches.
+
+2002-08-01 16:39  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.c, elf.c, killrpath.c, main.c, protos.h: Handle
+	platforms without runpath support (ie missing DT_RUNPATH).
+
+2002-08-01 16:39  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: Prepare for v0.8.
+
+2002-08-01 16:03  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: New release 0.7.
+
+2002-08-01 16:02  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.1, chrpath.c, killrpath.c, main.c, protos.h: Add
+	runpath-support.  Patch from Darren Salt.
+
+2002-07-29 12:21  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.1: More typos in manpage.
+
+2002-07-29 12:16  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, chrpath.1: Fixed typo.	Patch from Nikita V. Youshchenko.
+
+2002-07-29 12:15  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, elf.c: Fixed crash bug on Solaris, when reading
+	unknown/broken formats.
+
+2002-05-25 22:26  Petter Reinholdtsen <pere@hungry.com>
+
+	* README: Add license info.
+
+2002-05-25 22:21  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS: Started on 0.7 news.
+
+2002-05-25 22:18  Petter Reinholdtsen <pere@hungry.com>
+
+	* .cvsignore: Ignore generated files.
+
+2002-05-25 22:14  Petter Reinholdtsen <pere@hungry.com>
+
+	* chrpath.c: Avoid memory leaks in chrpath().
+
+2002-05-05 15:12  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: New release 0.6.
+
+2002-05-05 15:09  Petter Reinholdtsen <pere@hungry.com>
+
+	* Makefile.am, chrpath.1: Add manual page.  Thanks to Tollef Fog
+	Heen for writing it.
+
+2002-02-13 16:57  Petter Reinholdtsen <pere@hungry.com>
+
+	* README: Add link to FTP site, and a note about where to send
+	patches.
+
+2001-11-06 12:39  Petter Reinholdtsen <pere@hungry.com>
+
+	* elf.c: Avoid leaking file descriptors when elf_open() fails.
+
+2001-11-03 18:56  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS: Added news on debian/ package scripts.
+
+2001-11-03 18:42  Petter Reinholdtsen <pere@hungry.com>
+
+	* Makefile.am, configure.in: New target 'debs' to make debian
+	package.
+
+2001-11-03 18:12  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: New release 0.5.
+
+2001-10-26 16:08  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Prosess all programs listed on the command line, instead
+	of only the first.
+
+2001-10-26 16:05  Petter Reinholdtsen <pere@hungry.com>
+
+	* chrpath.c: Report filename when no rpath tag is found.
+
+2001-10-26 12:58  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS: Started on 0.5 release info.
+
+2001-10-26 12:41  Petter Reinholdtsen <pere@hungry.com>
+
+	* AUTHORS, configure.in, main.c: Fixes for compile without
+	getopt_long().	Hopefully this should work on Solaris now.  Patch
+	from Thomas Anders.
+
+2001-10-25 12:38  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Add option -l (list) to make it more obvious how to list
+	the current rpath setting.
+
+2001-10-25 12:13  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: New release 0.4.
+
+2001-10-25 12:12  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Add code to compile even if getopt_long() is missing.
+
+2001-10-25 12:03  Petter Reinholdtsen <pere@hungry.com>
+
+	* elf.c: Fix typo in big endian define test.  Avoid alignment
+	problem on sparc by using memcmp instead of casting.  Patch from
+	David Hull.
+
+2001-10-25 12:00  Petter Reinholdtsen <pere@hungry.com>
+
+	* chrpath.c, killrpath.c: Include <link.h>.  Fixes compile problem
+	on Solaris/SPARC.
+
+2001-10-25 11:55  Petter Reinholdtsen <pere@hungry.com>
+
+	* README: Corrected link to elfhach.
+
+2001-10-16 09:16  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: New release v0.3
+
+2001-10-16 09:14  Petter Reinholdtsen <pere@hungry.com>
+
+	* AUTHORS: Update list of contributors.
+
+2001-10-16 09:11  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Include <stdlib.h> to find exit().
+
+2001-10-16 09:03  Petter Reinholdtsen <pere@hungry.com>
+
+	* elf.c: Fix typo in elf_find_dynamic_section().  Patch from David
+	Hull.
+
+2001-10-16 09:01  Petter Reinholdtsen <pere@hungry.com>
+
+	* killrpath.c: Include <string.h> to find memset().
+
+2001-10-12 09:04  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS, configure.in: New release v0.2.
+
+2001-10-12 09:01  Petter Reinholdtsen <pere@hungry.com>
+
+	* README: Add link to elfhack.
+
+2001-10-12 09:00  Petter Reinholdtsen <pere@hungry.com>
+
+	* main.c: Fix typos in option parsing.	Patch from Bradford W.
+	Johnson <bradford@math.umn.edu>.
+
+2001-02-28 23:47  Petter Reinholdtsen <pere@hungry.com>
+
+	* NEWS: Set release date.
+
+2001-01-22 18:24  Petter Reinholdtsen <pere@hungry.com>
+
+	* acinclude.m4, configure.in: Add more warning flags when compiling
+	with GNU CC.
+
+2001-01-22 18:23  Petter Reinholdtsen <pere@hungry.com>
+
+	* chrpath.c, elf.c, protos.h, killrpath.c: Move common code for
+	finding the ELF dynamic section into separate function.
+
+2001-01-22 18:22  Petter Reinholdtsen <pere@hungry.com>
+
+	* Makefile.am: Install documentation.
+
+2001-01-22 08:47  Petter Reinholdtsen <pere@hungry.com>
+
+	* .cvsignore, AUTHORS, Makefile.am, NEWS, README, chrpath.c,
+	configure.in, elf.c, killrpath.c, main.c, protos.h: Initial
+	checking.  Soon to be release v0.1.
+

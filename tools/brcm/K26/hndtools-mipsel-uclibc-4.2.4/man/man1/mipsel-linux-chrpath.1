@@ -1,0 +1,70 @@
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+.\"
+.TH CHRPATH 1 "May 4, 2002" "chrpath" "change rpath/runpath in binaries"
+.SH NAME
+chrpath \- change the rpath or runpath in binaries
+.SH SYNOPSIS
+\fBchrpath\fP
+[ \fB-v\fP | \fB--version\fP ]
+[ \fB-d\fP | \fB--delete\fP ]
+[ \fB-r\fP \fI<path>\fP |\  \fB--replace\fP \fI<path>\fP ]
+[ \fB-c\fP | \fB--convert\fP ]
+[ \fB-l\fP | \fB--list\fP ]
+[ \fB-h\fP | \fB--help\fP ]
+\fI<program>\fP [ \fI<program>\fP ... ]
+.SH DESCRIPTION
+\fBchrpath\fP changes, lists or removes the rpath or runpath setting in a
+binary.  The rpath, or runpath if it is present, is where the runtime linker
+should look for the libraries needed for a program.
+.SH OPTIONS
+.TP
+.BR -v \ |\  --version
+Display program version number
+.TP
+.BR -d \ |\  --delete
+Delete current rpath or runpath setting
+.TP
+.BR -c \ |\  --convert
+Convert the rpath setting into a runpath setting
+.TP
+.BI -r\ \fI<path>\fP\ |\ --replace\ \fI<path>\fP
+Replace current rpath or runpath setting with the path given
+.TP
+.BR -k \ |\  --keepgoing
+Do not fail on first error, but process all arguments before returning
+the error.
+.TP
+.BR -l \ |\  --list
+List the current rpath or runpath (default)
+.TP
+.BR -h \ |\  --help
+Show usage information.
+.SH EXIT STATUS
+.TP
+.BR 0
+If all operations were successful
+.TP
+.BR > 0
+if one of the operations failed.  A failing operation terminates
+the program unless -k is specified.
+
+.SH AUTHOR
+The chrpath program was written by Petter Reinholdtsen
+<pere@hungry.com>, based on works by Geoffrey Keating
+<geoffk@ozemail.com.au> and Peeter Joot <peeterj@ca.ibm.com>.
+
+This manual page was originally written by
+Tollef Fog Heen <tfheen@debian.org>, for the Debian GNU/Linux
+system (but may be used by others).
