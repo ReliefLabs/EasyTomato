@@ -533,6 +533,7 @@ static void easytomato_devlist() {
 	}
 	web_puts("],\n");
 
+	comma = ' ';
 	web_puts("\t\"arplist\" : [");
 	if ((f = fopen("/proc/net/arp", "r")) != NULL) {
 		while (fgets(s, sizeof(s), f)) {

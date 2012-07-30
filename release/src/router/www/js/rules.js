@@ -136,17 +136,24 @@ x Enable/disable rule
 		if(rule) {  		
 			data = {'rule': $.extend({}, rule)}
 			
-			// Toggle day checkboxes
+			// Toggle day and hour checkboxes
 			$.each(rule.days, function(){
 				data.rule[this] = true;
 			});	
-
+			if(rule.days.length == 7){
+				data.rule.every_day = true;
+			}
+			if(rule.start_mins === -1 || rule.end_mins === -1)
+			{
+				data.rule.all_day = true;
+			}
 		} else {
 			data = {'rule': {}};
 		}
 
 		var start_hour, end_hour, start_min, end_min;
 
+		
 		if(!rule || rule.start_mins === -1 || rule.end_mins === -1) {
 			start_hour = -1;
 			end_hour = -1;
@@ -193,11 +200,11 @@ x Enable/disable rule
 			//if($form.find('.check[name="every_day"]').attr('checked')) {
 			//	result.days = -1;
 			//} else {
-				result.days = [];
-				$form.find('.day:checked').each(function(i, d) {
+			result.days = [];
+			$form.find('.day:checked').each(function(i, d) {
 					result.days.push($(d).attr('name'));
 				});
-			//}
+			
 
 			if($form.find('.check[name="all_day"]').attr('checked')) {
 				result.start_mins = -1;

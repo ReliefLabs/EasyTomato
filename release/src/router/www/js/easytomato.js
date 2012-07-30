@@ -47,8 +47,8 @@ function updateClock(){
     date = new Date(tomato_env.vars['time']);
     date.setMinutes(date.getMinutes()+1);
     tomato_env.vars['time'] = date;
-    var re = /(Mon|Tue|...|Sun)\,\s\d{2}\s(Jan|Feb|...|Dec)\s\d{4}\s\d{2}:\d{2}/;
-    $('.tomato_time').html(date.toUTCString().match(re)[0]);
+    var re = /(Mon|Tue|...|Sun)\s(Jan|Feb|...|Dec)\s\d{2}\s\d{4}\s\d{2}:\d{2}/;
+ 	$('.tomato_time').html(date.toString().match(re)[0]);
 }
 
 //groups and rules
@@ -57,6 +57,7 @@ var groups = [],
 	devices = [],
 	unassigned = [],
 	unassigned_rules = [],
+	device_names = {},
 	groups_nvram_id = 'easytomato_groups',
 	unassigned_rules_nvram_id = 'easytomato_rules',
 	block_adult_content_nvram_id = 'wan_dns',
@@ -73,13 +74,12 @@ var load_adult_block = function(){
 
 
 var load_devices = function() {
-	return $.when(tomato_env.get('lan_ipaddr'),tomato_env.get('devlist')).then(function() {
+	return $.when(tomato_env.get('lan_ipaddr'),tomato_env.get('devlist'), tomato_env.get('easytomato_scratch_3')).then(function() {
 		var mac_addrs = {};
-
-		$.each(tomato_env.vars['devlist'], function() {
+		$.each(tomato_env.vars['arplist'], function() {
 			var mac = this[2],
 				device = {
-				'name': this[0] !== "" ? this[0] : "device_"+this[2].substr(12).toUpperCase(),
+				'name': this[0] ,
  				'ip': this[1], 
 				'mac': this[2].toLowerCase()};
 
@@ -87,8 +87,8 @@ var load_devices = function() {
 			unassigned.push(device);		
 			mac_addrs[mac] = device;
 		});
-		
 
+		//Remove devices in unassigned that are in groups
 		$.each(groups, function(i, group) {
 			$.each(group.devices, function(j, device) {
 				unassigned = unassigned.filter(function(a){
@@ -99,39 +99,7 @@ var load_devices = function() {
 				})			
 			});
 		});
-		
 
-
-		//TEST AREA - Removes the duplicates from the dev list(dev list + arp list)  This will change, but works for now.
-		Array.prototype.unique = function(prop) {
-    		var temp = new Array();
-    		for( i = 0; i < this.length; i++) {
-        		if( typeof this[i] != "undefined" && !contains(temp, this[i], prop)) {
-            		temp.length += 1;
-            		temp[temp.length - 1] = this[i];
-        		}
-    		}
-    		return temp;
-		}
-    	
-    	// Will check for the Uniqueness
-		function contains(a, e, prop) {
-    		for( j = 0; j < a.length; j++) {
-        		if(prop) {
-            		if(a[j][prop] == e[prop]) {
-                		return true;
-           			}
-        		}
-        		if(a[j] == e) {
-            		return true;
-        		}
-    		}
-    		return false;
-		};
-
-		unassigned = unassigned.unique('mac');
-	
-		
 		//Removes Wan addresses - we may do this another way
 		var re = /[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}/;
 			var temp = tomato_env.vars['lan_ipaddr'].match(re)[0];
@@ -140,10 +108,48 @@ var load_devices = function() {
 						return true;	
 					}
 						return false;
-				})					
+				})				
+		
+		//loads device names
+		try {
+			device_names = JSON.parse(unescape(tomato_env.vars['easytomato_scratch_3']));
+		} catch(e) {
+			device_names = {};
+		}
+		
+
+
+		//Name devices in unassigned list
+		$.each(unassigned, function(i, device){
+			if (device_names[device.mac]){
+				device.name = device_names[device.mac];
+			} else {
+				var check = contains(tomato_env.vars['devlist'], device, 'mac');
+
+				if (check){
+					device.name = check;			
+				} else{
+					device.name = "device_"+ device.mac.substr(12).toUpperCase()
+				}
+			}
 		});
 
+
+		// Will check matching MAC address in devicelist
+		function contains(a, e, prop) {
+    		for( j = 0; j < a.length; j++) {
+        		if(prop) {
+            		if(a[j][2] == e[prop]) {
+                		return a[j][0];
+           			}
+        		}
+    		}
+    		return false;
+		};
+
+	});
 }
+
 
 var load_groups = function() {
 	return $.when(tomato_env.get(groups_nvram_id), tomato_env.get(unassigned_rules_nvram_id))
@@ -187,6 +193,8 @@ var set_rules = function() {
 	});
 	
 	tomato_env.set(groups_nvram_id, escape(JSON.stringify(groups)));
+	tomato_env.set('easytomato_scratch_3', escape(JSON.stringify(device_names)));
+
 
 	for (saved; saved < 100; saved++) {
 		var key = 'rrule' + saved;
