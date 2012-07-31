@@ -192,6 +192,7 @@ var device_name_form = function(device) {
 		afterShow:function(){
 			$('.save_device_name').click(function(){
 			device.name = $('.update_name_form .device_name').val();
+			device_names[device.mac] = device.name;
 			$.fancybox.close();
 			render_groups();
 			render_devices();

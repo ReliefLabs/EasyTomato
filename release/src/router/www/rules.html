@@ -189,21 +189,23 @@
 	$(document).ready(function() {
 		$('.every_day').live('click',function(){
 			if ($(this).attr('checked')){
-				$(this).siblings('.day').attr({'disabled':'disabled', 'checked':'checked'});
+				$(this).siblings('.days_div').children('.day').attr({'checked':'checked'});
+				$(this).siblings('.days_div').addClass('hideme');
 			}
 			else{
-			
-				$(this).siblings('.day').removeAttr('disabled').removeAttr('checked');
+				$(this).siblings('.days_div').children('.day').removeAttr('checked');
+				$(this).siblings('.days_div').removeClass('hideme');
 			}
 		});
 		
 		
 		$('.all_day').live('click',function(){
 			if ($(this).attr('checked')){
-				$(this).siblings('.combo').attr('disabled','disabled').css('background', '#f0f0f0').css('color', '#f0f0f0' );
+				$(this).siblings('.combo, .in_the_middle').addClass('hideme');
 			}
 			else{
-				$(this).siblings('.combo').removeAttr('disabled').css('background', 'white').css('color', '#222222' );		
+				$(this).siblings('.combo, .in_the_middle').removeClass('hideme');
+
 			}
 		});
 		
@@ -235,27 +237,29 @@
 				<span class="section_name">Days</span>
 				<input type="checkbox" class="check every_day" name="every_day" {{#every_day}}checked="checked"{{/every_day}}/>
 				<label for="every_day">Every Day</label>
-				
-				<input type="checkbox" class="check day" name="sun" {{#sun}}checked="checked"{{/sun}}/>
-				<label for="sun">Sun</label>
+				<span class="{{#every_day}}hideme{{/every_day}} days_div">
 
-				<input type="checkbox" class="check day" name="mon" {{#mon}}checked="checked"{{/mon}}/>
-				<label for="mon">Mon</label>
+					<input type="checkbox" class="check day" name="sun" {{#sun}}checked="checked"{{/sun}}/>
+					<label class="day_label" for="sun">Sun</label>
+
+					<input type="checkbox" class="check day" name="mon" {{#mon}}checked="checked"{{/mon}}/>
+					<label class="day_label" for="mon">Mon</label>
 				
-				<input type="checkbox" class="check day" name="tue" {{#tue}}checked="checked"{{/tue}}/>
-				<label for="tue">Tue</label>
+					<input type="checkbox" class="check day" name="tue" {{#tue}}checked="checked"{{/tue}}/>
+					<label class="day_label" for="tue">Tue</label>
 				
-				<input type="checkbox" class="check day" name="wed" {{#wed}}checked="checked"{{/wed}}/>
-				<label for="wed">Wed</label>
+					<input type="checkbox" class="check day" name="wed" {{#wed}}checked="checked"{{/wed}}/>
+					<label class="day_label" for="wed">Wed</label>
 				
-				<input type="checkbox" class="check day" name="thu" {{#thu}}checked="checked"{{/thu}}/>
-				<label for="thu">Thu</label>
+					<input type="checkbox" class="check day" name="thu" {{#thu}}checked="checked"{{/thu}}/>
+					<label class="day_label" for="thu">Thu</label>
 				
-				<input type="checkbox" class="check day" name="fri" {{#fri}}checked="checked"{{/fri}}/>
-				<label for="fri">Fri</label>
+					<input type="checkbox" class="check day" name="fri" {{#fri}}checked="checked"{{/fri}}/>
+					<label class="day_label" for="fri">Fri</label>
 				
-				<input type="checkbox" class="check day" name="sat" {{#sat}}checked="checked"{{/sat}}/>
-				<label for="sat">Sat</label>
+					<input type="checkbox" class="check day" name="sat" {{#sat}}checked="checked"{{/sat}}/>
+					<label class="day_label" for="sat">Sat</label>
+				</span>
 			</div>
 			
 			<div class="grid_row">
@@ -263,28 +267,28 @@
 				<input type="checkbox" class="check all_day" name="all_day" {{#all_day}}checked="checked"{{/all_day}}/>
 				<label for="all_day">All Day</label>
 				
-				<select class="hourcombo combo start_time_hour" name="start_time_hour">
+				<select class="hourcombo combo start_time_hour {{#all_day}}hideme{{/all_day}}" name="start_time_hour" >
 					{{#start_hours}}
 					<option value="{{value}}" {{#selected}}selected="selected"{{/selected}}>{{value}}</option>
 					{{/start_hours}}					
 				</select>
 				
-				<select class="mincombo combo" name="start_time_min">
+				<select class="mincombo combo {{#all_day}}hideme{{/all_day}}" name="start_time_min">
 					{{#start_mins}}
 					<option value="{{value}}" {{#selected}}selected="selected"{{/selected}}>{{value}}</option>
 					{{/start_mins}}
 				</select>
 
 				
-				<span>to</span>
+				<span class="in_the_middle {{#all_day}}hideme{{/all_day}}">to</span>
 				
-				<select class="hourcombo combo" name="end_time_hour">
+				<select class="hourcombo combo {{#all_day}}hideme{{/all_day}}" name="end_time_hour">
 					{{#end_hours}}
 					<option value="{{value}}" {{#selected}}selected="selected"{{/selected}}>{{value}}</option>
 					{{/end_hours}}
 				</select>
 				
-				<select class="mincombo combo" name="end_time_min">
+				<select class="mincombo combo {{#all_day}}hideme{{/all_day}}" name="end_time_min">
 					{{#end_mins}}
 					<option value="{{value}}" {{#selected}}selected="selected"{{/selected}}>{{value}}</option>
 					{{/end_mins}}
