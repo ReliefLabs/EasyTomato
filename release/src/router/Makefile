@@ -593,8 +593,10 @@ www-install:
 
 easytomatoscripts-install:
 	mkdir -p $(TARGETDIR)/easytomato
+	mkdir -p $(TARGETDIR)/easytomato/easyoptionals
 	cp easytomato/.adblocker.sh $(TARGETDIR)/easytomato/.
 	cp easytomato/.autorun $(TARGETDIR)/easytomato/.
+	cp easytomato/easyoptionals_setup.sh $(TARGETDIR)/easytomato/.
 
 matrixssl:
 	@$(SEP)

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+EASY_OPT_DIR=/easytomato/easyoptionals
+
+# Change into the EasyOptionals directory
+cd $EASY_OPT_DIR
+
+## First, change the permissions on the cache, run and log directories so we can init the cache
+chmod -R 777 ./var/logs
+chmod -R 777 ./var/cache
+chmod -R 777 ./var/run
+
+## Next, have squid initialize the cache
+./sbin/squid -z
+
+# Start up squid
+./sbin/squid
+
+# Load the iptables redirect module
+modprobe ipt_REDIRECT
+
+# Set up the IP tables to route all traffic from the LAN port 80 to squid on port 8080
+iptables -t nat -A PREROUTING -i br0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.1.1:8080
+iptables -t nat -A PREROUTING -i eth1 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
