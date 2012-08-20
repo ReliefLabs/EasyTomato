@@ -96,7 +96,16 @@ x Enable/disable rule
 
 				$this.find('.check[name="rule_toggle"]').bind('change', function() {
 					rule.enabled = !rule.enabled;
-					calendar.fullCalendar('refetchEvents');	
+					set_rules();
+					$.fancybox('<div class="apply_changes_box">Toggling Rule…</div>',{
+						helpers:  { overlay : {closeClick: false} },
+      					  closeBtn : false 
+						});
+					$.when(tomato_env.apply()).then(function() {
+			  			$.fancybox.close();
+			  			calendar.fullCalendar('refetchEvents');
+					});
+					
 				});
 				
 				$this.find('.edit_rule_trig').click(function() {
