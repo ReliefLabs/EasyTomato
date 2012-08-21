@@ -41,6 +41,18 @@ var render_groups = function() {
 					$(this).css('z-index','2')
 				}
 			});
+			// online devices highlighted, stored in var devices
+			var online = false;
+			$.each(devices, function(i, device) {
+				if (device.mac.toLowerCase() == group.devices[j].mac.toLowerCase()) {
+					online = true;
+					return false;
+				}
+			});
+			if (!online) {
+				$(this).css('color', 'grey');
+			}
+			
 		});
 		
 		//group box hover, edit behavior
