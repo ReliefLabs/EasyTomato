@@ -309,7 +309,7 @@
 
 			<div class="grid_row">
 				<span class="section_name">Blocked Websites</span> <span style="float:right">List each website on a new line</span>
-				<textarea name="block_sites">{{#block_sites}}{{.}}&#10;{{/block_sites}}</textarea>
+				<textarea name="block_sites" {{#block_all}}disabled="disabled"{{/block_all}}>{{#block_sites}}{{.}}&#10;{{/block_sites}}</textarea>
 			</div>
 			
 			<a href="javascript:void(0);" class="green_button save_rule">Save Rule</a>
