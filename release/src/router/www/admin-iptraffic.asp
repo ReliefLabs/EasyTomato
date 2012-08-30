@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,21 +7,39 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Admin: IP Traffic Monitoring</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
 <style type='text/css'>
-textarea {
+/*textarea {
 	width: 98%;
 	height: 15em;
-}
+}*/
 </style>
 
 <script type='text/javascript' src='debug.js'></script>
@@ -215,23 +233,31 @@ function save()
 function init()
 {
 	backupNameChanged();
+	var c;
+	if (((c = cookie.get('admin_iptraffic_notes_vis')) != null) && (c == '1')) toggleVisibility("notes");
+}
+
+function toggleVisibility(whichone) {
+	if (E('sesdiv_' + whichone).style.display == '') {
+		E('sesdiv_' + whichone).style.display = 'none';
+		E('sesdiv_' + whichone + '_showhide').innerHTML = '(Click here to show)';
+		cookie.set('admin_iptraffic_' + whichone + '_vis', 0);
+	} else {
+		E('sesdiv_' + whichone).style.display='';
+		E('sesdiv_' + whichone + '_showhide').innerHTML = '(Click here to hide)';
+		cookie.set('admin_iptraffic_' + whichone + '_vis', 1);
+	}
 }
 </script>
 
 </head>
 <body onload="init()">
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
 	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+<% include(header.html); %>
 
 <!-- / / / -->
 
-<div class='section-title'>IP Traffic Monitoring</div>
+<h3>IP Traffic Monitoring</h3>
 <div class='section' id='config-section'>
 <form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='admin-iptraffic.asp'>
@@ -284,40 +310,74 @@ REMOVE-END */
 
 <br>
 
-<div class='section-title'>Backup</div>
+<h3>Backup</h3>
 <div class='section' id='backup-section'>
 	<form>
 	<script type='text/javascript'>
 	W("<input type='text' size='40' maxlength='64' id='backup-name' name='backup_name' onchange='backupNameChanged()' value='tomato_cstats_" + nvram.et0macaddr.replace(/:/g, '').toLowerCase() + "'>");
 	</script>
 	.gz &nbsp;
-	<input type='button' name='f_backup_button' id='backup-button' onclick='backupButton()' value='Backup'>
+	<input type='button' name='f_backup_button' id='backup-button' onclick='backupButton()' value='Backup' class='btn'>
 	</form>
 	<a href='' id='backup-link'>Link</a>
 </div>
 <br>
 
-<div class='section-title'>Restore</div>
+<h3>Restore</h3>
 <div class='section' id='restore-section'>
 	<form id='restore-form' method='post' action='ipt/restore.cgi?_http_id=<% nv(http_id); %>' encType='multipart/form-data'>
 		<input type='file' size='40' id='restore-name' name='restore_name'>
-		<input type='button' name='f_restore_button' id='restore-button' value='Restore' onclick='restoreButton()'>
+		<input type='button' name='f_restore_button' id='restore-button' value='Restore' onclick='restoreButton()' class='btn'>
 		<br>
 	</form>
 </div>
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<form>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-	</form>
+<h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></h3>
+<div class='section' id='sesdiv_notes' style='display:none'>
+<ul>
+<li>IP Traffic is about monitoring <i>IPv4</i> network traffic flowing <i>through</i> the router.</li>
+<li>Check your <a href="basic-network.asp">LAN Settings</a> before enabling this feature: any/all LAN interfaces must have a netmask with at least 16 bits set (255.255.0.0).</li>
+<li>Monitoring of larger subnets is not supported.</li>
+</ul>
+
+<ul>
+<li><b>Other relevant notes/hints:</b>
+<ul>
+<li>Before enabling this feature, please check your <a href="basic-network.asp">LAN Settings</a> and make sure the netmask on any/all of your LAN bridges has been configured properly (i.e. netmask with at least 16 bits set or "255.255.0.0").</li>
+<li>Although technically supported, it's not actually recommended having IP Traffic monitoring enabled with subnets larger than/the equivalent of a class C network (i.e. netmask with at least 24 bits set or "255.255.255.0").</li>
+<li>IP Traffic monitoring keeps track of data/packets that would be either <i>coming from/leaving</i> or <i>going to/arriving</i> IPs on LAN interfaces/subnets.</li>
+<li>As a rule of thumb, this means keeping track of network/data packets being forwarded from/to LAN interfaces as a result of some kind of routing (or NAT) and would exclude any/all data/packets being exchanged between devices reachable/within the same LAN interface (i.e. on the same IP subnet/LAN bridge, even if packets are actually being forwarded from/to wired/wireless/different interfaces through the router).</li>
+<!-- VLAN-BEGIN -->
+<li>Network traffic/communications flowing from/to/between different LAN bridges/subnets will be tracked/accounted separately/accordingly ("twice", as in: number of bytes/packets <i>coming from</i> the first LAN bridge and (the same) number of bytes/packets <i>going to</i> the second LAN bridge).</li>
+<!-- VLAN-END -->
+</ul>
+</ul>
+
 </div>
-</td></tr>
-</table>
+
+<!-- / / / -->
+
+<form>
+<span id='footer-msg'></span>
+<div class='form-actions'>
+<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+</div>
+</form>
+
+<!-- / / / -->
+
+	<div id='footer'></div>
+	</div><!--/row-->
+	</div><!--/span-->
+</div><!--/row-->
+	<hr>
+	<footer>
+		<p>&copy; Tomato 2012</p>
+	</footer>
+</div><!--/.fluid-container-->
 <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2008 Jonathan Zarate
@@ -9,13 +9,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] OpenVPN: Server</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='vpn.js'></script>
 <script type='text/javascript'>
@@ -355,50 +374,21 @@ function init()
 }
 </script>
 
-<style type='text/css'>
-textarea
-{
-	width: 98%;
-	height: 10em;
-}
-p.keyhelp
-{
-	font-size: smaller;
-	font-style: italic;
-}
-div.status-header p
-{
-	font-weight: bold;
-	padding-bottom: 4px;
-}
-table.status-table
-{
-	width: auto;
-	margin-left: auto;
-	margin-right: auto;
-	text-align: center;
-}
-</style>
-
 </head>
 <body>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+    
+<% include(header.html); %>
 
+<!-- / / / -->
+
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='vpn-server.asp'>
 <input type='hidden' name='_nextwait' value='5'>
 <input type='hidden' name='_service' value=''>
 <input type='hidden' name='vpn_server_eas' id='vpn_server_eas' value=''>
 <input type='hidden' name='vpn_server_dns' id='vpn_server_dns' value=''>
 
-<div class='section-title'>OpenVPN Server Configuration</div>
+<h3>OpenVPN Server Configuration</h3>
 <div class='section'>
 <script type='text/javascript'>
 tabCreate.apply(this, tabs);
@@ -416,7 +406,7 @@ for (i = 0; i < tabs.length; ++i)
 	W('<input type=\'hidden\' id=\'vpn_'+t+'_pdns\' name=\'vpn_'+t+'_pdns\'>');
 	W('<input type=\'hidden\' id=\'vpn_'+t+'_rgw\' name=\'vpn_'+t+'_rgw\'>');
 
-	W('<ul class="tabs">');
+	W('<ul class="nav nav-tabs">');
 	for (j = 0; j < sections.length; j++)
 	{
 		W('<li><a href="javascript:sectSelect('+i+', \''+sections[j][0]+'\')" id="'+t+'-'+sections[j][0]+'-tab">'+sections[j][1]+'</a></li>');
@@ -459,7 +449,7 @@ for (i = 0; i < tabs.length; ++i)
 		{ title: 'Manage Client-Specific Options', name: 'f_vpn_'+t+'_ccd', type: 'checkbox', value: eval( 'nvram.vpn_'+t+'_ccd' ) != 0 },
 		{ title: 'Allow Client<->Client', name: 'f_vpn_'+t+'_c2c', type: 'checkbox', value: eval( 'nvram.vpn_'+t+'_c2c' ) != 0 },
 		{ title: 'Allow Only These Clients', name: 'f_vpn_'+t+'_ccd_excl', type: 'checkbox', value: eval( 'nvram.vpn_'+t+'_ccd_excl' ) != 0 },
-		{ title: '', suffix: '<table class=\'tomato-grid\' id=\'table_'+t+'_ccd\'></table>' },
+		{ title: '', suffix: '<table class=\'table table-striped table-condensed table-bordered\' id=\'table_'+t+'_ccd\'></table>' },
 		{ title: 'Custom Configuration', name: 'vpn_'+t+'_custom', type: 'textarea', value: eval( 'nvram.vpn_'+t+'_custom' ) }
 	]);
 	W('</div>');
@@ -477,29 +467,37 @@ for (i = 0; i < tabs.length; ++i)
 		W('<div id=\''+t+'-no-status\'><p>Server is not running or status could not be read.</p></div>');
 		W('<div id=\''+t+'-status-content\' style=\'display:none\' class=\'status-content\'>');
 			W('<div id=\''+t+'-status-header\' class=\'status-header\'><p>Data current as of <span id=\''+t+'-status-time\'></span>.</p></div>');
-			W('<div id=\''+t+'-status-clients\'><div class=\'section-title\'>Client List</div><table class=\'tomato-grid status-table\' id=\''+t+'-status-clients-table\'></table><br></div>');
-			W('<div id=\''+t+'-status-routing\'><div class=\'section-title\'>Routing Table</div><table class=\'tomato-grid status-table\' id=\''+t+'-status-routing-table\'></table><br></div>');
-			W('<div id=\''+t+'-status-stats\'><div class=\'section-title\'>General Statistics</div><table class=\'tomato-grid status-table\' id=\''+t+'-status-stats-table\'></table><br></div>');
+			W('<div id=\''+t+'-status-clients\'><div class=\'section-title\'>Client List</div><table class=\'table table-striped table-condensed table-bordered status-table\' id=\''+t+'-status-clients-table\'></table><br></div>');
+			W('<div id=\''+t+'-status-routing\'><div class=\'section-title\'>Routing Table</div><table class=\'table table-striped table-condensed table-bordered status-table\' id=\''+t+'-status-routing-table\'></table><br></div>');
+			W('<div id=\''+t+'-status-stats\'><div class=\'section-title\'>General Statistics</div><table class=\'table table-striped table-condensed table-bordered status-table\' id=\''+t+'-status-stats-table\'></table><br></div>');
 			W('<div id=\''+t+'-status-errors\' class=\'error\'></div>');
 		W('</div>');
 		W('<div style=\'text-align:right\'><a href=\'javascript:updateStatus('+i+')\'>Refresh Status</a></div>');
 	W('</div>');
-	W('<input type="button" value="' + (eval('vpn'+(i+1)+'up') ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'vpn'+t+'\', vpn'+(i+1)+'up)" id="_vpn'+t+'_button">');
+	W('<input type="button" value="' + (eval('vpn'+(i+1)+'up') ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'vpn'+t+'\', vpn'+(i+1)+'up)" id="_vpn'+t+'_button" class="btn">');
 	W('</div>');
 }
 
 </script>
 </div>
 
-</td></tr>
-	<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
+<span id='footer-msg'></span>
+<div class='form-actions'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+</div>
 </form>
+
+<!-- / / / -->
+
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>init();</script>
 </body>
 </html>
-

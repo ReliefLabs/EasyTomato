@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2007 Jonathan Zarate
@@ -7,17 +7,37 @@
 	Virtual Wireless Interfaces web interface & extensions
 	Copyright (C) 2012 Augusto Bott
 	http://code.google.com/p/tomato-sdhc-vlan/
+	Some portions Copyright (C) Jean-Yves Avenard
+	mailto:jean-yves@avenard.org
 
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 	LAN Access admin module by Augusto Bott
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Advanced: Virtual Wireless Interfaces</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <style type='text/css'>
@@ -52,6 +72,7 @@ ul.tabs a,
 
 var vifs_possible = [];
 var vifs_defined = [];
+var vifs_deleted = [];
 var max_no_vifs = 0;
 
 var wl_modes_available = [];
@@ -129,7 +150,7 @@ wlg.populate = function() {
 		wlg.removeAllData();
 		for (var uidx in vifs_defined) {
 			if (typeof(vifs_defined[uidx][0]) == 'undefined') continue;
-			var wmode = (((vifs_defined[uidx][7])     == 'ap') && ((nvram['wl' + u + '_wds_enable']) == '1')) ? 'apwds': (vifs_defined[uidx][7]);
+			var wmode = (((vifs_defined[uidx][7]) == 'ap') && ((nvram['wl' + u + '_wds_enable']) == '1')) ? 'apwds': (vifs_defined[uidx][7]);
 			this.insertData(-1, [
 				vifs_defined[uidx][0],
 				vifs_defined[uidx][4],
@@ -264,17 +285,15 @@ wlg.fieldValuesToData = function(row) {
 
 wlg.onDelete = function() {
 	this.removeEditor();
-// TODO: DELETE VIF IS NOT SUPPORTED
-// TODO: ONLY DISABLING
-//	if (this.source._data[0].indexOf('.') > 0) {
-////TODO: update vifs_defined (+ VIF tabs enabled/disabled)
-//		var vif = definedVIFidx(this.source._data[0]);
-//		vifs_defined.splice(vif,1);
-//		elem.remove(this.source);
-//		this.source = null;
-//	} else {
+	if (this.source._data[0].indexOf('.') > 0) {
+		var vif = definedVIFidx(this.source._data[0]);
+		vifs_defined.splice(vif,1);
+		vifs_deleted.push(this.source._data[0]);
+		elem.remove(this.source);
+		this.source = null;
+	} else {
 		this.showSource();
-//	}
+	}
 	this.disableNewEditor(false);
 	this.resetNewEditor();
 }
@@ -321,6 +340,14 @@ wlg.onAdd = function() {
 
 	this.disableNewEditor(false);
 	this.resetNewEditor();
+
+	/* if we had previously deleted this entry, remove it from deleted table */
+	for (var i = 0; i < vifs_deleted.length; i++) {
+		if (vifs_deleted[i] == u) {
+			vifs_deleted.splice(i, 1);
+			break;
+		}
+	}
 
 	tabSelect(u);
 	verifyFields(null,1);
@@ -577,8 +604,10 @@ function verifyFields(focused, quiet) {
 	var wmode, sm2;
 
 	for (uidx = 0; uidx < wl_ifaces.length; ++uidx) {
+		u = wl_fface(uidx);
+		if (u)
+			E('wl'+u+'_hwaddr_msg').style.visibility = ((wl_ifaces[uidx][8] == 'ap') && (wl_ifaces[uidx][5] != wl_ifaces[uidx][9])) ? 'visible' : 'hidden';
 		if (wl_sunit(uidx) < 0) {
-			u = wl_fface(uidx);
 			if (focused == E('_f_wl'+u+'_nband')) {
 				refreshNetModes(uidx);
 				refreshChannels(uidx);
@@ -1018,10 +1047,6 @@ function save() {
 	fom.nas_alternate.value = E('_f_nas_alternate').checked ? '1' : '0';
 /* LINUX24-END */
 
-/* REMOVE-BEGIN */
-// AB TODO: get back to this
-// CLEAN UP FIRST
-/* REMOVE-END */
 	for (var i = 0 ; i <= MAX_BRIDGE_ID ; i++) {
 		var j = (i == 0) ? '' : i.toString();
 		fom['lan'+j+'_ifnames'].value = '';
@@ -1056,6 +1081,7 @@ function save() {
 		if (vifs_defined[vif][11]*1 != 4) {
 			var x = (vifs_defined[vif][11] == '0') ? '' : vifs_defined[vif][11].toString();
 			fom['lan'+x+'_ifnames'].value += ' ' + vifs_defined[vif][1];
+			fom['lan'+x+'_ifnames'].value = fom['lan'+x+'_ifnames'].value.trim();
 		}
 
 /* REMOVE-BEGIN */
@@ -1221,21 +1247,17 @@ function do_pre_submit_form(fom) {
 		var u = vifs_possible[vidx][0].toString();  // WL unit (primary) or unit.subunit (virtual)
 		if (u.indexOf('.') > 0) { // only if virtual VIF
 			var vif = definedVIFidx(u);
-			for (var i = 0; i < elem.length ; ++i) {
-				if (elem[i].name.indexOf('wl' + u) == 0) {
-					if (vif < 0) { // not defined, nvram unset
-/* REMOVE-BEGIN */
-// AB TODO: delete VIF support? cleanup NVRAM?
-//						s += 'nvram unset ' + elem[i].name + '\n';
-/* REMOVE-END */
-					} else {
+			if (vif >= 0)
+			{
+				for (var i = 0; i < elem.length ; ++i) {
+					if (elem[i].name.indexOf('wl' + u) == 0) {
 						s += 'nvram set ' + elem[i].name + '=\'' + elem[i].value + '\'\n';
 					}
 				}
 			}
-			// unset HWADDR for any/all non-primary VIFs we have configured
-			s += 'nvram unset wl' + u + '_hwaddr\n';
 /* REMOVE-BEGIN */
+			// unset HWADDR for any/all non-primary VIFs we have configured
+//			s += 'nvram unset wl' + u + '_hwaddr\n';
 // AB TODO: figure out what to do with pre-existing/set MAC addresses
 //			if (vif >= 0) {
 //				if ((vifs_defined[vif][9] == '00:00:00:00:00:00') || (vifs_defined[vif][9] == '')) {
@@ -1243,20 +1265,48 @@ function do_pre_submit_form(fom) {
 //				}
 //			}
 /* REMOVE-END */
-/* REMOVE-BEGIN */
-// AB TODO: delete VIF support? cleanup?
-//			if (vif < 0) { // not defined, nvram unset
-//				s += 'nvram unset wl' + u + '_wme\n';
-//				s += 'nvram unset wl' + u + '_bss_maxassoc\n';
-//				s += 'ifconfig wl' + u + ' down\n';
-//			} else {
-//				s += 'nvram set wl' + u + '_wme="\'' + elem[i].value + '\'\n';
-//				handle wlX_wme + wlX_bssid_maxassoc ?
-//			}
-/* REMOVE-END */
 		}
 	}
 
+	/* Clean-up deleted interfaces */
+	var lan_ifnames = nvram['lan_ifnames'];
+	var lan1_ifnames = nvram['lan1_ifnames'];
+	var lan2_ifnames = nvram['lan2_ifnames'];
+	var lan3_ifnames = nvram['lan3_ifnames'];
+	var wl0_vifs = nvram['wl0_vifs'];
+	var wl1_vifs = nvram['wl1_vifs'];
+
+	for (var vidx = 0; vidx < vifs_deleted.length; ++vidx) {
+		var u = vifs_deleted[vidx];
+		for (var i = 0; i < elem.length ; ++i) {
+			if (elem[i].name.indexOf('wl' + u) == 0) {
+				s += 'nvram unset ' + elem[i].name + '\n';
+			}
+		}
+		lan_ifnames = lan_ifnames.replace('wl'+u, '');
+		lan1_ifnames = lan1_ifnames.replace('wl'+u, '');
+		lan2_ifnames = lan2_ifnames.replace('wl'+u, '');
+		lan3_ifnames = lan3_ifnames.replace('wl'+u, '');
+		if (typeof(wl0_vifs) != 'undefined') {
+			wl0_vifs = wl0_vifs.replace('wl'+u, '');
+		}
+		if (typeof(wl1_vifs) != 'undefined') {
+			wl1_vifs = wl1_vifs.replace('wl'+u, '');
+		}
+		s += 'nvram unset wl' + u + '_wme\n';
+		s += 'nvram unset wl' + u + '_bss_maxassoc\n';
+	}
+	if (vifs_deleted.length > 0)
+	{
+		s += 'nvram set lan_ifnames=\'' + lan_ifnames + '\'\n';
+		s += 'nvram set lan1_ifnames=\'' + lan1_ifnames + '\'\n';
+		s += 'nvram set lan2_ifnames=\'' + lan2_ifnames + '\'\n';
+		s += 'nvram set lan3_ifnames=\'' + lan3_ifnames + '\'\n';
+		if (typeof(wl0_vifs) != 'undefined')
+			s += 'nvram set wl0_vifs=\'' + wl0_vifs + '\'\n';
+		if (typeof(wl1_vifs) != 'undefined')
+			s += 'nvram set wl1_vifs=\'' + wl1_vifs + '\'\n';
+	}
 	post_pre_submit_form(s);
 }
 
@@ -1295,21 +1345,16 @@ function escapeText(s) {
 
 </head>
 <body onload='init()'>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-  <% include(/www/easyheader.html); %>
-  
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+    
+<% include(header.html); %>
 
 <!-- / / / -->
 
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='advanced-wlanvifs.asp'>
-<input type='hidden' name='_nextwait' value='20'>
-<input type='hidden' name='_service' value='*'>
+<input type='hidden' name='_nextwait' value='10'>
+<input type='hidden' name='_service' value='wireless-restart'>
+<input type='hidden' name='_force_commit' value='1'>
 
 <!-- LINUX24-BEGIN -->
 <input type='hidden' name='nas_alternate' value=''>
@@ -1324,7 +1369,7 @@ function escapeText(s) {
 <div id='sesdiv' style='display:none'>
 
 <!-- / / / -->
-<div class='section-title'>Virtual Wireless Interfaces</div>
+<h3>Virtual Wireless Interfaces</h3>
 <div class='section'>
 
 <script type='text/javascript'>
@@ -1333,12 +1378,12 @@ tabCreate.apply(this, tabs);
 
 <div id='overview-tab'>
 <br>
-<table class='tomato-grid' cellspacing=1 id='wlif-grid'></table>
+<table class='table table-striped table-condensed table-bordered' id='wlif-grid'></table>
 <br>
 
 <!-- / / / -->
 
-<div class='section-title'>Wireless Interfaces Details <small><i><a href='javascript:toggleVisibility("details");'><span id='sesdivdetailsshowhide'>(Click here to show)</span></a></i></small></div>
+<h3>Wireless Interfaces Details <small><i><a href='javascript:toggleVisibility("details");'><span id='sesdivdetailsshowhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdivdetails' style='display:none'>
 
 <script type='text/javascript'>
@@ -1357,7 +1402,7 @@ for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 <!-- / / / -->
 
 <!-- LINUX24-BEGIN -->
-<div class='section-title'>Options <small><i><a href='javascript:toggleVisibility("options");'><span id='sesdivoptionsshowhide'>(Click here to show)</span></a></i></small></div>
+<h3>Options <small><i><a href='javascript:toggleVisibility("options");'><span id='sesdivoptionsshowhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdivoptions' style='display:none'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -1369,7 +1414,7 @@ createFieldTable('', [
 
 <!-- / / / -->
 
-<div class='section-title'>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdivnotesshowhide'>(Click here to show)</span></a></i></small></div>
+<h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdivnotesshowhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdivnotes' style='display:none'>
 
 <ul>
@@ -1391,39 +1436,17 @@ createFieldTable('', [
 <li><b>Other relevant notes/hints:</b>
 <ul>
 <li>When creating/defining a new wireless VIF, it's MAC address will be shown (incorrectly) as '00:00:00:00:00:00', as it's unknown at that moment (until network is restarted and this page is reloaded).</li>
-<li>Once created/defined, a wireless VIF cannot de deleted: it can only be <i>disabled</i>.</li>
-<li>When saving changes, the MAC addresses of all defined non-primary wireless VIFs are <i>unset</i> and get <i>recreated</i> (so those might change when saving settings).</li>
+<li>When saving changes, the MAC addresses of all defined non-primary wireless VIFs could sometimes be (already) <i>set</i> but might be <i>recreated</i> by the WL driver (so that previously defined/saved settings might need to be updated/changed accordingly on <a href=advanced-mac.asp>Advanced/MAC Address</a> after saving settings and rebooting your router).</li>
 <li>This web interface allows configuring a maximum of 4 VIFs for each physical wireless interface available - up to 3 extra VIFs can be defined in addition to the primary VIF (<i>on devices with multiple VIF capabilities</i>).</li>
 <li>By definition, configuration settings for the <i>primary VIF</i> of any physical wireless interfaces shouldn't be touched here (use the <a href=basic-network.asp>Basic/Network</a> page instead).</li>
 </ul>
-<br>
-<ul>
-<li>This is highly <b>experimental</b> and hasn't been tested in anything but a WRT54GL v1.1 running a Teaman-ND K24 build and a Cisco/Linksys E3000 running a Teaman-RT K26 build.</li>
-<li>There's lots of things that could go wrong, please do think about what you're doing and take a backup before hitting the 'Save' button on this page!</li>
-<li>You've been warned!</li>
-</ul>
 </ul>
 </small>
 
-<!-- REMOVE-BEGIN -->
-<small>
-<ul>
-<li><b>Other relevant notes/hints:</b>
-<ul>
-<li>To specify multiple hostnames for a device, separate them with spaces.</li>
-<li>To enable/enforce static ARP binding for a particular device, it must have only one MAC associated with that particular IP address (i.e. you can't have two MAC addresses linked to the same hostname/device in the table above).</li>
-<li>When ARP binding is enabled for a particular MAC/IP address pair, that device will always be shown as "active" in the <a href="tools-wol.asp">Wake On LAN</a> table.</li>
-<li>See also the <a href='advanced-dhcpdns.asp'>Advanced DHCP/DNS</a> settings page for more DHCP-related configuration options.</li>
-</ul>
-</ul>
-</small>
-<!-- REMOVE-END -->
 </div>
-
 
 <!-- / / / -->
 
-<!-- / OVERVIEW-TAB / -->
 </div>
 
 <!-- / / / -->
@@ -1475,7 +1498,8 @@ for (var i = 1; i < tabs.length; ++i) {
 	f.push (
 		{ title: 'Enable Interface', name: 'f_wl'+u+'_radio', type: 'checkbox',
 			value: (eval('nvram["wl'+u+'_radio"]') == '1') && (eval('nvram["wl'+u+'_net_mode"]') != 'disabled') },
-		{ title: 'MAC Address', text: '<a href="advanced-mac.asp">' + (eval('nvram["wl'+u+'_hwaddr"]') || '00:00:00:00:00:00') + '</a>' },
+		{ title: 'MAC Address', text: '<a href="advanced-mac.asp">' + (eval('nvram["wl'+u+'_hwaddr"]') || '00:00:00:00:00:00') + '</a>' +
+			' &nbsp; <b id="wl'+u+'_hwaddr_msg" style="visibility:hidden"><small>(warning: WL driver reports BSSID <a href=advanced-mac.asp>' + ((typeof(wl_ifaces[wl_ifidxx(u)]) != 'undefined')? wl_ifaces[wl_ifidxx(u)][9] : '') + '</a>)</small></b>' },
 		{ title: 'Wireless Mode', name: 'f_wl'+u+'_mode', type: 'select',
 			options: wl_modes_available,
 			value: ((eval('nvram["wl'+u+'_mode"]') == 'ap') && (eval('nvram["wl'+u+'_wds_enable"]') == '1')) ? 'apwds' : eval('nvram["wl'+u+'_mode"]'),
@@ -1591,15 +1615,24 @@ for (var i = 1; i < tabs.length; ++i) {
 <!-- / SESDIV / -->
 </div>
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='cancel()'>
-</td></tr>
-</table>
-</form>
-<script type='text/javascript'>
+ </div><!--/row-->
+
+ <span id='footer-msg'></span>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='cancel()' class='btn'>
+
+<!-- / / / -->
+
+<div id='footer'></div>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
+    <script type='text/javascript'>
 for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 	if (wl_sunit(uidx) < 0) {
 		refreshNetModes(uidx);

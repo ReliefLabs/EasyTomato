@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,31 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Advanced: Conntrack / Netfilter</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -56,7 +74,7 @@ function check()
 		timer.start(6000);
 	}
 
-	checker.post('update.cgi', 'exec=ctcount&arg0=0');
+	checker.post('/update.cgi', 'exec=ctcount&arg0=0');
 }
 
 function clicked()
@@ -169,18 +187,11 @@ function save()
 
 </head>
 <body>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
 	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='advanced-ctnf.asp'>
 <input type='hidden' name='_service' value='ctnf-restart'>
 
@@ -197,7 +208,7 @@ function save()
 <input type='hidden' name='nf_sip'>
 /* LINUX26-END */
 
-<div class='section-title'>Connections</div>
+<h3>Connections</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -210,12 +221,12 @@ createFieldTable('', [
 ]);
 </script>
 <br>
-<input type='button' value='Drop Idle' onclick='expireClicked()' id='expire'>
+<input type='button' value='Drop Idle' onclick='expireClicked()' id='expire' class='btn'>
 <br><br>
 </div>
 
 
-<div class='section-title'>TCP Timeout</div>
+<h3>TCP Timeout</h3>
 <div class='section'>
 <script type='text/javascript'>
 if ((v = nvram.ct_tcp_timeout.match(/^(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)$/)) == null) {
@@ -233,7 +244,7 @@ createFieldTable('', f);
 </script>
 </div>
 
-<div class='section-title'>UDP Timeout</div>
+<h3>UDP Timeout</h3>
 <div class='section'>
 <script type='text/javascript'>
 if ((v = nvram.ct_udp_timeout.match(/^(\d+)\s+(\d+)$/)) == null) {
@@ -247,7 +258,7 @@ createFieldTable('', [
 </script>
 </div>
 
-<div class='section-title'>Other Timeouts</div>
+<h3>Other Timeouts</h3>
 <div class='section'>
 <script type='text/javascript'>
 if ((v = nvram.ct_timeout.match(/^(\d+)\s+(\d+)$/)) == null) {
@@ -261,7 +272,7 @@ createFieldTable('', [
 </script>
 </div>
 
-<div class='section-title'>Tracking / NAT Helpers</div>
+<h3>Tracking / NAT Helpers</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -276,7 +287,7 @@ createFieldTable('', [
 </script>
 </div>
 
-<div class='section-title'>Miscellaneous</div>
+<h3>Miscellaneous</h3>
 <div class='section'>
 <script type='text/javascript'>
 v = [];
@@ -295,16 +306,21 @@ createFieldTable('', [
 </script>
 </div>
 
+	<span id='footer-msg'></span>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();' class='btn'>
+
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();'>
-</td></tr>
-</table>
-</form>
-<script type='text/javascript'>verifyFields(null, 1);</script>
+<div id='footer'></div>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
+    <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>

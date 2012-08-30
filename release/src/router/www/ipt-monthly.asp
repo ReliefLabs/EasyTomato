@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -11,12 +11,28 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] IP Traffic: Monthly History</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
@@ -249,13 +265,17 @@ dg.sortCompare = function(a, b) {
 	var r = 0;
 	switch (col) {
 	case 0:	// Date
-	case 1:	// Hostname
 		r = cmpText(da[col], db[col]);
 		break;
+      case 1: // Hostname
+                r = cmpIP(da[col], db[col]);
+                if (r == 0)
+                        r = cmpText(da[col], db[col]);
+                break;
 	case 2:	// Download
 	case 3:	// Upload
 	case 4:	// Total
-		r = cmpFloat(parseFloat(da[col].replace(",","")), parseFloat(db[col].replace(",","")));
+                r = cmpFloat(da[col].replace(/,/g,""), db[col].replace(/,/g,""));
 		break;
 	}
 	return this.sortAscending ? r : -r;
@@ -433,22 +453,15 @@ function verifyFields(focused, quiet) {
 </script>
 </head>
 <body onload='init()'>
-<form>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>Tomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+<% include(header.html); %>
 
 <!-- / / / -->
 
 <div id='cstats'>
-<div class='section-title'>IP Traffic Monthly History</div>
+<h3>IP Traffic Monthly History</h3>
 <div class='section'>
-<table id='monthly-grid' class='tomato-grid' cellspacing=0 style='height:auto'></table>
+<table id='monthly-grid' class='table table-striped table-condensed table-bordered'></table>
 </div>
 
 <div class='section-title'>Options <small><i><a href='javascript:toggleVisibility("options");'><span id='sesdivoptionsshowhide'>(Click here to show)</span></a></i></small></div>
@@ -480,11 +493,16 @@ createFieldTable('',c);
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
+ </div><!--/row-->
+ <div id='footer'>
 <input type='button' value='Refresh' onclick='reloadPage()'>
-</td></tr>
-</table>
-</form>
+</div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>

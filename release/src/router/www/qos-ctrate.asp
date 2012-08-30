@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -11,12 +11,30 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] QoS: View Per-Connection Transfer Rates</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
@@ -218,7 +236,7 @@ grid.setup = function() {
 	this.headerSet(['Proto', 'Source', 'S Port', 'Destination', 'D Port', 'UL Rate', 'DL Rate']);
 }
 
-var ref = new TomatoRefresh('update.cgi', '', 0, 'qos_ctrate');
+var ref = new TomatoRefresh('/update.cgi', '', 0, 'qos_ctrate');
 
 var numconntotal = 0;
 var numconnshown = 0;
@@ -468,28 +486,12 @@ function verifyFields(focused, quiet) {
 
 </head>
 <body onload='init()'>
-<form id='_fom' action='javascript:{}'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+<% include(header.html); %>
 
 <!-- / / / -->
 
-<div class='section-title' id='stitle' onclick='document.location="qos-graphs.asp"' style='cursor:pointer'>Transfer Rates <span id='numtotalconn'></span></div>
-<div class='section'>
-<table id='grid' class='tomato-grid' style="float:left" cellspacing=1></table>
-
-<div id='loading'><br><b>Loading...</b></div>
-</div>
-
-<!-- / / / -->
-
-<div class='section-title'>Filters <small><i><a href='javascript:toggleVisibility("filters");'><span id='sesdivfiltersshowhide'>(Click here to show)</span></a></i></small></div>
+<h3>Filters <small><i><a href='javascript:toggleVisibility("filters");'><span id='sesdivfiltersshowhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdivfilters' style='display:none'>
 <script type='text/javascript'>
 var c;
@@ -508,12 +510,26 @@ createFieldTable('',c);
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
+<h3 id='stitle' onclick='document.location="qos-graphs.asp"' style='cursor:pointer'>Transfer Rates <span id='numtotalconn'></span></h3>
+<div class='section'>
+<table id='grid' class='table table-striped table-condensed table-bordered'></table>
+
+<div id='loading'><br><b>Loading...</b></div>
+</div>
+
+<!-- / / / -->
+
+ </div><!--/row-->
+ <div id='footer'>
 	<script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
-</td></tr>
-</table>
-</form>
+</div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>
 

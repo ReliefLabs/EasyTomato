@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Samba Server - !!TB
@@ -6,13 +6,33 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] NAS: File Sharing</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -28,12 +48,6 @@
 }
 #ss-grid .co5 {
 	width: 9%;
-}
-</style>
-<style type='text/css'>
-textarea {
-	width: 98%;
-	height: 6em;
 }
 </style>
 
@@ -198,18 +212,12 @@ function save()
 
 </head>
 <body>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='nas-samba.asp'>
 <input type='hidden' name='_service' value='samba-restart'>
 
@@ -217,7 +225,7 @@ function save()
 <input type='hidden' name='smbd_wins'>
 <input type='hidden' name='smbd_shares'>
 
-<div class='section-title'>Samba File Sharing</div>
+<h3>Samba File Sharing</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -252,24 +260,30 @@ createFieldTable('', [
 </div>
 <br>
 
-<div class='section-title'>Additional Shares List</div>
+<h3>Additional Shares List</h3>
 <div class='section'>
-	<table class='tomato-grid' cellspacing=1 id='ss-grid'></table>
+	<table class='table table-striped table-condensed table-bordered' id='ss-grid'></table>
 	<script type='text/javascript'>ssg.setup();</script>
 <br>
 <small>When no shares are specified and auto-sharing is disabled, <i>/mnt</i> directory is shared in Read Only mode.</small>
 </div>
 
+<div class='form-actions'>
+	<span id='footer-msg'></span>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+</div>
+</form>
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
-</form>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>

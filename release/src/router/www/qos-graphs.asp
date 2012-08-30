@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] QoS: View Graphs</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -128,7 +147,7 @@ function showData()
 }
 
 
-var ref = new TomatoRefresh('update.cgi', 'exec=qrate', 2, 'qos_graphs');
+var ref = new TomatoRefresh('/update.cgi', 'exec=qrate', 2, 'qos_graphs');
 
 ref.refresh = function(text)
 {
@@ -227,19 +246,12 @@ function init()
 </script>
 </head>
 <body onload='init()'>
-<form id='_fom' action='javascript:{}'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+<% include(header.html); %>
 
 <!-- / / / -->
 
-<div class="section-title">Connections Distribution</div>
+<h3>Connections Distribution</h3>
 <div class="section">
 <table border=0 width="100%"><tr><td>
 	<table style="width:250px">
@@ -264,7 +276,7 @@ if (nvram.web_svg != '0') {
 </table>
 </div>
 
-<div class="section-title">Bandwidth Distribution (Outbound)</div>
+<h3>Bandwidth Distribution (Outbound)</h3>
 <div class="section">
 <table border=0 width="100%"><tr><td>
 	<table style="width:250px">
@@ -291,7 +303,7 @@ if (nvram.web_svg != '0') {
 </table>
 </div>
 
-<div class="section-title">Bandwidth Distribution (Inbound)</div>
+<h3>Bandwidth Distribution (Inbound)</h3>
 <div class="section">
 <table border=0 width="100%"><tr><td>
 	<table style="width:250px">
@@ -327,11 +339,16 @@ if (nvram.qos_enable != '1') {
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
+ </div><!--/row-->
+ <div id='footer'>
 	<script type='text/javascript'>genStdRefresh(1,2,'ref.toggle()');</script>
-</td></tr>
-</table>
-</form>
+</div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>

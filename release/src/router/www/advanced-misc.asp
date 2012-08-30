@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,33 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Advanced: Miscellaneous</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -57,18 +77,13 @@ function save()
 
 </head>
 <body>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    
+<% include(header.html); %>
+
 
 <!-- / / / -->
-
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='advanced-misc.asp'>
 <input type='hidden' name='_reboot' value='0'>
 
@@ -77,7 +92,7 @@ function save()
 <input type='hidden' name='ctf_disable'>
 <!-- CTF-END -->
 
-<div class='section-title'>Miscellaneous</div>
+<h3>Miscellaneous</h3>
 <div class='section'>
 <script type='text/javascript'>
 a = [];
@@ -100,34 +115,32 @@ createFieldTable('', [
 
 ]);
 </script>
-<br>
 
-<div>
+<h3>Notes</h3>
 	<ul>
-	<br>
-	<br>
-	<b>NOTES</b><br>
-	<br>
-	<small>
-	* CPU clock frequencies up to 266 are for older MIPSR1 routers, and set 2 parameters<br>
-	* Frequencies above 266 are used for later models of router, and set 3 parameters<br>
-	* You must reboot the router for the new CPU clock frequency to take effect<br>
-	* Not all models support these options<br>
-	</small>
+	<li>CPU clock frequencies up to 266 are for older MIPSR1 routers, and set 2 parameters</li>
+	<li>Frequencies above 266 are used for later models of router, and set 3 parameters</li>
+	<li>You must reboot the router for the new CPU clock frequency to take effect</li>
+	<li>Not all models support these options</li>
 	</ul>
+
 </div>
 
+<span id='footer-msg'></span>
+	<input type='button' value='Save' id='save-button' onclick='save()'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();'>
+</form>
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();'>
-</td></tr>
-</table>
-</form>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>

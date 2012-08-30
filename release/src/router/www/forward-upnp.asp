@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,12 +7,30 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Forwarding: UPnP / NAT-PMP</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
@@ -219,18 +237,14 @@ function submit_complete()
 
 </head>
 <body onload='init()'>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+
+    
+<% include(header.html); %>
+
 
 <!-- / / / -->
-
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='forward-upnp.asp'>
 <input type='hidden' name='_service' value='upnp-restart'>
 
@@ -248,13 +262,13 @@ REMOVE-END */
 <input type='hidden' name='upnp_lan3'>
 <!-- VLAN-END -->
 
-<div class='section-title'>Forwarded Ports</div>
+<h3>Forwarded Ports</h3>
 <div class='section'>
-	<table id='upnp-grid' class='tomato-grid'></table>
-	<div style='width: 100%; text-align: right'><input type='button' value='Delete All' onclick='deleteAll()' id='upnp-delete-all'> <input type='button' value='Refresh' onclick='javascript:reloadPage();'></div>
+	<table id='upnp-grid' class='table table-striped table-condensed table-bordered'></table>
+	<div style='width: 100%; text-align: right'><input type='button' value='Delete All' onclick='deleteAll()' id='upnp-delete-all' class='btn'> <input type='button' value='Refresh' onclick='javascript:reloadPage();' class='btn'></div>
 </div>
 
-<div class='section-title'>Settings <small><i><a href='javascript:toggleFiltersVisibility();'>(Toggle Visibility)</a></i></small></div>
+<h3>Settings <small><i><a href='javascript:toggleFiltersVisibility();'>(Toggle Visibility)</a></i></small></h3>
 <div class='section' id='upnpsettings' style='display:none'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -283,18 +297,24 @@ REMOVE-END */
 </script>
 </div>
 
+	<span id='footer-msg'></span>
+	<div class='form-actions'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+	</div>
+</form>
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
-</form>
-/* REMOVE-BEGIN
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
+    /* REMOVE-BEGIN
 	!!TB - added verifyFields
 REMOVE-END */
 <script type='text/javascript'>ug.setup();verifyFields(null, 1);</script>

@@ -1,27 +1,52 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Tools: System Commands</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+
+<!-- / / / -->
+
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
 
 <style type='text/css'>
+/*
 textarea {
+	
 	font: 12px monospace;
 	width: 99%;
 	height: 12em;
+
 }
+*/
 </style>
 
 <script type='text/javascript' src='debug.js'></script>
@@ -35,7 +60,7 @@ var cmd = null;
 
 
 
-var ref = new TomatoRefresh('update.cgi', '', 0, 'tools-shell_refresh');
+var ref = new TomatoRefresh('/update.cgi', '', 0, 'tools-shell_refresh');
 
 ref.refresh = function(text)
 {
@@ -120,30 +145,25 @@ function toggleVisibility(whichone) {
 </head>
 
 <body onload='init()'>
-<form action='javascript:{}'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    
+<% include(header.html); %>
+
 
 <!-- / / / -->
 
-<div class='section-title'>Execute System Commands</div>
+<h3>Execute System Commands</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
 	{ title: 'Command', name: 'f_cmd', type: 'textarea', wrap: 'off', value: '' }
 ]);
 </script>
-<div style='float:left'><input type='button' value='Execute' onclick='execute()' id='execb'></div>
+<div><input type='button' value='Execute' onclick='execute()' id='execb'></div>
 <script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
 </div>
 
-<div class='section-title'>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></div>
+<h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdiv_notes' style='display:none'>
 	<ul>
 		<li><b>TIP</b> - Use the command "nvram export --set" or "nvram export --set | grep qos" to cut and paste configuration
@@ -151,14 +171,19 @@ createFieldTable('', [
 </div>
 
 
-<div style="visibility:hidden;text-align:right" id="wait">Please wait... <img src='spin.gif' style="vertical-align:top"></div>
+<div style="visibility:hidden;text-align:right" id="wait">Please wait... <img src='spin.gif'></div>
 <pre id='result'></pre>
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>&nbsp;</td></tr>
-</table>
-</form>
+ </div><!--/row-->
+ <div id='footer'>&nbsp;</div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>

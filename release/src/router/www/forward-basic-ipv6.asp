@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Forwarding: Basic IPv6</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -160,26 +179,20 @@ function init()
 </script>
 </head>
 <body onload='init()'>
-<form id='_fom' method='post' action='javascript:{}'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form id='_fom' method='post' action='javascript:{}'>
 <input type='hidden' name='_nextpage' value='forward-basic-ipv6.asp'>
 <input type='hidden' name='_service' value='firewall-restart'>
 
 <input type='hidden' name='ipv6_portforward'>
 
-<div class='section-title'>IPv6 Port Forwarding</div>
+<h3>IPv6 Port Forwarding</h3>
 <div class='section'>
-	<table class='tomato-grid' cellspacing=1 id='fo-grid'></table>
+	<table class='table table-striped table-condensed table-bordered' cellspacing=1 id='fo-grid'></table>
 	<script type='text/javascript'>fog.setup();</script>
 </div>
 
@@ -192,18 +205,22 @@ Opens access to ports on machines inside the LAN, but does <b>not</b> re-map por
 </ul>
 </div>
 
-<br>
 <script type='text/javascript'>show_notice1('<% notice("ip6tables"); %>');</script>
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
+ </div><!--/row-->
+ <div class='form-actions'>
 	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();'>
-</td></tr>
-</table>
-</form>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();' class='btn'>
+</div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>

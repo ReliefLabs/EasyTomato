@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,15 +7,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Bandwidth: Monthly</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
-<script type='text/javascript' src='tomato.js'></script>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
 
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+<script type='text/javascript' src='tomato.js'></script>
 <!-- / / / -->
 
 <script type='text/javascript' src='debug.js'></script>
@@ -66,7 +83,7 @@ function redraw()
 	block = '';
 	gn = 0;
 
-	grid = '<table class="bwmg" cellspacing="1">';
+	grid = '<table class="table">';
 	grid += makeRow('header', 'Date', 'Download', 'Upload', 'Total');
 
 	for (i = 0; i < monthly_history.length; ++i) {
@@ -101,21 +118,12 @@ function init()
 
 </head>
 <body onload='init()'>
-<form>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
-
+    <% include(header.html); %>
 <!-- / / / -->
 
-<div class='section-title'>WAN Bandwidth - Monthly</div>
-<div id='bwm-monthly-grid' style='float:left'></div>
-<div style="float:right;text-align:right">
+<h3>WAN Bandwidth - Monthly</h3>
+<div id='bwm-monthly-grid'></div>
+<div>
 <b>Date</b> <select onchange='changeDate(this, "ym")' id='dafm'><option value=0>yyyy-mm</option><option value=1>mm-yyyy</option><option value=2>mmm yyyy</option><option value=3>mm.yyyy</option></select><br>
 <b>Scale</b> <select onchange='changeScale(this)' id='scale'><option value=0>KB</option><option value=1>MB</option><option value=2 selected>GB</option></select><br>
 <br>
@@ -130,11 +138,15 @@ function init()
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-<input type='button' value='Refresh' onclick='reloadPage()'>
-</td></tr>
-</table>
-</form>
+ </div><!--/row-->
+ <div class='form-actions'>
+  <input type='button' value='Refresh' onclick='reloadPage()' class='btn'></div>
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 </body>
 </html>

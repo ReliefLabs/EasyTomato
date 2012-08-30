@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate

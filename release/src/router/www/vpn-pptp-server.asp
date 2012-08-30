@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato PPTPd GUI
 	Copyright (C) 2012 Augusto Bott
@@ -10,22 +10,44 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] VPN: PPTP Server</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <style type='text/css'>
 #ul-grid .co2 {
   text-align: center;
 }
+textarea {
+  width: 98%;
+  height: 10em;
+}
 </style>
 <script type='text/javascript' src='interfaces.js'></script>
 <script type='text/javascript'>
-//	<% nvram("lan_ipaddr,lan_netmask,pptpd_enable,pptpd_remoteip,pptpd_forcemppe,pptpd_broadcast,pptpd_users,pptpd_dns1,pptpd_dns2,pptpd_wins1,pptpd_wins2,pptpd_mtu,pptpd_mru");%>
+//	<% nvram("lan_ipaddr,lan_netmask,pptpd_enable,pptpd_remoteip,pptpd_forcemppe,pptpd_broadcast,pptpd_users,pptpd_dns1,pptpd_dns2,pptpd_wins1,pptpd_wins2,pptpd_mtu,pptpd_mru,pptpd_custom");%>
 
 if (nvram.pptpd_remoteip == '') nvram.pptpd_remoteip = '172.19.0.1-6';
 if (nvram.pptpd_forcemppe == '') nvram.pptpd_forcemppe = '1';
@@ -168,6 +190,7 @@ function verifyFields(focused, quiet) {
 	E('_pptpd_broadcast').disabled = c;
 	E('_f_pptpd_startip').disabled = c;
 	E('_f_pptpd_endip').disabled = c;
+	E('_pptpd_custom').disabled = c;
 
 	var a = E('_f_pptpd_startip');
 /* REMOVE-BEGIN */
@@ -290,23 +313,22 @@ function toggleVisibility(whichone) {
 </script>
 </head>
 <body onload='init()'>
+
+    
+<% include(header.html); %>
+
+
+<!-- / / / -->
+
 <form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-  <div class='title'>Tomato</div>
-  <div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
 <input type='hidden' name='_nextpage' value='vpn-pptpd.asp'>
 <input type='hidden' name='_nextwait' value='5'>
-<input type='hidden' name='_service' value='firewall-restart,pptpd-restart'>
+<input type='hidden' name='_service' value='firewall-restart,pptpd-restart,dnsmasq-restart'>
 <input type='hidden' name='pptpd_users'>
 <input type='hidden' name='pptpd_enable'>
 <input type='hidden' name='pptpd_remoteip'>
 
-<div class='section-title'>PPTP Server Configuration <small><i><a href='javascript:toggleVisibility("settings");'><span id='sesdiv_settings_showhide'>(Click here to hide)</span></a></i></small></div>
+<h3>PPTP Server Configuration <small><i><a href='javascript:toggleVisibility("settings");'><span id='sesdiv_settings_showhide'>(Click here to hide)</span></a></i></small></h3>
 <div class='section' id='sesdiv_settings'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -323,20 +345,22 @@ createFieldTable('', [
 	{ title: 'WINS Servers', name: 'pptpd_wins1', type: 'text', maxlen: 15, size: 17, value: nvram.pptpd_wins1 },
 	{ title: '', name: 'pptpd_wins2', type: 'text', maxlen: 15, size: 17, value: nvram.pptpd_wins2 },
 	{ title: 'MTU', name: 'pptpd_mtu', type: 'text', maxlen: 4, size: 6, value: (nvram.pptpd_mtu ? nvram.pptpd_mtu : 1450)},
-	{ title: 'MRU', name: 'pptpd_mru', type: 'text', maxlen: 4, size: 6, value: (nvram.pptpd_mru ? nvram.pptpd_mru : 1450)}
+	{ title: 'MRU', name: 'pptpd_mru', type: 'text', maxlen: 4, size: 6, value: (nvram.pptpd_mru ? nvram.pptpd_mru : 1450)},
+	{ title: '<a href="http://poptop.sourceforge.net/" target="_new">Poptop</a><br>Custom configuration', name: 'pptpd_custom', type: 'textarea', value: nvram.pptpd_custom }
+
 ]);
 </script>
 </div>
 
-<div class='section-title'>PPTP User List <small><i><a href='javascript:toggleVisibility("userlist");'><span id='sesdiv_userlist_showhide'>(Click here to hide)</span></a></i></small></div>
+<h3>PPTP User List <small><i><a href='javascript:toggleVisibility("userlist");'><span id='sesdiv_userlist_showhide'>(Click here to hide)</span></a></i></small></h3>
 <!-- REMOVE-BEGIN -->
-<!-- <div class='section-title'>PPTP User List <small> <span id='user_count'></span> <i><a href='javascript:toggleVisibility("userlist");'><span id='sesdiv_userlist_showhide'>(Click here to hide)</span></a></i></small></div> -->
+<!-- <h3>PPTP User List <small> <span id='user_count'></span> <i><a href='javascript:toggleVisibility("userlist");'><span id='sesdiv_userlist_showhide'>(Click here to hide)</span></a></i></small></h3> -->
 <!--REMOVE-END -->
 <div class='section' id='sesdiv_userlist'>
   <table class='tomato-grid' cellspacing=1 id='ul-grid'></table>
 </div>
 
-<div class='section-title'>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></div>
+<h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdiv_notes' style='display:none'>
 <ul>
 <li><b>Local IP Address/Netmask</b> - Address to be used at the local end of the tunnelled PPP links between the server and the VPN clients.</li>
@@ -358,18 +382,25 @@ createFieldTable('', [
 </small>
 </div>
 
-<br>
-<div style="float:right;text-align:right">
-&raquo; <a href="vpn-pptp-online.asp">PPTP Online</a>
-</div>
+ <a href="vpn-pptp-online.asp" class='btn'>&raquo; PPTP Online</a>
 
-</td></tr>
-<tr><td id='footer' colspan=2>
- <span id='footer-msg'></span>
- <input type='button' value='Save' id='save-button' onclick='save()'>
- <input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
+<span id='footer-msg'></span>
+<div class='form-actions'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+</div>
 </form>
+
+<!-- / / / -->
+
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
+<script type='text/javascript'>init();</script>
 </body>
 </html>

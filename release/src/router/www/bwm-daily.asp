@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,31 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Bandwidth: Daily</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -86,7 +104,7 @@ function redraw()
 	block = '';
 	gn = 0;
 
-	grid = '<table class="bwmg" cellspacing="1">';
+	grid = '<table class="table table-striped table-bordered">';
 	grid += makeRow('header', 'Date', 'Download', 'Upload', 'Total');
 
 	for (i = 0; i < daily_history.length; ++i) {
@@ -128,33 +146,30 @@ function init()
 
 </head>
 <body onload='init()'>
-<form>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    <% include(header.html); %>
 
 <!-- / / / -->
 
-<div class='section-title'>WAN Bandwidth - Daily</div>
-<div id='bwm-daily-grid' style='float:left'></div>
-<div style="float:right;text-align:right">
+<h3>WAN Bandwidth - Daily</h3>
+<div id='bwm-daily-grid' class="span6"></div>
+<div class="span4">
 
 
-<table class='tomato-grid' style='width:150px'>
-<tr class='header'><td colspan=2 style='text-align:center'>Last 30 Days<br><span style='font-weight:normal' id='last-dates'></span></td></tr>
-<tr class='even'><td>Down</td><td id='last-dn'>-</td></tr>
-<tr class='odd'><td>Up</td><td id='last-up'>-</td></tr>
-<tr class='footer'><td>Total</td><td id='last-total'>-</td></tr>
+<table class='table table-striped table-bordered table-condensed'>
+	<thead>
+<tr><th colspan=2 style='text-align:center'>Last 30 Days<br><span style='font-weight:normal' id='last-dates'></span></th></tr>
+</thead>
+<tbody>
+<tr><td>Down</td><td id='last-dn'>-</td></tr>
+<tr><td>Up</td><td id='last-up'>-</td></tr>
+<tr><td>Total</td><td id='last-total'>-</td></tr>
+</tbody>
 </table>
 
-<br>
-<hr size=1>
-<br>
+<br/>
+<hr/>
+<br/>
 
 <b>Date</b> <select onchange='changeDate(this, "ymd")' id='dafm'><option value=0>yyyy-mm-dd</option><option value=1>mm-dd-yyyy</option><option value=2>mmm dd, yyyy</option><option value=3>dd.mm.yyyy</option></select><br>
 <b>Scale</b> <select onchange='changeScale(this)' id='scale'><option value=0>KB</option><option value=1>MB</option><option value=2 selected>GB</option></select><br>
@@ -170,11 +185,17 @@ function init()
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-<input type='button' value='Refresh' onclick='reloadPage()'>
-</td></tr>
-</table>
-</form>
+ </div><!--/row-->
+
+ <div id='footer' class="row-fluid">
+<input class="btn btn-primary" type='button' value='Refresh' onclick='reloadPage()'>
+</div>
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 </body>
 </html>

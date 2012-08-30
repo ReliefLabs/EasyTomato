@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,12 +7,30 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] About</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript'>
@@ -75,24 +93,14 @@ function init()
 
 </head>
 <body onload='init()'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+<% include(header.html); %>
 
 <div style='float:right;margin:140px 30px;text-align:center'>
 <img src='kinaree.png' alt='Linux &amp; Tomato' id='tux'>
 </div>
 <div style='margin:30px 30px;font-size:14px;color:#555;'>
-<b>EasyTomato Firmware v<% version(1); %></b><br>
-Copyright (C) 2011 Relief Labs International
-<a href="http://www.easytomato.org">http://www.easytomato.org</a><br>
-<br>
-<b>Based on Tomato Firmware v<% version(); %></b><br>
+<b>Tomato Firmware v<% version(1); %></b><br>
 <br>
 Based on TomatoUSB by Fedor Kozhevnikov<br>
 - Linux kernel <% version(2); %> and Broadcom Wireless Driver <% version(3); %> updates<br>
@@ -150,7 +158,6 @@ Captive Portal Copyright (C) 2011 Ofer Chen & Vicente Soriano<br>
 Copyright (C) 2011 Michał Rupental<br>
 <a href='http://openlinksys.info' target='_new'>http://openlinksys.info</a><br>
 <br>
-
 <!-- JYAVENARD-BEGIN -->
 <b>"JYAvenard" Features:</b><br>
 <!-- OPENVPN-BEGIN -->
@@ -163,7 +170,6 @@ Copyright (C) 2010-2011 Jean-Yves Avenard<br>
 <a href='mailto:jean-yves@avenard.org'>jean-yves@avenard.org</a><br>
 <br>
 <!-- JYAVENARD-END -->
-
 <b>"Teaman" Features:</b><br>
 - QOS-detailed & ctrate improved filters<br>
 - Per-IP bandwidth monitoring of LAN clients [cstats v2]<br>
@@ -192,6 +198,7 @@ Copyright (C) 2012 Tiomo<br>
 - 250 entry limit in Static DHCP  & Wireless Filter<br>
 - 500 entry limit in Access Restriction rules<br>
 - Up to 80 QOS rules<br>
+- IMQ based QOS/Bandwidth Limiter<br>
 - Configurable QOS class names<br>
 - Comprehensive QOS rule examples set by default<br>
 - GPT support for HDD by Yaniv Hamo<br>
@@ -241,9 +248,19 @@ suggestions and contributed to this project. ^ _ ^</b><br>
 
 </div>
 
+<!-- / / / -->
+ </div><!--/row-->
+          
+        </div><!--/span-->
+      </div><!--/row-->
 
-</td></tr>
-	<tr><td id='footer' colspan=2>&nbsp;</td></tr>
-</table>
+      <hr>
+
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
 </body>
 </html>
