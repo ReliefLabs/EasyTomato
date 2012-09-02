@@ -5,29 +5,14 @@
 #ifndef OPENSSL_DOING_MAKEDEPEND
 
 
-#ifndef OPENSSL_NO_AES
-# define OPENSSL_NO_AES
-#endif
-#ifndef OPENSSL_NO_AES192
-# define OPENSSL_NO_AES192
-#endif
 #ifndef OPENSSL_NO_CAMELLIA
 # define OPENSSL_NO_CAMELLIA
 #endif
 #ifndef OPENSSL_NO_CAPIENG
 # define OPENSSL_NO_CAPIENG
 #endif
-#ifndef OPENSSL_NO_CAST
-# define OPENSSL_NO_CAST
-#endif
 #ifndef OPENSSL_NO_CMS
 # define OPENSSL_NO_CMS
-#endif
-#ifndef OPENSSL_NO_DES
-# define OPENSSL_NO_DES
-#endif
-#ifndef OPENSSL_NO_DH
-# define OPENSSL_NO_DH
 #endif
 #ifndef OPENSSL_NO_DTLS1
 # define OPENSSL_NO_DTLS1
@@ -59,9 +44,6 @@
 #ifndef OPENSSL_NO_GOST
 # define OPENSSL_NO_GOST
 #endif
-#ifndef OPENSSL_NO_IDEA
-# define OPENSSL_NO_IDEA
-#endif
 #ifndef OPENSSL_NO_JPAKE
 # define OPENSSL_NO_JPAKE
 #endif
@@ -74,20 +56,11 @@
 #ifndef OPENSSL_NO_MDC2
 # define OPENSSL_NO_MDC2
 #endif
-#ifndef OPENSSL_NO_MODES
-# define OPENSSL_NO_MODES
-#endif
 #ifndef OPENSSL_NO_PERLASM
 # define OPENSSL_NO_PERLASM
 #endif
 #ifndef OPENSSL_NO_PSK
 # define OPENSSL_NO_PSK
-#endif
-#ifndef OPENSSL_NO_RC2
-# define OPENSSL_NO_RC2
-#endif
-#ifndef OPENSSL_NO_RC5
-# define OPENSSL_NO_RC5
 #endif
 #ifndef OPENSSL_NO_RFC3779
 # define OPENSSL_NO_RFC3779
@@ -134,29 +107,14 @@
    who haven't had the time to do the appropriate changes in their
    applications.  */
 #ifdef OPENSSL_ALGORITHM_DEFINES
-# if defined(OPENSSL_NO_AES) && !defined(NO_AES)
-#  define NO_AES
-# endif
-# if defined(OPENSSL_NO_AES192) && !defined(NO_AES192)
-#  define NO_AES192
-# endif
 # if defined(OPENSSL_NO_CAMELLIA) && !defined(NO_CAMELLIA)
 #  define NO_CAMELLIA
 # endif
 # if defined(OPENSSL_NO_CAPIENG) && !defined(NO_CAPIENG)
 #  define NO_CAPIENG
 # endif
-# if defined(OPENSSL_NO_CAST) && !defined(NO_CAST)
-#  define NO_CAST
-# endif
 # if defined(OPENSSL_NO_CMS) && !defined(NO_CMS)
 #  define NO_CMS
-# endif
-# if defined(OPENSSL_NO_DES) && !defined(NO_DES)
-#  define NO_DES
-# endif
-# if defined(OPENSSL_NO_DH) && !defined(NO_DH)
-#  define NO_DH
 # endif
 # if defined(OPENSSL_NO_DTLS1) && !defined(NO_DTLS1)
 #  define NO_DTLS1
@@ -188,9 +146,6 @@
 # if defined(OPENSSL_NO_GOST) && !defined(NO_GOST)
 #  define NO_GOST
 # endif
-# if defined(OPENSSL_NO_IDEA) && !defined(NO_IDEA)
-#  define NO_IDEA
-# endif
 # if defined(OPENSSL_NO_JPAKE) && !defined(NO_JPAKE)
 #  define NO_JPAKE
 # endif
@@ -203,20 +158,11 @@
 # if defined(OPENSSL_NO_MDC2) && !defined(NO_MDC2)
 #  define NO_MDC2
 # endif
-# if defined(OPENSSL_NO_MODES) && !defined(NO_MODES)
-#  define NO_MODES
-# endif
 # if defined(OPENSSL_NO_PERLASM) && !defined(NO_PERLASM)
 #  define NO_PERLASM
 # endif
 # if defined(OPENSSL_NO_PSK) && !defined(NO_PSK)
 #  define NO_PSK
-# endif
-# if defined(OPENSSL_NO_RC2) && !defined(NO_RC2)
-#  define NO_RC2
-# endif
-# if defined(OPENSSL_NO_RC5) && !defined(NO_RC5)
-#  define NO_RC5
 # endif
 # if defined(OPENSSL_NO_RFC3779) && !defined(NO_RFC3779)
 #  define NO_RFC3779
