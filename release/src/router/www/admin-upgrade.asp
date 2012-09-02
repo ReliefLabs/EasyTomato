@@ -34,18 +34,6 @@
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
-<!-- / / / -->
-<style type='text/css'>
-#afu-progress {
-	text-align: center;
-	padding: 200px 0;
-	width: 890px;
-}
-#afu-time {
-	font-size: 26px;
-}
-</style>
-
 <script type='text/javascript' src='debug.js'></script>
 
 <script type='text/javascript'>
@@ -101,10 +89,9 @@ function upgrade()
 	<h3>Upgrade Firmware</h3>
 	<div class='section'>
 		<form name='form_upgrade' method='post' action='upgrade.cgi' encType='multipart/form-data'>
-		<div id='box-input'>
-			Select the file to use:<br>
-			<input type='file' name='file' size='50' style='height:20px'> <input type='button' value='Upgrade' id='afu-upgrade-button' onclick='upgrade()' style='height:20px'>
-		</div>
+		
+			<label>Select the file to use:</label>
+			<input type='file' name='file' size='50'> <input type='button' value='Upgrade' id='afu-upgrade-button' onclick='upgrade()' class="btn btn-primary">
 		</form>
 		<br><form name='form_reset' action='javascript:{}'>
 		<div id='reset-input'>

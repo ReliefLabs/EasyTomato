@@ -35,6 +35,7 @@
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='interfaces.js'></script>
 <script type='text/javascript' src='debug.js'></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 
 <script type='text/javascript'>
 wmo = {'ap':'Access Point','sta':'Wireless Client','wet':'Wireless Ethernet Bridge','wds':'WDS'};
@@ -206,13 +207,21 @@ function toggleVisibility(whichone) {
 }
 </script>
 
+<script>
+$(document).ready(function() {
+    $("a.toggler").click(function () {
+      $("div.section").slideToggle("fast");
+    })
+});
+</script>
+
 </head>
 <body onload='init()'>
 
 
 <% include(header.html); %>
 
-<h3>System <small><i><a href='javascript:toggleVisibility("system");'><span id='sesdiv_system_showhide'>(Click here to hide)</span></a></i></small></h3>
+<h3>System <small><i><a class="toggler" href='#'><span id='sesdiv_system_showhide'>(Click here to hide)</span></a></i></small></h3>
 <div class='section' id='sesdiv_system'>
 <script type='text/javascript'>
 createFieldTable('', [

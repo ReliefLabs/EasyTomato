@@ -2499,7 +2499,7 @@ REMOVE-END */
 	for (i = 0; i < menu.length; ++i) {
 		var m = menu[i];
 		if (!m) {
-			buf.push("<br>");
+			buf.push('<li class="divider"></li>');
 			continue;
 		}
 		if (m.length == 2) {
@@ -2526,7 +2526,7 @@ REMOVE-END */
 			if ((!on1) && (m[2] == 0) && (cexp.indexOf(m[1]) == -1)) continue;
 
 
-			buf.push('<ul>');
+			buf.push('<ul class="nav nav-list">');
 			for (j = 0; j < m[3].length; ++j) {
 				sm = m[3][j];
 				a = m[1] + '-' + sm[1];
