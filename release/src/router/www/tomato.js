@@ -2520,7 +2520,6 @@ REMOVE-END */
 				}
 			}
 			a = m[1] + '-' + b;
-			if (a == 'status-overview.asp') a = '/';
 			on1 = (base == m[1]);
 			buf.push('<li' + (on1 ? ' class=""' : '') + '><a href="' + a + '">' + m[0] + '</a></li>');
 			if ((!on1) && (m[2] == 0) && (cexp.indexOf(m[1]) == -1)) continue;
@@ -2530,7 +2529,6 @@ REMOVE-END */
 			for (j = 0; j < m[3].length; ++j) {
 				sm = m[3][j];
 				a = m[1] + '-' + sm[1];
-				if (a == 'status-overview.asp') a = '/';
 				buf.push('<li' + (((on1) && (name == sm[1])) ? ' class="active"' : '') + '><a href="' + a + '">' + sm[0] + '</a></li>');
 			}
 			buf.push('</ul>');
