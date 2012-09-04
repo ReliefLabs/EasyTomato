@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # libtoolT - Provide generalized library-building support services.
 # Generated automatically by  (GNU lzo 2.03)
@@ -44,10 +44,10 @@ available_tags=" CXX"
 
 # ### BEGIN LIBTOOL CONFIG
 
-# Libtool was configured on host keith-laptop:
+# Libtool was configured on host lancelot:
 
 # Shell to use when invoking shell scripts.
-SHELL="/bin/sh"
+SHELL="/bin/bash"
 
 # Whether or not to build shared libraries.
 build_libtool_libs=yes
@@ -70,8 +70,8 @@ host=mipsel-unknown-linux-gnu
 host_os=linux-gnu
 
 # The build system.
-build_alias=
-build=i686-pc-linux-gnu
+build_alias=x86_64-linux-gnu
+build=x86_64-pc-linux-gnu
 build_os=linux-gnu
 
 # An echo program that does not interpret backslashes.
@@ -85,7 +85,7 @@ AR_FLAGS="cru"
 LTCC="mipsel-uclibc-gcc"
 
 # LTCC compiler flags.
-LTCFLAGS="-mips2 -O3 -Wall"
+LTCFLAGS="-Os -Wall -fPIC -DLINUX26 -DCONFIG_BCMWL5 -pipe -DBCMWPA2 -funit-at-a-time -Wno-pointer-sign -mtune=mips32 -mips32 "
 
 # A language-specific compiler.
 CC="mipsel-uclibc-gcc"
@@ -106,7 +106,7 @@ LN_S="ln -s"
 NM="mipsel-uclibc-nm"
 
 # A symbol stripping program
-STRIP="mipsel-uclibc-strip"
+STRIP="mipsel-uclibc-strip -R .note -R .comment"
 
 # Used to examine libraries when file_magic_cmd begins "file"
 MAGIC_CMD=file
@@ -174,7 +174,7 @@ dlopen_self_static=unknown
 link_static_flag="-static"
 
 # Compiler flag to turn off builtin functions.
-no_builtin_flag=" -fno-builtin -fno-rtti -fno-exceptions"
+no_builtin_flag=" -fno-builtin"
 
 # Compiler flag to allow reflexive dlopens.
 export_dynamic_flag_spec="\${wl}--export-dynamic"
@@ -224,8 +224,8 @@ module_cmds=""
 module_expsym_cmds=""
 
 # Commands to strip libraries.
-old_striplib="mipsel-uclibc-strip --strip-debug"
-striplib="mipsel-uclibc-strip --strip-unneeded"
+old_striplib="mipsel-uclibc-strip -R .note -R .comment --strip-debug"
+striplib="mipsel-uclibc-strip -R .note -R .comment --strip-unneeded"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
@@ -325,10 +325,10 @@ variables_saved_for_relink="PATH LD_LIBRARY_PATH LD_RUN_PATH GCC_EXEC_PREFIX COM
 link_all_deplibs=unknown
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec=" /opt/brcm/hndtools-mipsel-linux/bin//../lib/gcc-lib/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin//../lib/gcc-lib/ /opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3/ /usr/lib/gcc/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin//../lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin//../lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/ /opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/ /opt/brcm/hndtools-mipsel-linux/bin//../lib/gcc-lib/mipsel-linux/3.2.3/../../../mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin//../lib/gcc-lib/mipsel-linux/3.2.3/../../../"
+sys_lib_search_path_spec=" /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/ /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/ /opt/brcm/hndtools-mipsel-uclibc-4.2.4/lib/gcc/mipsel-linux-uclibc/4.2.4/ /usr/lib/gcc/mipsel-linux-uclibc/4.2.4/ /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/../../../../mipsel-linux-uclibc/lib/mipsel-linux-uclibc/4.2.4/ /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/../../../../mipsel-linux-uclibc/lib/ /opt/brcm/hndtools-mipsel-uclibc-4.2.4/mipsel-linux-uclibc/lib/mipsel-linux-uclibc/4.2.4/ /opt/brcm/hndtools-mipsel-uclibc-4.2.4/mipsel-linux-uclibc/lib/"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib /lib/i486-linux-gnu /usr/lib/i486-linux-gnu /usr/lib/alsa-lib /usr/local/lib "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib32/alsa-lib /usr/local/lib /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/mesa /lib32 /usr/lib32 "
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""
@@ -7215,10 +7215,10 @@ disable_libs=static
 # End:
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
-# Libtool was configured on host keith-laptop:
+# Libtool was configured on host lancelot:
 
 # Shell to use when invoking shell scripts.
-SHELL="/bin/sh"
+SHELL="/bin/bash"
 
 # Whether or not to build shared libraries.
 build_libtool_libs=yes
@@ -7241,8 +7241,8 @@ host=mipsel-unknown-linux-gnu
 host_os=linux-gnu
 
 # The build system.
-build_alias=
-build=i686-pc-linux-gnu
+build_alias=x86_64-linux-gnu
+build=x86_64-pc-linux-gnu
 build_os=linux-gnu
 
 # An echo program that does not interpret backslashes.
@@ -7256,7 +7256,7 @@ AR_FLAGS="cru"
 LTCC="mipsel-uclibc-gcc"
 
 # LTCC compiler flags.
-LTCFLAGS="-mips2 -O3 -Wall"
+LTCFLAGS="-Os -Wall -fPIC -DLINUX26 -DCONFIG_BCMWL5 -pipe -DBCMWPA2 -funit-at-a-time -Wno-pointer-sign -mtune=mips32 -mips32 "
 
 # A language-specific compiler.
 CC="mipsel-linux-g++"
@@ -7277,7 +7277,7 @@ LN_S="ln -s"
 NM="mipsel-uclibc-nm"
 
 # A symbol stripping program
-STRIP="mipsel-uclibc-strip"
+STRIP="mipsel-uclibc-strip -R .note -R .comment"
 
 # Used to examine libraries when file_magic_cmd begins "file"
 MAGIC_CMD=file
@@ -7392,16 +7392,16 @@ module_cmds=""
 module_expsym_cmds=""
 
 # Commands to strip libraries.
-old_striplib="mipsel-uclibc-strip --strip-debug"
-striplib="mipsel-uclibc-strip --strip-unneeded"
+old_striplib="mipsel-uclibc-strip -R .note -R .comment --strip-debug"
+striplib="mipsel-uclibc-strip -R .note -R .comment --strip-unneeded"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
-predep_objects="/opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/crti.o /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/crtbeginS.o"
+predep_objects="/home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/../../../../mipsel-linux-uclibc/lib/crti.o /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/crtbeginS.o"
 
 # Dependencies to place after the objects being linked to create a
 # shared library.
-postdep_objects="/opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/crtendS.o /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/crtn.o"
+postdep_objects="/home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/crtendS.o /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/../../../../mipsel-linux-uclibc/lib/crtn.o"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
@@ -7413,7 +7413,7 @@ postdeps="-lstdc++ -lm -lgcc_s -lc -lgcc_s"
 
 # The library search path used internally by the compiler when linking
 # a shared library.
-compiler_lib_search_path="-L/opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3 -L/opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib -L/opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3 -L/opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib -L/opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib -L/opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../.."
+compiler_lib_search_path="-L/home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4 -L/home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc -L/home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/../../../../mipsel-linux-uclibc/lib"
 
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
@@ -7493,10 +7493,10 @@ variables_saved_for_relink="PATH LD_LIBRARY_PATH LD_RUN_PATH GCC_EXEC_PREFIX COM
 link_all_deplibs=unknown
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec=" /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/ /opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3/ /usr/lib/gcc/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/ /opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux-3.2.3/lib/gcc-lib/mipsel-linux/3.2.3/../../../../mipsel-linux/lib/ /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../../mipsel-linux/3.2.3/ /opt/brcm/hndtools-mipsel-linux/bin/../lib/gcc-lib/mipsel-linux/3.2.3/../../../"
+sys_lib_search_path_spec=" /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/ /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/ /opt/brcm/hndtools-mipsel-uclibc-4.2.4/lib/gcc/mipsel-linux-uclibc/4.2.4/ /usr/lib/gcc/mipsel-linux-uclibc/4.2.4/ /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/../../../../mipsel-linux-uclibc/lib/mipsel-linux-uclibc/4.2.4/ /home/alex/tomato/tools/brcm/K26/hndtools-mipsel-uclibc-4.2.4/bin/../lib/gcc/mipsel-linux-uclibc/4.2.4/../../../../mipsel-linux-uclibc/lib/ /opt/brcm/hndtools-mipsel-uclibc-4.2.4/mipsel-linux-uclibc/lib/mipsel-linux-uclibc/4.2.4/ /opt/brcm/hndtools-mipsel-uclibc-4.2.4/mipsel-linux-uclibc/lib/"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib /lib/i486-linux-gnu /usr/lib/i486-linux-gnu /usr/lib/alsa-lib /usr/local/lib "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib32/alsa-lib /usr/local/lib /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/mesa /lib32 /usr/lib32 "
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""

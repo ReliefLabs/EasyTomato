@@ -37,9 +37,12 @@
 #define TCONFIG_L7PAT 1
   #define IF_TCONFIG_L7PAT(...) __VA_ARGS__
   #define IF_NOT_TCONFIG_L7PAT(...)
-#undef TCONFIG_LZO
-  #define IF_TCONFIG_LZO(...)
-  #define IF_NOT_TCONFIG_LZO(...) __VA_ARGS__
+#define TCONFIG_LZO 1
+  #define IF_TCONFIG_LZO(...) __VA_ARGS__
+  #define IF_NOT_TCONFIG_LZO(...)
+#define TCONFIG_OPENVPN 1
+  #define IF_TCONFIG_OPENVPN(...) __VA_ARGS__
+  #define IF_NOT_TCONFIG_OPENVPN(...)
 #define TCONFIG_IPV6 1
   #define IF_TCONFIG_IPV6(...) __VA_ARGS__
   #define IF_NOT_TCONFIG_IPV6(...)
@@ -61,9 +64,9 @@
 #define TCONFIG_FTP 1
   #define IF_TCONFIG_FTP(...) __VA_ARGS__
   #define IF_NOT_TCONFIG_FTP(...)
-#undef TCONFIG_FTP_SSL
-  #define IF_TCONFIG_FTP_SSL(...)
-  #define IF_NOT_TCONFIG_FTP_SSL(...) __VA_ARGS__
+#define TCONFIG_FTP_SSL 1
+  #define IF_TCONFIG_FTP_SSL(...) __VA_ARGS__
+  #define IF_NOT_TCONFIG_FTP_SSL(...)
 #define TCONFIG_SAMBASRV 1
   #define IF_TCONFIG_SAMBASRV(...) __VA_ARGS__
   #define IF_NOT_TCONFIG_SAMBASRV(...)

@@ -29,10 +29,10 @@
 /* #undef HAVE_CLOCK_GETCPUCLOCKID */
 
 /* Define to 1 if you have the `clock_getres' function. */
-/* #undef HAVE_CLOCK_GETRES */
+#define HAVE_CLOCK_GETRES 1
 
 /* Define to 1 if you have the `clock_gettime' function. */
-/* #undef HAVE_CLOCK_GETTIME */
+#define HAVE_CLOCK_GETTIME 1
 
 /* Define to 1 if you have the `ctime' function. */
 #define HAVE_CTIME 1
@@ -278,7 +278,7 @@
 #define SIZEOF_FLOAT 4
 
 /* The size of a `fpos_t', as computed by sizeof. */
-#define SIZEOF_FPOS_T 8
+#define SIZEOF_FPOS_T 24
 
 /* The size of a `int', as computed by sizeof. */
 #define SIZEOF_INT 4
