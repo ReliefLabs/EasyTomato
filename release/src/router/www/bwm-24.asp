@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,31 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Bandwidth: Last 24 Hours</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -68,7 +86,7 @@ function switchHours(h)
 	cookie.set(cprefix + 'hrs', hours);
 }
 
-var ref = new TomatoRefresh('update.cgi', 'exec=bandwidth&arg0=speed');
+var ref = new TomatoRefresh('/update.cgi', 'exec=bandwidth&arg0=speed');
 
 ref.refresh = function(text)
 {
@@ -147,20 +165,13 @@ function init()
 
 </head>
 <body onload='init()'>
-<form>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
 
+
+    <% include(header.html); %>
 <!-- / / / -->
 
 <div id='rstats'>
-	<div id='tab-area'></div>
+	<div id='tab-area' class="btn-toolbar"></div>
 
 	<script type='text/javascript'>
 	if ((nvram.web_svg != '0') && (nvram.rstats_enable == '1')) {
@@ -199,27 +210,27 @@ function init()
 	</div>
 
 	<br><br>
-	<table border=0 cellspacing=2 id='txt'>
+	<table id='txt' class="table-striped">
 	<tr>
-		<td width='8%' align='right' valign='top'><b style='border-bottom:blue 1px solid' id='rx-name'>RX</b></td>
-			<td width='15%' align='right' valign='top'><span id='rx-current'></span></td>
-		<td width='8%' align='right' valign='top'><b>Avg</b></td>
-			<td width='15%' align='right' valign='top' id='rx-avg'></td>
-		<td width='8%' align='right' valign='top'><b>Peak</b></td>
-			<td width='15%' align='right' valign='top' id='rx-max'></td>
-		<td width='8%' align='right' valign='top'><b>Total</b></td>
-			<td width='14%' align='right' valign='top' id='rx-total'></td>
+		<td><b style='border-bottom:blue 1px solid' id='rx-name'>RX</b></td>
+			<td><span id='rx-current'></span></td>
+		<td><b>Avg</b></td>
+			<td id='rx-avg'></td>
+		<td><b>Peak</b></td>
+			<td id='rx-max'></td>
+		<td><b>Total</b></td>
+			<td id='rx-total'></td>
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td width='8%' align='right' valign='top'><b style='border-bottom:blue 1px solid' id='tx-name'>TX</b></td>
-			<td width='15%' align='right' valign='top'><span id='tx-current'></span></td>
-		<td width='8%' align='right' valign='top'><b>Avg</b></td>
-			<td width='15%' align='right' valign='top' id='tx-avg'></td>
-		<td width='8%' align='right' valign='top'><b>Peak</b></td>
-			<td width='15%' align='right' valign='top' id='tx-max'></td>
-		<td width='8%' align='right' valign='top'><b>Total</b></td>
-			<td width='14%' align='right' valign='top' id='tx-total'></td>
+		<td><b style='border-bottom:blue 1px solid' id='tx-name'>TX</b></td>
+			<td><span id='tx-current'></span></td>
+		<td><b>Avg</b></td>
+			<td id='tx-avg'></td>
+		<td><b>Peak</b></td>
+			<td id='tx-max'></td>
+		<td><b>Total</b></td>
+			<td id='tx-total'></td>
 		<td>&nbsp;</td>
 	</tr>
 	</table>
@@ -233,19 +244,24 @@ if (nvram.rstats_enable != '1') {
 	E('rstats').style.display = 'none';
 }
 else {
-	W('<div class="note-warning" style="display:none" id="rbusy">The rstats program is not responding or is busy. Try reloading after a few seconds.</div>');
+	W('<div class="alert alert-info" style="display:none" id="rbusy">The rstats program is not responding or is busy. Try reloading after a few seconds.</div>');
 }
 </script>
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
+<div id='footer' class="footer">
 	<span id='dtime'></span>
 	<img src='spin.gif' id='refresh-spinner' onclick='debugTime=1'>
-	<input type='button' value='Refresh' id='refresh-button' onclick='ref.toggleX()'>
-</td></tr>
-</table>
-</form>
+	<input type='button' value='Refresh' id='refresh-button' onclick='ref.toggleX()' class="btn">
+</div>
+ </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2007 Jonathan Zarate
@@ -7,12 +7,30 @@
 	No part of this file may be used without permission.
 	LAN Access admin module by Augusto Bott
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Advanced: LAN Access</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <style type='text/css'>
@@ -220,27 +238,24 @@ function toggleVisibility(whichone) {
 </script>
 </head>
 <body onload='init()'>
+    
+<% include(header.html); %>
+
+<!-- / / / -->
+
 <form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-  <% include(/www/easyheader.html); %>
-  
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
 <input type='hidden' name='_nextpage' value='advanced-access.asp'>
 <input type='hidden' name='_nextwait' value='10'>
 <input type='hidden' name='_service' value='firewall-restart'>
 <input type='hidden' name='lan_access'>
 
-<div class='section-title'>LAN Access</div>
+<h3>LAN Access</h3>
 <div class='section'>
-  <table class='tomato-grid' cellspacing=1 id='la-grid'></table>
+  <table class='table table-striped table-condensed table-bordered' id='la-grid'></table>
 </div>
 </div>
 
-<div class='section-title'>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></div>
+<h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdiv_notes' style='display:none'>
 <ul>
 <li><b>Src</b> - Source LAN bridge.</li>
@@ -250,13 +265,20 @@ function toggleVisibility(whichone) {
 </ul>
 </div>
 
-</td></tr>
-<tr><td id='footer' colspan=2>
- <span id='footer-msg'></span>
- <input type='button' value='Save' id='save-button' onclick='save()'>
- <input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
-</form>
+
+<span id='footer-msg'></span>
+ <input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+ <input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+
+<!-- / / / -->
+
+ </div><!--/row-->
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>

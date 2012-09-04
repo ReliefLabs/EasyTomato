@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,23 +7,34 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Advanced: DHCP / DNS</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
-
-<style type='text/css'>
-textarea {
-	width: 98%;
-	height: 15em;
-}
-</style>
 
 <script type='text/javascript' src='debug.js'></script>
 
@@ -113,18 +124,12 @@ function init() {
 
 </head>
 <body onload='init()'>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+    
+<% include(header.html); %>
 
 <!-- / / / -->
 
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='advanced-dhcpdns.asp'>
 <input type='hidden' name='_service' value=''>
 
@@ -137,7 +142,7 @@ function init() {
 <input type='hidden' name='dhcpc_minpkt'>
 <input type='hidden' name='dhcpd_static_only'>
 
-<div class='section-title'>DHCP / DNS Server (LAN)</div>
+<h3>DHCP / DNS Server (LAN)</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -159,7 +164,7 @@ createFieldTable('', [
 
 <!-- / / / -->
 
-<div class='section-title'>DHCP Client (WAN)</div>
+<h3>DHCP Client (WAN)</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -171,7 +176,7 @@ createFieldTable('', [
 
 <!-- / / / -->
 
-<div class='section-title'>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdivnotesshowhide'>(Click here to show)</span></a></i></small></div>
+<h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdivnotesshowhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdivnotes' style='display:none'>
 
 <i>DHCP / DNS Server (LAN):</i><br>
@@ -200,17 +205,22 @@ createFieldTable('', [
 
 </div>
 
+	<span id='footer-msg'></span>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+</form>
+</div>
+
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
-</form>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>verifyFields(null, true);</script>
 </body>
 </html>
-

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,7 +7,7 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
@@ -19,8 +19,8 @@
 <body>
 <table id='container' cellspacing=0>
 <tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
+	<div class='title'>Tomato</div>
+	<div class='version'>Version <% version(); %></div>
 </td></tr>
 <tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
 <td id='content'>
@@ -46,8 +46,8 @@ W('<ul>' + b.join('') + '</ul>');
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>&nbsp;</td></tr>
+ </div><!--/row-->
+ <div id='footer'>&nbsp;</td></tr>
 </table>
 </body>
 </html>

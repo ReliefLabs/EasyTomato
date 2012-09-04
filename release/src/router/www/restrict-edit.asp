@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Edit Access Restrictions</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='protocols.js'></script>
 
@@ -54,7 +73,6 @@
 }
 
 textarea {
-	width: 99%;
 	height: 20em;
 }
 </style>
@@ -82,7 +100,11 @@ layer7.unshift(['', 'Layer 7 (disabled)']);
 
 var ipp2p = [
 	[0,'IPP2P (disabled)'],[0xFFFF,'All IPP2P Filters'],[1,'AppleJuice'],[2,'Ares'],[4,'BitTorrent'],[8,'Direct Connect'],
-	[16,'eDonkey'],[32,'Gnutella'],[64,'Kazaa'],[128,'Mute'],[256,'SoulSeek'],[512,'Waste'],[1024,'WinMX'],[2048,'XDCC']];
+	[16,'eDonkey'],[32,'Gnutella'],[64,'Kazaa'],[128,'Mute'],[4096,'PPLive/UUSee'],[256,'SoulSeek'],[512,'Waste'],[1024,'WinMX']
+/* LINUX26-BEGIN */
+	,[2048,'XDCC'],[8192,'Xunlei/QQCyclone']
+/* LINUX26-END */
+	];
 
 var dowNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -431,23 +453,18 @@ function earlyInit()
 </script>
 </head>
 <body onload='init()'>
-<form name='_fom' id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version() %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+
+    
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form name='_fom' id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='restrict.asp'>
 <input type='hidden' name='_service' value='restrict-restart'>
 <input type='hidden' name='rruleNN' id='_rrule' value=''>
 
-<div class='section-title'>Access Restriction</div>
+<h3>Access Restriction</h3>
 <div class='section'>
 <script type='text/javascript'>
 W('<div style="float:right"><small>'+ 'ID: ' + rruleN.pad(2) + '</small>&nbsp;</div><br>');
@@ -486,19 +503,23 @@ createFieldTable('', [
 </script>
 </div>
 
+	<span id='footer-msg'></span>
+	<input type='button' value='Delete...' id='delete-button' onclick='remove()' class='btn'>
+	&nbsp;
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='cancel()' class='btn'>
+</form>
+
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Delete...' id='delete-button' onclick='remove()'>
-	&nbsp;
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='cancel()'>
-</td></tr>
-</table>
-<br><br>
-</form>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>earlyInit();</script>
 </body>
 </html>

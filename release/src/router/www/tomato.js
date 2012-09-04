@@ -479,8 +479,12 @@ function v_macip(e, quiet, bok, lan_ipaddr, lan_netmask)
 function fixIP(ip, x)
 {
 	var a, n, i;
+        a = ip;
+        i = a.indexOf("<br>");
+        if (i > 0)
+                a = a.slice(0,i);
 
-	a = ip.split('.');
+        a = a.split('.');
 	if (a.length != 4) return null;
 	for (i = 0; i < 4; ++i) {
 		n = a[i] * 1;
@@ -1590,13 +1594,13 @@ TomatoGrid.prototype = {
 		c.colSpan = this.header.cells.length;
 		if (which == 'edit') {
 			c.innerHTML =
-				'<input type=button value="Delete" onclick="TGO(this).onDelete()"> &nbsp; ' +
-				'<input type=button value="OK" onclick="TGO(this).onOK()"> ' +
-				'<input type=button value="Cancel" onclick="TGO(this).onCancel()">';
+				'<input type=button class="btn" value="Delete" onclick="TGO(this).onDelete()"> &nbsp; ' +
+				'<input type=button class="btn" value="OK" onclick="TGO(this).onOK()"> ' +
+				'<input type=button class="btn" value="Cancel" onclick="TGO(this).onCancel()">';
 		}
 		else {
 			c.innerHTML =
-				'<input type=button value="Add" onclick="TGO(this).onAdd()">';
+				'<input type=button class="btn" value="Add" onclick="TGO(this).onAdd()">';
 		}
 		return r;
 	},
@@ -2125,10 +2129,10 @@ function genStdTimeList(id, zero, min)
 
 function genStdRefresh(spin, min, exec)
 {
-	W('<div style="text-align:right">');
+	W('<div class="form-inline" style="text-align:right">');
 	if (spin) W('<img src="spin.gif" id="refresh-spinner"> ');
 	genStdTimeList('refresh-time', 'Auto Refresh', min);
-	W('<input type="button" value="Refresh" onclick="' + (exec ? exec : 'refreshClick()') + '" id="refresh-button"></div>');
+	W('<input type="button" value="Refresh" onclick="' + (exec ? exec : 'refreshClick()') + '" id="refresh-button" class="btn"></div>');
 }
 
 
@@ -2138,10 +2142,11 @@ function genStdRefresh(spin, min, exec)
 function _tabCreate(tabs)
 {
 	var buf = [];
-	buf.push('<ul id="tabs">');
+
+	buf.push('<div id="tabs" class="btn-group">');
 	for (var i = 0; i < arguments.length; ++i)
-		buf.push('<li><a href="javascript:tabSelect(\'' + arguments[i][0] + '\')" id="' + arguments[i][0] + '">' + arguments[i][1] + '</a>');
-	buf.push('</ul><div id="tabs-bottom"></div>');
+		buf.push('<a class="btn btn-large" href="javascript:tabSelect(\'' + arguments[i][0] + '\')" id="' + arguments[i][0] + '">' + arguments[i][1] + '</a>');
+	buf.push('</div>');
 	return buf.join('');
 }
 
@@ -2402,7 +2407,8 @@ REMOVE-END */
 			['Classification',	'classify.asp'],
 			['View Graphs',		'graphs.asp'],
 			['View Details',	'detailed.asp'],
-			['Transfer Rates',	'ctrate.asp'] ] ],
+			['Transfer Rates',	'ctrate.asp'],
+			['B/W Limiter',		'qoslimit.asp'] ] ],
 		['Access Restriction',		'restrict.asp'],
 
 /* NOCAT-BEGIN */
@@ -2470,7 +2476,6 @@ REMOVE-END */
 			['Upgrade',			'upgrade.asp'] ] ],
 		null,
 		['About',				'about.asp'],
-		['Test Stuff',				'test.asp'],
 		['Reboot...',			'javascript:reboot()'],
 		['Shutdown...',			'javascript:shutdown()'],
 		['Logout',				'javascript:logout()']
@@ -2494,11 +2499,11 @@ REMOVE-END */
 	for (i = 0; i < menu.length; ++i) {
 		var m = menu[i];
 		if (!m) {
-			buf.push("<br>");
+			buf.push('<li class="divider"></li>');
 			continue;
 		}
 		if (m.length == 2) {
-			buf.push('<a href="' + m[1] + '" class="indent1' + (((base == '') && (name == m[1])) ? ' active' : '') + '">' + m[0] + '</a>');
+			buf.push('<li' + (((base == '') && (name == m[1])) ? ' class="active"' : '') + '><a href="' + m[1] + '">' + m[0] + '</a></li>');
 		}
 		else {
 			if (base == m[1]) {
@@ -2515,17 +2520,18 @@ REMOVE-END */
 				}
 			}
 			a = m[1] + '-' + b;
-			if (a == 'status-overview.asp') a = '/';
 			on1 = (base == m[1]);
-			buf.push('<a href="' + a + '" class="indent1' + (on1 ? ' active' : '') + '">' + m[0] + '</a>');
+			buf.push('<li' + (on1 ? ' class=""' : '') + '><a href="' + a + '">' + m[0] + '</a></li>');
 			if ((!on1) && (m[2] == 0) && (cexp.indexOf(m[1]) == -1)) continue;
 
+
+			buf.push('<ul class="nav nav-list">');
 			for (j = 0; j < m[3].length; ++j) {
 				sm = m[3][j];
 				a = m[1] + '-' + sm[1];
-				if (a == 'status-overview.asp') a = '/';
-				buf.push('<a href="' + a + '" class="indent2' + (((on1) && (name == sm[1])) ? ' active' : '') + '">' + sm[0] + '</a>');
+				buf.push('<li' + (((on1) && (name == sm[1])) ? ' class="active"' : '') + '><a href="' + a + '">' + sm[0] + '</a></li>');
 			}
+			buf.push('</ul>');
 		}
 	}
 	document.write(buf.join(''));
@@ -2550,12 +2556,12 @@ function createFieldTable(flags, desc)
 	var id1;
 	var tr;
 
-	if ((flags.indexOf('noopen') == -1)) buf.push('<table class="fields">');
+	if ((flags.indexOf('noopen') == -1)) buf.push('<table class="table table-striped table-condensed table-bordered">');
 	for (desci = 0; desci < desc.length; ++desci) {
 		var v = desc[desci];
 
 		if (!v) {
-			buf.push('<tr><td colspan=2 class="spacer">&nbsp;</td></tr>');
+			buf.push('<tr><td colspan=2>&nbsp;</td></tr>');
 			continue;
 		}
 
@@ -2568,7 +2574,7 @@ function createFieldTable(flags, desc)
 
 		if (v.text) {
 			if (v.title) {
-				buf.push('<td class="title indent' + (v.indent || 1) + '">' + v.title + '</td><td class="content">' + v.text + '</td></tr>');
+				buf.push('<td>' + v.title + '</td><td>' + v.text + '</td></tr>');
 			}
 			else {
 				buf.push('<td colspan=2>' + v.text + '</td></tr>');
@@ -2578,7 +2584,7 @@ function createFieldTable(flags, desc)
 
 		id1 = '';
 		buf2 = [];
-		buf2.push('<td class="content">');
+		buf2.push('<td>');
 
 		if (v.multi) fields = v.multi;
 			else fields = [v];
@@ -2631,7 +2637,7 @@ function createFieldTable(flags, desc)
 				buf2.push('</select>');
 				break;
 			case 'textarea':
-				buf2.push('<textarea' + name + common + (f.wrap ? (' wrap=' + f.wrap) : '') + '>' + escapeHTML(UT(f.value)) + '</textarea>');
+				buf2.push('<textarea rows="6" class="span12" ' + name + common + (f.wrap ? (' wrap=' + f.wrap) : '') + '>' + escapeHTML(UT(f.value)) + '</textarea>');
 				break;
 			default:
 				if (f.custom) buf2.push(f.custom);
@@ -2641,7 +2647,7 @@ function createFieldTable(flags, desc)
 		}
 		buf2.push('</td>');
 
-		buf.push('<td class="title indent' + (v.indent ? v.indent : 1) + '">');
+		buf.push('<td>');
 		if (id1 != '') buf.push('<label for="' + id + '">' + v.title + '</label></td>');
 			else buf.push(+ v.title + '</td>');
 

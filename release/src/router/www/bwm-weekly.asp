@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,31 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Bandwidth: Weekly</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -101,7 +119,7 @@ function redraw()
 	if (swk < 0) swk = 6;
 
 	if (summary) {
-		grid = '<table class="bwmg" cellspacing="1">';
+		grid = '<table class="table">';
 		grid += makeRow('header', 'Date', 'Download', 'Upload', 'Total');
 	}
 	else {
@@ -111,7 +129,7 @@ function redraw()
 	function flush_block()
 	{
 		grid += '<b>' + dbeg + ' to ' + dend + '</b>' +
-				'<table class="bwmg" cellspacing="1">' +
+				'<table class="table">' +
 				makeRow('header', 'Date', 'Download', 'Upload', 'Total') +
 				block.join('') +
 				makeRow('footer', 'Total', rescale(dl), rescale(ul), rescale(dl + ul)) +
@@ -228,40 +246,37 @@ function init()
 
 </head>
 <body onload='init()'>
-<form>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    <% include(header.html); %>
 
 <!-- / / / -->
 
-<div class='section-title'>WAN Bandwidth - Weekly</div>
-<div id='bwm-weekly-grid' style='float:left'></div>
-<div style="float:right;text-align:right">
+<h3>WAN Bandwidth - Weekly</h3>
+<div id='bwm-weekly-grid'></div>
+<div>
 <b>Show</b> <select onchange='changeMode(this)' id='shmode'><option value=1 selected>Summary<option value=0>Full</select><br>
 <b>Date</b> <select onchange='changeDate(this, "ymd")' id='dafm'><option value=0>yyyy-mm-dd</option><option value=1>mm-dd-yyyy</option><option value=2>mmm dd, yyyy</option><option value=3>dd.mm.yyyy</option></select><br>
 <b>Start</b> <select onchange='changeStart(this)' id='startwk'><option value=0 selected>Sun<option value=1>Mon<option value=2>Tue<option value=3>Wed<option value=4>Thu<option value=5>Fri<option value=6>Sat</select><br>
 <b>Scale</b> <select onchange='changeScale(this)' id='scale'><option value=0>KB</option><option value=1>MB</option><option value=2 selected>GB</option></select><br>
 <br>
 &raquo; <a href="admin-bwm.asp">Configure</a>
-<br><br><br>
 </div>
-<br>
 
 <script type='text/javascript'>checkRstats();</script>
 
+<div class='form-actions'>
+  <input class="btn" type='button' value='Refresh' onclick='reloadPage()'>
+</div>
+
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-<input type='button' value='Refresh' onclick='reloadPage()'>
-</td></tr>
-</table>
-</form>
+ </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 </body>
 </html>

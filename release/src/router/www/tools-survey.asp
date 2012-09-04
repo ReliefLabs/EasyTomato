@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,34 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Tools: Wireless Survey</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+
+<!-- / / / -->
+
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -274,7 +295,7 @@ function setMsg(msg)
 }
 
 
-var ref = new TomatoRefresh('update.cgi', 'exec=wlscan', 0, 'tools_survey_refresh');
+var ref = new TomatoRefresh('/update.cgi', 'exec=wlscan', 0, 'tools_survey_refresh');
 
 ref.refresh = function(text)
 {
@@ -303,21 +324,15 @@ function init()
 </script>
 </head>
 <body onload='init()'>
-<form action='javascript:{}'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    
+<% include(header.html); %>
 
 <!-- / / / -->
 
-<div class='section-title'>Wireless Site Survey</div>
+<h3>Wireless Site Survey</h3>
 <div class='section'>
-	<table id='survey-grid' class='tomato-grid' cellspacing=0></table>
+	<table id='survey-grid' class='table table-striped table-condensed table-bordered'></table>
 	<div id='survey-msg'></div>
 	<div id='survey-controls'>
 		<img src="spin.gif" id="refresh-spinner">
@@ -338,11 +353,16 @@ function init()
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>&nbsp;</td></tr>
-</table>
-</form>
+
+<div id='footer'></div>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>earlyInit();</script>
 </body>
 </html>
-

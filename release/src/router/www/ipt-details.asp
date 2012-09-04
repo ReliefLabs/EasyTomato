@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -11,12 +11,30 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] IP Traffic: Details</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
@@ -77,7 +95,7 @@ var lastiptraffic = iptraffic;
 
 hostnamecache = [];
 
-var ref = new TomatoRefresh('update.cgi', '', 0, 'ipt_details');
+var ref = new TomatoRefresh('/update.cgi', '', 0, 'ipt_details');
 ref.refresh = function(text) {
 
 	++lock;
@@ -442,29 +460,22 @@ function toggleVisibility(whichone) {
 
 </head>
 <body onload='init()'>
-<form id='_fom' action='javascript:{}'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>Tomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+<% include(header.html); %>
 
 <div id='cstats'>
 <!-- / / / -->
 
-<div class='section-title'>IP Traffic Details</div>
+<h3>IP Traffic Details</h3>
 <div class='section'>
-<table id='grid' class='tomato-grid' style="float:left" cellspacing=1></table>
+<table id='grid' class='table table-striped table-condensed table-bordered'></table>
 
 <div id='loading'><br><b>Loading...</b></div>
 </div>
 
 <!-- / / / -->
 
-<div class='section-title'>Options <small><i><a href='javascript:toggleVisibility("options");'><span id='sesdivoptionsshowhide'>(Click here to show)</span></a></i></small></div>
+<h3>Options <small><i><a href='javascript:toggleVisibility("options");'><span id='sesdivoptionsshowhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdivoptions' style='display:none'>
 <script type='text/javascript'>
 var c;
@@ -490,11 +501,16 @@ createFieldTable('',c);
 <script type='text/javascript'>checkCstats();</script>
 
 
-</td></tr>
-<tr><td id='footer' colspan=2>
+ </div><!--/row-->
+ <div id='footer'>
 	<script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
-</td></tr>
-</table>
-</form>
+</div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>

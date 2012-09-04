@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,31 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Admin: Logging</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -124,18 +142,11 @@ function save()
 
 </head>
 <body>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+    
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='admin-log.asp'>
 <input type='hidden' name='_service' value='logging-restart'>
 
@@ -150,7 +161,7 @@ function save()
 <script type='text/javascript'>
 </script>
 
-<div class='section-title'>Syslog</div>
+<h3>Syslog</h3>
 <div class='section'>
 <script type='text/javascript'>
 
@@ -190,7 +201,7 @@ createFieldTable('', [
 </script>
 </div>
 
-<div class='section-title'>Web Monitor</div>
+<h3>Web Monitor</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -204,18 +215,22 @@ createFieldTable('', [
 ]);
 </script>
 </div>
-
-<!-- / / / -->
-
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
+<span id='footer-msg'></span>
 	<input type='button' value='Save' id='save-button' onclick='save()'>
 	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
-</form>
-<script type='text/javascript'>verifyFields(null, 1);</script>
+<!-- / / / -->
+
+<div id='footer'></div>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
+    <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>
+
 

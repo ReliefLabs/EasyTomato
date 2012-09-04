@@ -1,36 +1,39 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
 	http://www.polarcloud.com/tomato/
 
-	Tomato VLAN GUI
-	Copyright (C) 2011 Augusto Bott
-	http://code.google.com/p/tomato-sdhc-vlan/
-
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Status: Overview</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='interfaces.js'></script>
-
-<!-- / / / -->
-
-<style type='text/css'>
-.controls {
-	width: 90px;
-	margin-top: 5px;
-	margin-bottom: 10px;
-}
-</style>
-
 <script type='text/javascript' src='debug.js'></script>
 
 <script type='text/javascript'>
@@ -205,18 +208,11 @@ function toggleVisibility(whichone) {
 
 </head>
 <body onload='init()'>
-<form>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-<% include("/www/easyheader.html"); %>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
 
-<!-- / / / -->
 
-<div class='section-title'>System <small><i><a href='javascript:toggleVisibility("system");'><span id='sesdiv_system_showhide'>(Click here to hide)</span></a></i></small></div>
+<% include(header.html); %>
+
+<h3>System <small><i><a href='javascript:toggleVisibility("system");'><span id='sesdiv_system_showhide'>(Click here to hide)</span></a></i></small></h3>
 <div class='section' id='sesdiv_system'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -236,7 +232,7 @@ createFieldTable('', [
 </script>
 </div>
 
-<div class='section-title' id='wan-title'>WAN <small><i><a href='javascript:toggleVisibility("wan");'><span id='sesdiv_wan_showhide'>(Click here to hide)</span></a></i></small></div>
+<h3 id='wan-title'>WAN <small><i><a href='javascript:toggleVisibility("wan");'><span id='sesdiv_wan_showhide'>(Click here to hide)</span></a></i></small></h3>
 <div class='section' id='sesdiv_wan'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -258,15 +254,15 @@ createFieldTable('', [
 ]);
 </script>
 <span id='b_dhcpc' style='display:none'>
-	<input type='button' class='controls' onclick='dhcpc("renew")' value='Renew'>
-	<input type='button' class='controls' onclick='dhcpc("release")' value='Release'> &nbsp;
+	<input type='button' class='btn' onclick='dhcpc("renew")' value='Renew'>
+	<input type='button' class='btn' onclick='dhcpc("release")' value='Release'>
 </span>
-<input type='button' class='controls' onclick='wan_connect()' value='Connect' id='b_connect' style='display:none'>
-<input type='button' class='controls' onclick='wan_disconnect()' value='Disconnect' id='b_disconnect' style='display:none'>
+<input type='button' class='btn' onclick='wan_connect()' value='Connect' id='b_connect' style='display:none'>
+<input type='button' class='btn' onclick='wan_disconnect()' value='Disconnect' id='b_disconnect' style='display:none'>
 </div>
 
 
-<div class='section-title'>LAN <small><i><a href='javascript:toggleVisibility("lan");'><span id='sesdiv_lan_showhide'>(Click here to hide)</span></a></i></small></div>
+<h3>LAN <small><i><a href='javascript:toggleVisibility("lan");'><span id='sesdiv_lan_showhide'>(Click here to hide)</span></a></i></small></h3>
 <div class='section' id='sesdiv_lan'>
 <script type='text/javascript'>
 
@@ -341,11 +337,11 @@ for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 //	u = wl_unit(uidx);
 REMOVE-END */
 	u = wl_fface(uidx);
-	W('<div class=\'section-title\' id=\'wl'+u+'-title\'>Wireless');
+	W('<h3 id=\'wl'+u+'-title\'>Wireless');
 	if (wl_ifaces.length > 0)
 		W(' (' + wl_display_ifname(uidx) + ')');
 	W(' <small><i><a href=\'javascript:toggleVisibility("wl_' + u + '");\'><span id=\'sesdiv_wl_' +u + '_showhide\'>(Click here to hide)</span></a></i></small>');
-	W('</div>');
+	W('</h3>');
 	W('<div class=\'section\' id=\'sesdiv_wl_'+u+'\'>');
 	sec = auth[nvram['wl'+u+'_security_mode']] + '';
 	if (sec.indexOf('WPA') != -1) sec += ' + ' + enc[nvram['wl'+u+'_crypto']];
@@ -374,8 +370,8 @@ REMOVE-END */
 		{ title: 'Signal Quality', rid: 'qual'+uidx, text: stats.qual[uidx] || '', ignore: ((!wlstats[uidx].client) || (wl_sunit(uidx)>=0)) }
 	]);
 
-	W('<input type=\'button\' class=\'controls\' onclick=\'wlenable('+uidx+', 1)\' id=\'b_wl'+uidx+'_enable\' value=\'Enable\' style=\'display:none\'>');
-	W('<input type=\'button\' class=\'controls\' onclick=\'wlenable('+uidx+', 0)\' id=\'b_wl'+uidx+'_disable\' value=\'Disable\' style=\'display:none\'>');
+	W('<input type=\'button\' class=\'btn\' onclick=\'wlenable('+uidx+', 1)\' id=\'b_wl'+uidx+'_enable\' value=\'Enable\' style=\'display:none\'>');
+	W('<input type=\'button\' class=\'btn\' onclick=\'wlenable('+uidx+', 0)\' id=\'b_wl'+uidx+'_disable\' value=\'Disable\' style=\'display:none\'>');
 	W('</div>');
 }
 </script>
@@ -383,12 +379,22 @@ REMOVE-END */
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
-</td></tr>
-</table>
-</form>
+<div id='footer'>
+	<script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script></div>
+
+ </div><!--/row-->
+          
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
 <script type='text/javascript'>earlyInit()</script>
 </body>
 </html>

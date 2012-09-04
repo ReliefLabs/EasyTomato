@@ -1,4 +1,4 @@
-<html><head><title>Firmware Upgrade</title></head>
+<html lang="en"><head><title>Firmware Upgrade</title></head>
 <body>
 <h1>Firmware Upgrade</h1>
 <b>WARNING:</b>

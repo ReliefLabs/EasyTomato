@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Tools: WOL</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -52,6 +71,17 @@ wg.setup = function() {
 	this.init('wol-grid', 'sort');
 	this.headerSet(['MAC Address', 'IP Address', 'Status', 'Name']);
 	this.sort(3);
+}
+wg.sortCompare = function(a, b) {
+        var da = a.getRowData();
+        var db = b.getRowData();
+        var r = 0;
+        var c = this.sortColumn;
+        if (c == 1)
+                r = cmpIP(da[c], db[c]);
+        else
+                r = cmpText(da[c], db[c]);
+        return this.sortAscending ? r : -r;
 }
 wg.populate = function()
 {
@@ -152,7 +182,7 @@ function refresh()
 		refresher = null;
 	}
 	refresher.onError = function(ex) { alert(ex); reloadPage(); }
-	refresher.post('update.cgi', 'exec=arplist');
+	refresher.post('/update.cgi', 'exec=arplist');
 }
 
 function refreshClick()
@@ -171,29 +201,26 @@ function init()
 
 </head>
 <body onload='init()'>
-<form id='_fom' action='wakeup.cgi' method='post'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+
+    
+<% include(header.html); %>
 
 <!-- / / / -->
+
+<form id='_fom' action='wakeup.cgi' method='post'>
 
 <input type='hidden' name='_redirect' value='tools-wol.asp'>
 <input type='hidden' name='_nextwait' value='1'>
 <input type='hidden' name='mac' value='' id='_mac'>
 
-<div class='section-title'>Wake On LAN</div>
+<h3>Wake On LAN</h3>
 <div class='section'>
-	<table id='wol-grid' class='tomato-grid' cellspacing=1></table>
+	<table id='wol-grid' class='table table-striped table-condensed table-bordered'></table>
 	<div style='float:right'><img src='spin.gif' id='spin' style='vertical-align:middle;visibility:hidden'> &nbsp; <input type='button' value='Refresh' onclick='refreshClick()' id='refreshb'></div>
 </div>
 <div id='msg' style='visibility:hidden;background:#ffffa0;margin:auto;width:50%;text-align:center;padding:2px;border:1px solid #fee'></div>
-<div class='section-title'></div>
+<h3></h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -203,12 +230,19 @@ createFieldTable('', [
 <div style='float:right'><input type='button' value='Wake Up' onclick='wake(null)' id='save-button'></div>
 </div>
 
+</form> <!-- WOL form -->
+
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>&nbsp;</td></tr>
-</table>
-</form>
-<script type='text/javascript'>wg.setup();wg.populate();</script>
+<div id='footer'></div>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
+    <script type='text/javascript'>wg.setup();wg.populate();</script>
 </body>
 </html>

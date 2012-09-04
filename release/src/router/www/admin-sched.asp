@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,31 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Scheduler</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -234,18 +252,11 @@ function init()
 </script>
 </head>
 <body onload='init()'>
-<form name='_fom' id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	<div class='version'>Version <% version() %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content' style='visibility:hidden'>
-<div id='ident'><% ident(); %></div>
+    
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form name='_fom' id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='admin-sched.asp'>
 <input type='hidden' name='_service' value='sched-restart'>
 <input type='hidden' name='sch_rboot' value=''>
@@ -254,51 +265,57 @@ function init()
 <input type='hidden' name='sch_c2' value=''>
 <input type='hidden' name='sch_c3' value=''>
 
-<div class='section-title'>Reboot</div>
+<h3>Reboot</h3>
 <div class='section'>
 <script type='text/javascript'>
 makeSched('rboot');
 </script>
 </div>
 
-<div class='section-title'>Reconnect</div>
+<h3>Reconnect</h3>
 <div class='section'>
 <script type='text/javascript'>
 makeSched('rcon');
 </script>
 </div>
 
-<div class='section-title'>Custom 1</div>
+<h3>Custom 1</h3>
 <div class='section'>
 <script type='text/javascript'>
 makeSched('c1', 1);
 </script>
 </div>
 
-<div class='section-title'>Custom 2</div>
+<h3>Custom 2</h3>
 <div class='section'>
 <script type='text/javascript'>
 makeSched('c2', 1);
 </script>
 </div>
 
-<div class='section-title'>Custom 3</div>
+<h3>Custom 3</h3>
 <div class='section'>
 <script type='text/javascript'>
 makeSched('c3', 1);
 </script>
 </div>
 
+<span id='footer-msg'></span>
+	<div class='form-actions'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+	</div>
+</form>
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
-<br><br>
-</form>
+<div id='footer'></div>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 </body>
 </html>

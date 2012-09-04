@@ -1,60 +1,38 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
 	http://www.polarcloud.com/tomato/
 
-	Tomato VLAN GUI
-	Copyright (C) 2011 Augusto Bott
-	http://code.google.com/p/tomato-sdhc-vlan/
-
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Status: Device List</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
-
-<!-- / / / -->
-
-<style type='text/css'>
-#dev-grid .co1 {
-	width: 9%;
-}
-#dev-grid .co2 {
-	width: 18%;
-}
-#dev-grid .co3 {
-	width: 14%;
-}
-#dev-grid .co4 {
-	width: 21%;
-}
-#dev-grid .co5 {
-	width: 8%;
-	text-align: right;
-}
-#dev-grid .co6 {
-	width: 8%;
-	text-align: center;
-}
-#dev-grid .co7 {
-	width: 9%;
-	text-align: right;
-}
-#dev-grid .co8 {
-	width: 13%;
-	text-align: right;
-}
-#dev-grid .header {
-	text-align: left;
-}
-</style>
 
 <script type='text/javascript' src='debug.js'></script>
 
@@ -149,6 +127,13 @@ function addWF(n)
 	var e = list[n];
 	cookie.set('addmac', [e.mac, e.name.split(',')[0]].join(','), 1);
 	location.href = 'basic-wfilter.asp';
+}
+
+function addqoslimit(n)
+{
+	var e = list[n];
+	cookie.set('addqoslimit', [e.ip, e.name.split(',')[0]].join(','), 1);
+	location.href = 'qos-qoslimit.asp';
 }
 
 var ref = new TomatoRefresh('update.cgi', 'exec=devlist', 0, 'status_devices_refresh');
@@ -284,7 +269,8 @@ dg.populate = function()
 		if (e.mac.match(/^(..):(..):(..)/)) {
 			b += '<br><small>' +
 				'<a href="http://standards.ieee.org/cgi-bin/ouisearch?' + RegExp.$1 + '-' + RegExp.$2 + '-' + RegExp.$3 + '" target="_new" title="OUI Search">[oui]</a> ' +
-				'<a href="javascript:addStatic(' + i + ')" title="Static Lease...">[static]</a>';
+				'<a href="javascript:addStatic(' + i + ')" title="Static Lease...">[static]</a>' +
+				'<a href="javascript:addqoslimit(' + i + ')" title="QoS BW Limiter">[qoslimit]</a>';
 
 			if (e.rssi != '') {
 				b += ' <a href="javascript:addWF(' + i + ')" title="Wireless Filter...">[wfilter]</a>';
@@ -332,20 +318,15 @@ function init()
 </script>
 </head>
 <body onload='init()'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+    
+<% include(header.html); %>
 
 <!-- / / / -->
 
-<div class='section-title'>Device List</div>
+<h3>Device List</h3>
 <div class='section'>
-	<table id='dev-grid' class='tomato-grid' cellspacing=0></table>
+	<table id='dev-grid' class='table table-striped table-condensed table-bordered'></table>
 
 <script type='text/javascript'>
 f = [];
@@ -366,15 +347,23 @@ for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 createFieldTable('', f);
 </script>
 
-</div>
+<div id='footer'><script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script></div>
 
-<!-- / / / -->
+	</div>
+		</div><!--/row-->
+          
+        </div><!--/span-->
+      </div><!--/row-->
 
-</td></tr>
-<tr><td id='footer' colspan=2><script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script></td></tr>
-</table>
+      <hr>
+
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
 <script type='text/javascript'>earlyInit();</script>
 </body>
 </html>
-
 

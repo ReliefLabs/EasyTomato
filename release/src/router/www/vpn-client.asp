@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2008 Jonathan Zarate
@@ -10,13 +10,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] OpenVPN: Client</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
+
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='vpn.js'></script>
 <script type='text/javascript'>
@@ -253,10 +272,6 @@ function init()
 </script>
 
 <style type='text/css'>
-textarea {
-	width: 98%;
-	height: 10em;
-}
 p.keyhelp
 {
 	font-size: smaller;
@@ -278,22 +293,19 @@ table.status-table
 
 </head>
 <body>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
 
+    
+<% include(header.html); %>
+
+<!-- / / / -->
+
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='vpn-client.asp'>
 <input type='hidden' name='_nextwait' value='5'>
 <input type='hidden' name='_service' value=''>
 <input type='hidden' name='vpn_client_eas' id='vpn_client_eas' value=''>
 
-<div class='section-title'>OpenVPN Client Configuration</div>
+<h3>OpenVPN Client Configuration</h3>
 <div class='section'>
 <script type='text/javascript'>
 tabCreate.apply(this, tabs);
@@ -309,7 +321,7 @@ for (i = 0; i < tabs.length; ++i)
 	W('<input type=\'hidden\' id=\'vpn_'+t+'_useronly\' name=\'vpn_'+t+'_useronly\'>');
 	W('<input type=\'hidden\' id=\'vpn_'+t+'_tlsremote\' name=\'vpn_'+t+'_tlsremote\'>');
 
-	W('<ul class="tabs">');
+	W('<ul class="nav nav-tabs">');
 	for (j = 0; j < sections.length; j++)
 	{
 		W('<li><a href="javascript:sectSelect('+i+', \''+sections[j][0]+'\')" id="'+t+'-'+sections[j][0]+'-tab">'+sections[j][1]+'</a></li>');
@@ -383,21 +395,30 @@ for (i = 0; i < tabs.length; ++i)
 		W('</div>');
 		W('<div style=\'text-align:right\'><a href=\'javascript:updateStatus('+i+')\'>Refresh Status</a></div>');
 	W('</div>');
-	W('<input type="button" value="' + (eval('vpn'+(i+1)+'up') ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'vpn'+t+'\', vpn'+(i+1)+'up)" id="_vpn'+t+'_button">');
+	W('<input type="button" value="' + (eval('vpn'+(i+1)+'up') ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'vpn'+t+'\', vpn'+(i+1)+'up)" id="_vpn'+t+'_button" class="btn">');
 	W('</div>');
 }
 
 </script>
 </div>
 
-</td></tr>
-	<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
+<span id='footer-msg'></span>
+<div class='form-actions'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+</div>
 </form>
+
+<!-- / / / -->
+
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>init();</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,25 +7,33 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Admin: Access</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css' id='guicss'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
-
-<!-- / / / -->
-
-<style type='text/css'>
-textarea {
-	width: 99%;
-	height: 10em;
-}
-</style>
-
-<script type='text/javascript' src='debug.js'></script>
+<script type='text/javascript' src='interfaces.js'></script>
 
 <script type='text/javascript'>
 
@@ -234,15 +242,7 @@ function init()
 </script>
 </head>
 <body onload="init()">
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+<% include(header.html); %>
 
 <!-- / / / -->
 
@@ -266,7 +266,7 @@ function init()
 <input type='hidden' name='sshd_forwarding'>
 <input type='hidden' name='web_mx'>
 
-<div class='section-title'>Web Admin</div>
+<h3>Web Admin</h3>
 <div class='section'>
 <script type='text/javascript'>
 var m = [
@@ -301,7 +301,7 @@ createFieldTable('', m);
 </script>
 </div>
 
-<div class='section-title'>SSH Daemon</div>
+<h3>SSH Daemon</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -313,22 +313,22 @@ createFieldTable('', [
 	{ title: 'Allow Password Login', name: 'f_sshd_pass', type: 'checkbox', value: nvram.sshd_pass == 1 },
 	{ title: 'Authorized Keys', name: 'sshd_authkeys', type: 'textarea', value: nvram.sshd_authkeys }
 ]);
-W('<input type="button" value="' + (sdup ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'sshd\', sdup)" id="_sshd_button">');
+W('<input type="button" value="' + (sdup ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'sshd\', sdup)" id="_sshd_button" class="btn">');
 </script>
 </div>
 
-<div class='section-title'>Telnet Daemon</div>
+<h3>Telnet Daemon</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
 	{ title: 'Enable at Startup', name: 'f_telnetd_eas', type: 'checkbox', value: nvram.telnetd_eas == 1 },
 	{ title: 'Port', name: 'telnetd_port', type: 'text', maxlen: 5, size: 7, value: nvram.telnetd_port }
 ]);
-W('<input type="button" value="' + (tdup ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'telnetd\', tdup)" id="_telnetd_button">');
+W('<input type="button" value="' + (tdup ? 'Stop' : 'Start') + ' Now" onclick="toggle(\'telnetd\', tdup)" id="_telnetd_button" class="btn">');
 </script>
 </div>
 
-<div class='section-title'>Admin Restrictions</div>
+<h3>Admin Restrictions</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -346,7 +346,7 @@ createFieldTable('', [
 </script>
 </div>
 
-<div class='section-title'>Password</div>
+<h3>Password</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -356,16 +356,22 @@ createFieldTable('', [
 </script>
 </div>
 
-<!-- / / / -->
+<div id='footer'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn btn-primary'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
+</div>
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
-</td></tr>
-</table>
-</form>
+<!-- / / / -->
+ 
+<div id='footer'></div>
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>

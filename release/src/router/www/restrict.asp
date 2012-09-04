@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,13 +7,32 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Access Restrictions</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='color.css'>
+
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -45,7 +64,7 @@ var og = new TomatoGrid();
 og.setup = function() {
 	this.init('res-over-grid', 'sort');
 	this.headerSet(['Description', 'Schedule']);
-	var r = this.footerSet(['<input type="button" value="Add" onclick="TGO(this).addEntry()" id="res-over-add">']);
+	var r = this.footerSet(['<input type="button" value="Add" onclick="TGO(this).addEntry()" id="res-over-add" class="btn">']);
 	r.cells[0].colSpan = 2;
 }
 og.populate = function() {
@@ -107,39 +126,38 @@ function init()
 </script>
 </head>
 <body onload='init()'>
-<form name='_fom' id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+
+    
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form name='_fom' id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_redirect' value='restrict-edit.asp'>
 <input type='hidden' name='_commit' value='0'>
 <input type='hidden' name='rruleN' id='_rruleN' value=''>
 
-<div class='section-title'>Access Restriction Overview</div>
+<h3>Access Restriction Overview</h3>
 <div class='section'>
-	<table class='tomato-grid' cellspacing=1 id='res-over-grid'></table>
+	<table class='table table-striped table-condensed table-bordered' id='res-over-grid'></table>
 </div>
 
 <br>
 <script type='text/javascript'>show_notice1('<% notice("iptables"); %>');</script>
 <br>
 <script type='text/javascript'>show_notice1('<% notice("ip6tables"); %>');</script>
-
+</form>
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>&nbsp;</td></tr>
-</table>
-</form>
+
+		</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script text='text/javascript'>og.setup();</script>
 </body>
 </html>
-

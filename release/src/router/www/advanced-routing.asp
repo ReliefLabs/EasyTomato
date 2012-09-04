@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,12 +7,30 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Advanced: Routing</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
@@ -228,18 +246,11 @@ function init()
 </script>
 </head>
 <body onload='init()'>
-<form id='_fom' method='post' action='tomato.cgi'>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<% include(/www/easyheader.html); %>
-	
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+    
+<% include(header.html); %>
 
 <!-- / / / -->
-
+<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='advanced-routing.asp'>
 <input type='hidden' name='_service' value='routing-restart'>
 
@@ -262,17 +273,17 @@ function init()
 <input type='hidden' name='dr_wan_tx'>
 <input type='hidden' name='dr_wan_rx'>
 
-<div class='section-title'>Current Routing Table</div>
+<h3>Current Routing Table</h3>
 <div class='section'>
-	<table class='tomato-grid' id='ara-grid'></table>
+	<table class='table table-striped table-condensed table-bordered' id='ara-grid'></table>
 </div>
 
-<div class='section-title'>Static Routing Table</div>
+<h3>Static Routing Table</h3>
 <div class='section'>
-	<table class='tomato-grid' id='ars-grid'></table>
+	<table class='table table-striped table-condensed table-bordered' id='ars-grid'></table>
 </div>
 
-<div class='section-title'>Miscellaneous</div>
+<h3>Miscellaneous</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -301,18 +312,24 @@ createFieldTable('', [
 </script>
 </div>
 
+<div id='footer'>
+	<span id='footer-msg'></span>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();' class='btn'>
+</form>
+</div>
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
-	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();'>
-</td></tr>
-</table>
-</form>
-<script type='text/javascript'>earlyInit(); verifyFields(null, 1);</script>
+</div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
+    <script type='text/javascript'>earlyInit(); verifyFields(null, 1);</script>
 </body>
 </html>
 

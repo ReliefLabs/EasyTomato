@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,12 +7,28 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Bandwidth: Real-Time Client Monitor</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
+<link href="bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
@@ -66,7 +82,7 @@ var ipt_addr_hidden = [];
 
 hostnamecache = [];
 
-var ref = new TomatoRefresh('update.cgi', 'exec=iptmon', updateInt);
+var ref = new TomatoRefresh('/update.cgi', 'exec=iptmon', updateInt);
 
 ref.stop = function() {
 	this.timer.start(1000);
@@ -263,15 +279,8 @@ function verifyFields(focused, quiet) {
 
 </head>
 <body onload='init()'>
-<form>
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>Tomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
+
+<% include(header.html); %>
 
 <!-- / / / -->
 <div id='cstats'>
@@ -361,14 +370,18 @@ if (nvram.cstats_enable != '1') {
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer' colspan=2>
+ </div><!--/row-->
+ <div id='footer'>
 	<span id='warnwd' style='display:none'>Warning: 10 second timeout, restarting...&nbsp;</span>
 	<span id='dtime'></span>
 	<img src='spin.gif' id='refresh-spinner' onclick='javascript:debugTime=1'>
-
-</td></tr>
-</table>
-</form>
+ </div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>
