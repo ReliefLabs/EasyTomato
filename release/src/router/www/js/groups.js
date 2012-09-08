@@ -198,18 +198,33 @@ var render_devices = function() {
 		}
 		
 
-
-var device_name_form = function(device) {
-	$.fancybox({ content:Mustache.render($('#device_name_template').html(),device),
-		afterShow:function(){
-			$('.save_device_name').click(function(){
-			device.name = $('.update_name_form .device_name').val();
+var change_device_name = function(device) {
+	var name = $('.update_name_form .device_name').val();
+		if (name === '' || device.name === name) {
+				// Warning
+		} else {
+			device.name = name;
 			device_names[device.mac] = device.name;
-			$.fancybox.close();
 			render_groups();
 			render_devices();
 			set_rules();
 			$('#apply_trigger').fadeIn();
+		}
+	$.fancybox.close();
+};
+
+var device_name_form = function(device) {
+	$.fancybox({ 
+		content: Mustache.render($('#device_name_template').html(),device),
+		afterShow:function(){
+			$('form.update_name_form').bind("keypress", function (e) {
+            	if (e.keyCode == 13) {
+            		change_device_name(device);
+            		return false;
+            	}
+        	});
+			$('.save_device_name').click(function(){
+				change_device_name(device);
 			});	
 		}
 	});
