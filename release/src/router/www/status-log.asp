@@ -14,22 +14,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Status: Logs</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
@@ -70,8 +55,7 @@ function init()
 		<a href="logs/view.cgi?which=100&_http_id=<% nv(http_id) %>">View Last 100 Lines</a><br>
 		<a href="logs/view.cgi?which=all&_http_id=<% nv(http_id) %>">View All</a><br><br>
 		<a href="logs/syslog.txt?_http_id=<% nv(http_id) %>">Download Log File</a><br><br>
-		<input type="text" maxsize=32 size=33 id="find-text"> <input type="button" value="Find" onclick="find()"><br>
-		<br><br>
+		<input type="text" maxsize=32 size=33 id="find-text"> <input type="button" value="Find" onclick="find()" class='btn'>
 		&raquo; <a href="admin-log.asp">Logging Configuration</a><br><br>
 	</div>
 </div>

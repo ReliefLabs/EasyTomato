@@ -14,42 +14,13 @@
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] NAS: File Sharing</title>
 
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
-<style tyle='text/css'>
-#ss-grid {
-	width: 99%;
-}
-#ss-grid .co1, #ss-grid .co2, #ss-grid .co3 {
-	width: 25%;
-}
-#ss-grid .co4 {
-	width: 16%;
-}
-#ss-grid .co5 {
-	width: 9%;
-}
-</style>
 
 <script type='text/javascript' src='debug.js'></script>
 
@@ -212,7 +183,6 @@ function save()
 
 </head>
 <body>
-
     
 <% include(header.html); %>
 
@@ -264,7 +234,6 @@ createFieldTable('', [
 <div class='section'>
 	<table class='table table-striped table-condensed table-bordered' id='ss-grid'></table>
 	<script type='text/javascript'>ssg.setup();</script>
-<br>
 <small>When no shares are specified and auto-sharing is disabled, <i>/mnt</i> directory is shared in Read Only mode.</small>
 </div>
 

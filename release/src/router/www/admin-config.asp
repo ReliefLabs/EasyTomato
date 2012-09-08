@@ -14,22 +14,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Admin: Configuration</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
@@ -105,27 +90,25 @@ function resetButton()
 <h3>Backup Configuration</h3>
 <div class='section'>
 	<form>
+		<div class="input-append">
 		<script type='text/javascript'>
 		W("<input type='text' size='40' maxlength='64' id='backup-name' onchange='backupNameChanged()' value='tomato_v" + ('<% version(); %>'.replace(/\./g, '')) + "_m" + nvram.et0macaddr.replace(/:/g, '').substring(6, 12) + "'>");
 		</script>
-		.cfg &nbsp;
-		<input type='button' name='f_backup_button' onclick='backupButton()' value='Backup'><br>
-		<a href='' id='backup-link'>Link</a>
+		<span class="add-on">.cfg</span>
+		</div>
+		<input type='button' name='f_backup_button' onclick='backupButton()' value='Backup' class='btn'>
+		<a href='' id='backup-link' class='btn'>Link</a>
 	</form>
 </div>
-
-<br><br>
 
 <h3>Restore Configuration</h3>
 <div class='section'>
 	<form id='restore-form' method='post' action='cfg/restore.cgi' encType='multipart/form-data'>
 		Select the configuration file to restore:<br>
-		<input type='file' size='40' id='restore-name' name='filename'> <input type='button' name='f_restore_button' id='restore-button' value='Restore' onclick='restoreButton()'>
+		<input type='file' size='40' id='restore-name' name='filename'> <input type='button' name='f_restore_button' id='restore-button' value='Restore' onclick='restoreButton()' class='btn'>
 		<br>
 	</form>
 </div>
-
-<br><br>
 
 <h3>Restore Default Configuration</h3>
 <div class='section'>
@@ -135,11 +118,9 @@ function resetButton()
 		<option value=1>Restore default router settings (normal)</option>
 		<option value=2>Erase all data in NVRAM memory (thorough)</option>
 	</select>
-	<input type='button' value='OK' onclick='resetButton()' id='reset-button'>
+	<input type='button' value='OK' onclick='resetButton()' id='reset-button' class='btn'>
 	</form>
 </div>
-
-<br>
 
 <div class='section-title'></div>
 <div class='section'>

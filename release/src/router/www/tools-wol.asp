@@ -14,22 +14,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Tools: WOL</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 
@@ -40,6 +25,7 @@
 <script type='text/javascript' src='debug.js'></script>
 
 <style type='text/css'>
+/*
 #wol-grid .co1 {
 	width: 15%;
 }
@@ -56,9 +42,7 @@ textarea {
 	width: 99%;
 	height: 8em;
 }
-#refreshb, #save-button {
-	width: 90px;
-}
+*/
 </style>
 
 <script type='text/javascript'>
@@ -217,7 +201,10 @@ function init()
 <h3>Wake On LAN</h3>
 <div class='section'>
 	<table id='wol-grid' class='table table-striped table-condensed table-bordered'></table>
-	<div style='float:right'><img src='spin.gif' id='spin' style='vertical-align:middle;visibility:hidden'> &nbsp; <input type='button' value='Refresh' onclick='refreshClick()' id='refreshb'></div>
+	<div>
+		<input type='button' value='Refresh' onclick='refreshClick()' id='refreshb' class="btn">
+		<img src='spin.gif' id='spin' style='vertical-align:middle;visibility:hidden'>
+	</div>
 </div>
 <div id='msg' style='visibility:hidden;background:#ffffa0;margin:auto;width:50%;text-align:center;padding:2px;border:1px solid #fee'></div>
 <h3></h3>
@@ -227,7 +214,7 @@ createFieldTable('', [
 	{ title: 'MAC Address List', name: 'f_mac', type: 'textarea', value: cookie.get('wakemac') || '' },
 ]);
 </script>
-<div style='float:right'><input type='button' value='Wake Up' onclick='wake(null)' id='save-button'></div>
+<div><input type='button' value='Wake Up' onclick='wake(null)' id='save-button' class="btn"></div>
 </div>
 
 </form> <!-- WOL form -->

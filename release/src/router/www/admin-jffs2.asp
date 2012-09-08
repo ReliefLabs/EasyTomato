@@ -14,22 +14,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Admin: JFFS</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
@@ -131,7 +116,7 @@ createFieldTable('', [
 	null,
 	{ title: 'Total / Free Size', text: (((jffs2.mnt) || (jffs2.size > 0)) ? scaleSize(jffs2.size) : '') + ((jffs2.mnt) ? ' / ' + scaleSize(jffs2.free) : ' (not mounted)') },
 	null,
-	{ title: '', custom: '<input type="button" value="Format / Erase..." onclick="formatClicked()" id="format"><br><br>' +
+	{ title: '', custom: '<input type="button" value="Format / Erase..." onclick="formatClicked()" id="format" class="btn">' +
 		'<span style="background:#b55;color:#fff;padding:1px 8px;visibility:hidden" id="fmsg">Please wait for <span id="fclock">about 60 seconds</span>...</span>' }
 ]);
 </script>
@@ -140,8 +125,8 @@ createFieldTable('', [
 <script type='text/javascript'>show_notice1('<% notice("jffs"); %>');</script>
 
 <span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
 
 <!-- / / / -->
 
