@@ -717,6 +717,7 @@ th, td, caption {
 .group_boxes .devices_box li:nth-child(odd) {  }
 .group_boxes .devices_box li:nth-child(even) { 	background: #EEE; }
 
+.group_boxes .devices_box li.offline { color: grey;}
 
 .group_boxes .devices_box li span{}
 
