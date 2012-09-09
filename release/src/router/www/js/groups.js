@@ -54,7 +54,7 @@ var render_groups = function() {
 			}
 		});
 
-		//Sort
+		/*
 		var array_to_sort = $this.find('li.device');
 		
 		$this.find('.devices_box ul')
@@ -70,6 +70,7 @@ var render_groups = function() {
 					}
 				})
 			);
+*/
 		
 		//group box hover, edit behavior
 		$this.find('.group_name').bind({
