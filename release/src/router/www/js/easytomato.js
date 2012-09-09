@@ -61,7 +61,8 @@ var groups = [],
 	groups_nvram_id = 'easytomato_groups',
 	unassigned_rules_nvram_id = 'easytomato_rules',
 	block_adult_content_nvram_id = 'wan_dns',
-	block_adult_content_status = false;
+	block_adult_content_status = false,
+	unsaved_groups = {};
 
 
 var load_adult_block = function(){
@@ -71,15 +72,13 @@ var load_adult_block = function(){
 	});
 };
 
-
-
 var load_devices = function() {
 	return $.when(tomato_env.get('lan_ipaddr'),tomato_env.get('devlist'), tomato_env.get('easytomato_scratch_3')).then(function() {
 		var mac_addrs = {};
 		$.each(tomato_env.vars['arplist'], function() {
 			var mac = this[2],
 				device = {
-				'name': this[0] ,
+				'name': this[0],
  				'ip': this[1], 
 				'mac': this[2].toLowerCase()};
 

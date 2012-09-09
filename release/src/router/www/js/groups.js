@@ -145,7 +145,7 @@ var render_groups = function() {
 		});
 
 		//$this.find('.edit_group_trig').attr('href', 'rules.html?g='+i);
-		$this.find('.edit_group_trig').attr('href', 'javascript:goToPage("rules.html?g='+i+'")');
+		$this.find('.edit_group_trig').attr('href', 'javascript:goToPage("rules.html?g='+i+'",'+i+')');
 
 		//Changes the DNS servers over to OpenDNS' FamilyShield and back
 		$('input[name=block_adult]').click(function() {
@@ -247,12 +247,23 @@ var device_name_form = function(device) {
 	});
 }
 
-var goToPage = function(uri) {
+var goToPage = function(uri, group_id) {
 
 	if ($('#apply_trigger').is(':visible')) {
-		var r = confirm("Changes will be applied now. Do you want to continue?");
+		if (group_id) {
+			// Check the group has been saved
+			if (unsaved_groups[group_id]) {
+				var r = confirm('This group needs to be saved before you can add rules.');
+				if ( r ) {
+					apply_trigger_changes(function() {
+						window.location = uri;
+					})
+				}
+				return;
+			}
+		}
+		var r = confirm("Changes not applied will be discarded. Do you want to continue?");
 		if ( r ){
-
  			window.location = uri;
   		}
 	} else {
@@ -261,13 +272,18 @@ var goToPage = function(uri) {
 };
 
 var apply_trigger_changes = function(callback) {
+	if (callback) {
+		$.fancybox({content: $('#block_page')});
+	}
 	$.when(tomato_env.apply()).then(function() {
 		$('#apply_trigger').fadeOut();
-		callback();
 		if(full_restart_required){
 			setTimeout('$.fancybox.close()', 7000);
-		}else{
+		} else{
 			$.fancybox.close();
+		}
+		if (callback) {
+			callback();
 		}
 	});
 }
@@ -316,6 +332,8 @@ KNOWN BUGS (x = done)
 
 	
 	$('#apply_trigger').click(function() {
+		apply_trigger_changes();
+		/*
 		$.when(tomato_env.apply()).then(function() {
 			$('#apply_trigger').fadeOut();
 			if(full_restart_required){
@@ -324,11 +342,13 @@ KNOWN BUGS (x = done)
 				$.fancybox.close();
 			}
 		});
+*/
 	});
 		
 	// Create group
 	$('.content_bar .new_group_trig').click(function(){
 		groups.push({'name': 'Untitled Group', 'devices': []});
+		unsaved_groups[groups.length -1] = true;
 		render_groups();
 		$('#apply_trigger').fadeIn();
 	});
