@@ -3,8 +3,8 @@ var full_restart_required = false;
 var render_groups = function() {
 	var group_template = $('#group_template').html(),
 		$target = $('.group_boxes');
-	$target.html(Mustache.render(group_template, {'groups': groups}));
 
+	$target.html(Mustache.render(group_template, {'groups': groups}));
 	
 	$target.find('.group_box').each(function(i, element) {
 		var group = groups[i],
@@ -50,10 +50,26 @@ var render_groups = function() {
 				}
 			});
 			if (!online) {
-				$(this).css('color', 'grey');
+				$(this).addClass('offline');
 			}
-			
 		});
+
+		//Sort
+		var array_to_sort = $this.find('li.device');
+		
+		$this.find('.devices_box ul')
+			.empty()
+			.append(
+				array_to_sort.sort(function(a, b) {
+					if ($(a).hasClass('offline') && !$(b).hasClass('offline')) {
+						return 1;
+					} else if (!$(a).hasClass('offline') && $(b).hasClass('offline')){
+						return -1;
+					} else {
+						return 0;
+					}
+				})
+			);
 		
 		//group box hover, edit behavior
 		$this.find('.group_name').bind({
@@ -128,8 +144,9 @@ var render_groups = function() {
 			device_name_form($(this).parents('li.device').data('device'));
 		});
 
-		$this.find('.edit_group_trig').attr('href', 'rules.html?g='+i);
-		
+		//$this.find('.edit_group_trig').attr('href', 'rules.html?g='+i);
+		$this.find('.edit_group_trig').attr('href', 'javascript:goToPage("rules.html?g='+i+'")');
+
 		//Changes the DNS servers over to OpenDNS' FamilyShield and back
 		$('input[name=block_adult]').click(function() {
             if ($('input[name=block_adult]').is(':checked')){
@@ -226,6 +243,31 @@ var device_name_form = function(device) {
 			$('.save_device_name').click(function(){
 				change_device_name(device);
 			});	
+		}
+	});
+}
+
+var goToPage = function(uri) {
+
+	if ($('#apply_trigger').is(':visible')) {
+		var r = confirm("Changes will be applied now. Do you want to continue?");
+		if ( r ){
+
+ 			window.location = uri;
+  		}
+	} else {
+		window.location = uri;
+	}
+};
+
+var apply_trigger_changes = function(callback) {
+	$.when(tomato_env.apply()).then(function() {
+		$('#apply_trigger').fadeOut();
+		callback();
+		if(full_restart_required){
+			setTimeout('$.fancybox.close()', 7000);
+		}else{
+			$.fancybox.close();
 		}
 	});
 }
