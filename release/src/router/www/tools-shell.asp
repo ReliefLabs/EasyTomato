@@ -12,22 +12,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Tools: System Commands</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 
@@ -159,7 +144,7 @@ createFieldTable('', [
 	{ title: 'Command', name: 'f_cmd', type: 'textarea', wrap: 'off', value: '' }
 ]);
 </script>
-<div><input type='button' value='Execute' onclick='execute()' id='execb'></div>
+<div><input type='button' value='Execute' onclick='execute()' id='execb' class='btn'></div>
 <script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
 </div>
 

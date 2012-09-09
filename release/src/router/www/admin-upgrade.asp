@@ -14,22 +14,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Admin: Upgrade</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
@@ -63,10 +48,10 @@ function upgrade()
 	E('afu-upgrade-button').disabled = true;
 
 	elem.display('afu-input', false);
-	E('content').style.verticalAlign = 'middle';
+	//E('content').style.verticalAlign = 'middle';
 	elem.display('afu-progress', true);
-	elem.display('navi', false)
-	elem.display('ident', false)
+	//elem.display('navi', false)
+	//elem.display('ident', false)
 
 	startTime = (new Date()).getTime();
 	setInterval('clock()', 800);

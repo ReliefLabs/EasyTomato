@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2008 Jonathan Zarate
@@ -10,20 +10,17 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Captive Portal</title>
-<link rel='stylesheet' type='text/css' href='tomato.css'>
-<link rel='stylesheet' type='text/css' href='<% nv('web_css'); %>.css'>
+
+<% include("common-header.html"); %>
+
 <script type='text/javascript' src='tomato.js'></script>
-<style type='text/css'>
-textarea {
- width: 98%;
- height: 15em;
-}
-</style>
 <script type='text/javascript'>
 
 //	<% nvram("NC_enable,NC_Verbosity,NC_GatewayName,NC_GatewayPort,NC_ForcedRedirect,NC_HomePage,NC_DocumentRoot,NC_LoginTimeout,NC_IdleTimeout,NC_MaxMissedARP,NC_ExcludePorts,NC_IncludePorts,NC_AllowedWebHosts,NC_MACWhiteList"); %>
@@ -116,15 +113,10 @@ function init()
 </head>
 
 <body onLoad="init()">
-<table id='container' cellspacing=0>
-<tr><td colspan=2 id='header'>
-	<div class='title'>EasyTomato</div>
-	<div class='version'>Version <% version(); %></div>
-</td></tr>
-<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
-<td id='content'>
-<div id='ident'><% ident(); %></div>
-<div class='section-title'>Captive Portal Management</div>
+
+<% include(header.html); %>
+
+<h3>Captive Portal Management</h3>
 <div class='section' id='config-section'>
 <form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='new-splashd.asp'>
@@ -153,11 +145,11 @@ createFieldTable('', [
 </form>
 </div>
 <br>
-<div class='section-title'>Customized Splash File Path</div>
+<h3>Customized Splash File Path</h3>
 <div class='section' id='upload-section'>
  <form id='upload-form' method='post' action='uploadsplash.cgi?_http_id=<% nv(http_id); %>' encType='multipart/form-data'>
  <input type='file' size='40' id='upload-name' name='upload_name'>
- <input type='button' name='f_upload_button' id='upload-button' value='Upload' onclick='uploadButton()'>
+ <input type='button' name='f_upload_button' id='upload-button' value='Upload' onclick='uploadButton()' class='btn'>
  <br>
  </form>
 </div>
@@ -193,16 +185,25 @@ Leave a blank space between each URL.<br>
 </span>
 </ul>
 <br>
-</td></tr>
-<tr><td id='footer' colspan=2>
+
  <form>
- <span id='footer-msg'></span>	
- <input type='button' value='Save' id='save-button' onclick='save()'>
- <input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
+ <input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+ <input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
  </form>
+ <span id='footer-msg'></span>
+
+<!-- / / / -->
+
+<div id='footer'>
 </div>
-</td></tr>
-</table>
+</div><!--/row-->
+  </div><!--/span-->
+    </div><!--/row-->
+      <hr>
+      <footer>
+        <p>&copy; Tomato 2012</p>
+      </footer>
+    </div><!--/.fluid-container-->
 <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>

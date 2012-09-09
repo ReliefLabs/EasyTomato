@@ -14,22 +14,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Advanced: MAC Address</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
@@ -180,7 +165,7 @@ for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 
 f = [
 	{ title: 'WAN Port', indent: 1, name: 'f_wan_hwaddr', type: 'text', maxlen: 17, size: 20,
-		suffix: ' <input type="button" value="Default" onclick="bdefault(\'wan\')"> <input type="button" value="Random" onclick="brand(\'wan\')"> <input type="button" value="Clone PC" onclick="bclone(\'wan\')">',
+		suffix: ' <input type="button" value="Default" onclick="bdefault(\'wan\')" class="btn"> <input type="button" value="Random" onclick="brand(\'wan\')" class="btn"> <input type="button" value="Clone PC" onclick="bclone(\'wan\')" class="btn">',
 		value: nvram.mac_wan || defmac('wan') }
 ];
 
@@ -188,7 +173,7 @@ for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 	var u = wl_fface(uidx);
 	f.push(
 		{ title: 'Wireless Interface ' + ((wl_ifaces.length > 1) ? wl_ifaces[uidx][0] : ''), indent: 1, name: 'f_wl'+u+'_hwaddr', type: 'text', maxlen: 17, size: 20,
-			suffix:' <input type="button" value="Default" onclick="bdefault(\'wl'+u+'\')"> <input type="button" value="Random" onclick="brand(\'wl'+u+'\')"> <input type="button" value="Clone PC" onclick="bclone(\'wl'+u+'\')">',
+			suffix:' <input type="button" value="Default" onclick="bdefault(\'wl'+u+'\')" class="btn"> <input type="button" value="Random" onclick="brand(\'wl'+u+'\')" class="btn"> <input type="button" value="Clone PC" onclick="bclone(\'wl'+u+'\')" class="btn">',
 			value: nvram['wl'+u+'_hwaddr'] || defmac('wl' + u) }
 		);
 }

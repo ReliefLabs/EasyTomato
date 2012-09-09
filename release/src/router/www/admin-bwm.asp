@@ -275,7 +275,7 @@ createFieldTable('', [
 	W("<input type='text' size='40' maxlength='64' id='backup-name' name='backup_name' onchange='backupNameChanged()' value='tomato_rstats_" + nvram.et0macaddr.replace(/:/g, '').toLowerCase() + "'>");
 	</script>
 	.gz &nbsp;
-	<input type='button' name='f_backup_button' id='backup-button' onclick='backupButton()' value='Backup'>
+	<input type='button' name='f_backup_button' id='backup-button' onclick='backupButton()' value='Backup' class='btn'>
 	</form>
 	<a href='' id='backup-link'>Link</a>
 </div>
@@ -285,14 +285,14 @@ createFieldTable('', [
 <div class='section' id='restore-section'>
 	<form id='restore-form' method='post' action='bwm/restore.cgi?_http_id=<% nv(http_id); %>' encType='multipart/form-data'>
 		<input type='file' size='40' id='restore-name' name='restore_name'>
-		<input type='button' name='f_restore_button' id='restore-button' value='Restore' onclick='restoreButton()'>
+		<input type='button' name='f_restore_button' id='restore-button' value='Restore' onclick='restoreButton()' class='btn'>
 		<br>
 	</form>
 </div>
 <form>
 	<span id='footer-msg'></span>
-	<input type='button' value='Save' id='save-button' onclick='save()'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
 </form>
 <!-- / / / -->
 

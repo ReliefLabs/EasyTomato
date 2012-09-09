@@ -16,22 +16,7 @@
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] IP Traffic: Last 24 Hours</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap-responsive.min.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<% include("common-header.html"); %>
 
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
@@ -428,7 +413,7 @@ if (nvram.cstats_enable != '1') {
  <div id='footer'>
 	<span id='dtime'></span>
 	<img src='spin.gif' id='refresh-spinner' onclick='debugTime=1'>
-	<input type='button' value='Refresh' id='refresh-button' onclick='ref.toggleX()'>
+	<input type='button' value='Refresh' id='refresh-button' onclick='ref.toggleX()' class='btn'>
 </div>
     </div><!--/span-->
   </div><!--/row-->
