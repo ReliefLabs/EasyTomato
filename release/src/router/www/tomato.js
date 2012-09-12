@@ -2143,9 +2143,9 @@ function _tabCreate(tabs)
 {
 	var buf = [];
 
-	buf.push('<div id="tabs" class="btn-group">');
+	buf.push('<div id="tabs">');
 	for (var i = 0; i < arguments.length; ++i)
-		buf.push('<a class="btn btn-large" href="javascript:tabSelect(\'' + arguments[i][0] + '\')" id="' + arguments[i][0] + '">' + arguments[i][1] + '</a>');
+		buf.push('<a class="btn" href="javascript:tabSelect(\'' + arguments[i][0] + '\')" id="' + arguments[i][0] + '">' + arguments[i][1] + '</a>');
 	buf.push('</div>');
 	return buf.join('');
 }

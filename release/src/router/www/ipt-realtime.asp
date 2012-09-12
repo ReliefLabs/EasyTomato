@@ -19,27 +19,6 @@
 
 <!-- / / / -->
 
-<style type='text/css'>
-#txt {
-	width: 550px;
-	white-space: nowrap;
-}
-#bwm-controls {
-	text-align: right;
-	margin-right: 5px;
-	margin-top: 5px;
-	float: right;
-	visibility: hidden;
-}
-ul.tabs a,
-#tabs a {
-	width: 140px;
-	height: 12px;
-	font-size: 9px;
-	font-weight:bold;
-}
-</style>
-
 <script type='text/javascript' src='debug.js'></script>
 
 <script type='text/javascript' src='wireless.jsx?_http_id=<% nv(http_id); %>'></script>
@@ -300,8 +279,7 @@ function verifyFields(focused, quiet) {
 		&nbsp; &raquo; <a href="admin-iptraffic.asp">Configure</a>
 	</div>
 
-	<br><br>
-	<table border=0 cellspacing=2 id='txt'>
+	<table class="table" id='txt'>
 	<tr>
 		<td width='8%' align='right' valign='top'><b style='border-bottom:blue 1px solid' id='rx-name'>RX</b></td>
 			<td width='15%' align='right' valign='top'><span id='rx-current'></span></td>

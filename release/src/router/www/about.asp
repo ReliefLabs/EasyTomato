@@ -20,58 +20,6 @@
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript'>
 //	<% nvram(''); %>	// http_id
-
-var clicks = 0;
-var tux = null;
-var t = 0;
-var r = 3;
-var rd = 1;
-
-function moo()
-{
-	if ((r <= 2) || (r >= 25)) rd = -rd;
-	r += rd;
-	t += (Math.PI / 10);
-	if (t > (2 * Math.PI)) t = 0;
-
-	var x = tux.origX + (r * Math.sin(t));
-	var y = tux.origY + (r * Math.cos(t));
-
-	tux.style.left = x + 'px';
-	tux.style.top = y + 'px';
-
-	if (clicks > 0) setTimeout(moo, 33);
-}
-
-function onClick()
-{
-	try {
-		++clicks;
-		if (clicks < 10) moo();
-			else clicks = 0;
-	}
-	catch (ex) {
-	}
-}
-
-function init()
-{
-	try {
-		tux = E('tux');
-
-		var o = elem.getOffset(tux);
-		tux.origX = o.x;
-		tux.origY = o.y;
-
-		tux.style.position = 'absolute';
-		tux.style.left = o.x + 'px';
-		tux.style.top = o.y + 'px';
-
-		tux.addEventListener('click', onClick, false);
-	}
-	catch (ex) {
-	}
-}
 </script>
 
 <!-- / / / -->
