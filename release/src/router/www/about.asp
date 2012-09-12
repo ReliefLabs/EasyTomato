@@ -81,11 +81,8 @@ function init()
 
 <% include(header.html); %>
 
-<div style='float:right;margin:140px 30px;text-align:center'>
-<img src='kinaree.png' alt='Linux &amp; Tomato' id='tux'>
-</div>
 <div style='margin:30px 30px;font-size:14px;color:#555;'>
-<b>Tomato Firmware v<% version(1); %></b><br>
+<b>EasyTomato Firmware v<% version(1); %></b><br>
 <br>
 Based on TomatoUSB by Fedor Kozhevnikov<br>
 - Linux kernel <% version(2); %> and Broadcom Wireless Driver <% version(3); %> updates<br>
