@@ -104,8 +104,8 @@ function redraw()
 	if (swk < 0) swk = 6;
 
 	if (summary) {
-		grid = '<table class="table">';
-		grid += makeRow('header', 'Date', 'Download', 'Upload', 'Total');
+		grid = '<table class="table table-striped table-bordered">';
+		grid += '<thead><tr><th>Date</th><th>Download</th><th>Upload</th><th>Total</th></tr></thead>';
 	}
 	else {
 		grid = '';
@@ -113,9 +113,9 @@ function redraw()
 
 	function flush_block()
 	{
-		grid += '<b>' + dbeg + ' to ' + dend + '</b>' +
-				'<table class="table">' +
-				makeRow('header', 'Date', 'Download', 'Upload', 'Total') +
+		grid += '<h4>' + dbeg + ' to ' + dend + '</h4>' +
+				'<table class="table table-striped table-bordered">' +
+				'<thead><tr><th>Date</th><th>Download</th><th>Upload</th><th>Total</th></tr></thead>' +
 				block.join('') +
 				makeRow('footer', 'Total', rescale(dl), rescale(ul), rescale(dl + ul)) +
 				'</table><br>';
@@ -244,7 +244,7 @@ function init()
 <b>Start</b> <select onchange='changeStart(this)' id='startwk'><option value=0 selected>Sun<option value=1>Mon<option value=2>Tue<option value=3>Wed<option value=4>Thu<option value=5>Fri<option value=6>Sat</select><br>
 <b>Scale</b> <select onchange='changeScale(this)' id='scale'><option value=0>KB</option><option value=1>MB</option><option value=2 selected>GB</option></select><br>
 <br>
-&raquo; <a href="admin-bwm.asp">Configure</a>
+<a href="admin-bwm.asp" class="btn">Configure</a>
 </div>
 
 <script type='text/javascript'>checkRstats();</script>

@@ -90,7 +90,8 @@ function redraw()
 	gn = 0;
 
 	grid = '<table class="table table-striped table-bordered">';
-	grid += makeRow('header', 'Date', 'Download', 'Upload', 'Total');
+	grid += '<thead><tr><th>Date</th><th>Download</th><th>Upload</th><th>Total</th></tr></thead>';
+
 
 	for (i = 0; i < daily_history.length; ++i) {
 		h = daily_history[i];
@@ -139,8 +140,6 @@ function init()
 <h3>WAN Bandwidth - Daily</h3>
 <div id='bwm-daily-grid' class="span6"></div>
 <div class="span4">
-
-
 <table class='table table-striped table-bordered table-condensed'>
 	<thead>
 <tr><th colspan=2 style='text-align:center'>Last 30 Days<br><span style='font-weight:normal' id='last-dates'></span></th></tr>
@@ -158,22 +157,20 @@ function init()
 
 <b>Date</b> <select onchange='changeDate(this, "ymd")' id='dafm'><option value=0>yyyy-mm-dd</option><option value=1>mm-dd-yyyy</option><option value=2>mmm dd, yyyy</option><option value=3>dd.mm.yyyy</option></select><br>
 <b>Scale</b> <select onchange='changeScale(this)' id='scale'><option value=0>KB</option><option value=1>MB</option><option value=2 selected>GB</option></select><br>
-<br>
-&raquo; <a href="javascript:genData()">Data</a>
-<br>
-&raquo; <a href="admin-bwm.asp">Configure</a>
-<br><br><br>
-</div>
-<br>
 
-</script>
+<a href="javascript:genData()" class="btn">Data</a> 
+<a href="admin-bwm.asp" class="btn">Configure</a>
+</div>
 
 <!-- / / / -->
 
  </div><!--/row-->
 
  <div id='footer' class="row-fluid">
-<input class="btn btn-primary" type='button' value='Refresh' onclick='reloadPage()'>
+ <div class="form-actions">
+<input class="btn" type='button' value='Refresh' onclick='reloadPage()'>
+</div>
+
 </div>
         </div><!--/span-->
       </div><!--/row-->
