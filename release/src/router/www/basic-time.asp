@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Basic: Time</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -144,8 +143,6 @@ function earlyInit()
 </head>
 <body>
 
-
-    
 <% include(header.html); %>
 
 <!-- / / / -->
@@ -160,7 +157,6 @@ function earlyInit()
 <input type='hidden' name='ntp_server'>
 <input type='hidden' name='ntp_tdod'>
 <input type='hidden' name='ntp_kiss' value='' disabled>
-
 
 <h3>Time</h3>
 <div class='section'>
@@ -265,7 +261,7 @@ createFieldTable('', [
 ]);
 </script>
 </div>
-<br><br>
+
 <div id='ntpkiss' style='display:none'>
 The following NTP servers have been automatically blocked by request from the server:
 <b id='ntpkiss-ip'></b>

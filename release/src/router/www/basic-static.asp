@@ -25,22 +25,12 @@
 
 <!-- / / / -->
 <style type='text/css'>
-#bs-grid .co1 {
-	width: 120px;
-	text-align: center;
-}
-#bs-grid .co2 {
-	width: 80px;
-	text-align: center;
-}
-#bs-grid .co3 {
-	width: 120px;
-}
-#bs-grid .co4 {
-	width: 80px;
-	text-align: center;
-}
-#bs-grid .centered {
+#bs-grid .co1,
+#bs-grid .co2,
+#bs-grid .co3,
+#bs-grid .co4,
+#bs-grid .centered
+{
 	text-align: center;
 }
 </style>
@@ -255,11 +245,11 @@ sg.resetNewEditor = function() {
 
 sg.setup = function() {
 	this.init('bs-grid', 'sort', 250, [
-		{ multi: [ { type: 'text', maxlen: 17 }, { type: 'text', maxlen: 17 } ] },
+		{ multi: [ { type: 'text', class: 'input-medium' }, { type: 'text', class: 'input-medium' } ] },
 		{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-		{ type: 'text', maxlen: 15 },
+		{ type: 'text', maxlen: 15, class: 'input-medium' },
 		{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-		{ type: 'text', maxlen: 50 } ] );
+		{ type: 'text', maxlen: 50, class: 'input-medium' } ] );
 
 	this.headerSet(['MAC Address', 'Bound to', 'IP Address', 'IPTraffic', 'Hostname']);
 

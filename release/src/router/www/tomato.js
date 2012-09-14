@@ -1275,7 +1275,7 @@ TomatoGrid.prototype = {
 
 		elem.remove(this.header);
 		this.header = e = this._insert(0, cells, escCells);
-		e.className = 'header';
+		
 
 		for (i = 0; i < e.cells.length; ++i) {
 			e.cells[i].cellN = i;	// cellIndex broken in Safari
@@ -1529,7 +1529,7 @@ TomatoGrid.prototype = {
 				var f = ef[j];
 
 				if (f.prefix) s += f.prefix;
-				var attrib = ' class="fi' + (vi + 1) + '" ' + (f.attrib || '');
+				var attrib = ' class="fi' + (vi + 1) + ' ' + (f.class ? f.class : '') + '" ' + (f.attrib || '');
 				var id = (this.tb ? ('_' + this.tb + '_' + (vi + 1)) : null);
 				if (id) attrib += ' id="' + id + '"';
 				switch (f.type) {
