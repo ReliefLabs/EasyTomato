@@ -10,7 +10,7 @@
 /*                                                                            */
 /******************************************************************************/
 
-/* $Id: b57um.c,v 1.29.2.6 2010/02/21 20:06:36 Exp $ */
+/* $Id: b57um.c,v 1.34.10.1 2010-10-09 01:46:48 Exp $ */
 
 char bcm5700_driver[] = "bcm5700";
 char bcm5700_version[] = "8.3.14";
@@ -2285,10 +2285,10 @@ bcm5700_start_xmit(struct sk_buff *skb, struct net_device *dev)
 #ifdef BCM_TSO
 	LM_UINT32 mss = 0 ;
 	uint16_t ip_tcp_len, tcp_opt_len, tcp_seg_flags;
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 22)
 	struct tcphdr *th;
 	struct iphdr *iph;
-#endif
 #endif
 
 	if ((pDevice->LinkStatus == LM_STATUS_LINK_DOWN) ||
@@ -4329,6 +4329,68 @@ STATIC int bcm5700_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 		return 0;
 	}
 
+	case SIOCSETGETVAR:
+	{
+		int ret = 0;
+		void *buffer = NULL;
+		bool get = FALSE, set = TRUE;
+		et_var_t var;
+
+		if (set && mm_copy_from_user(&var, rq->ifr_data, sizeof(var)))
+			return -EFAULT;
+
+		/* prepare buffer if any */
+		if (var.buf) {
+			if (!var.set)
+				get = TRUE;
+
+			if (!(buffer = (void *) MALLOC(SI_OSH, var.len))) {
+				B57_ERR(("%s: out of memory, malloced %d bytes\n", __FUNCTION__,
+					MALLOCED(SI_OSH)));
+				return -ENOMEM;
+			}
+
+			if (mm_copy_from_user(buffer, var.buf, var.len)) {
+				MFREE(SI_OSH, buffer, var.len);
+				return -EFAULT;
+			}
+		}
+
+		/* do var.cmd */
+		switch (var.cmd) {
+		case IOV_ET_ROBO_DEVID:
+		{
+			uint *vecarg = (uint *)buffer;
+			robo_info_t *robo = (robo_info_t *)pUmDevice->robo;
+
+			if (((pDevice->Flags & ROBO_SWITCH_FLAG) == 0) ||
+			    (robo == NULL)) {
+				ret = -ENXIO;
+				break;
+			}
+
+			/* get robo device id */
+			*vecarg = robo->devid;
+
+			if (mm_copy_to_user(var.buf, buffer, var.len)) {
+				ret = -EFAULT;
+				break;
+			}
+
+			break;
+		}
+
+		default:
+			ret = -EOPNOTSUPP;
+			break;
+		}
+
+		if (buffer)
+			MFREE(SI_OSH, buffer, var.len);
+
+		return ret;
+	}
+
 	case SIOCSETCSETMSGLEVEL:
 		if (mm_copy_from_user(&value, rq->ifr_data, sizeof(value)))
 			return -EFAULT;
@@ -5774,7 +5836,7 @@ MM_IndicateRxPackets(PLM_DEVICE_BLOCK pDevice)
 
 #ifdef HNDCTF
 		if (CTF_ENAB(pUmDevice->cih)) {
-			if (ctf_forward(pUmDevice->cih, skb) != BCME_ERROR) {
+			if (ctf_forward(pUmDevice->cih, skb, skb->dev) != BCME_ERROR) {
 				pUmDevice->dev->last_rx = jiffies;
 				pUmDevice->stats.rx_bytes += skb->len;
 				goto drop_rx;

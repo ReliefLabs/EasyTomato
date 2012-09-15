@@ -160,7 +160,11 @@ extern void hotplug_net(void);
 extern void do_static_routes(int add);
 extern int radio_main(int argc, char *argv[]);
 extern int wldist_main(int argc, char *argv[]);
+extern void stop_wireless(void);
+extern void start_wireless(void);
 extern void start_wl(void);
+extern void unload_wl(void);
+extern void load_wl(void);
 #ifdef TCONFIG_IPV6
 extern void enable_ipv6(int enable);
 extern void accept_ra(const char *ifname);
@@ -448,6 +452,7 @@ extern void stop_snmp();
 #ifdef TCONFIG_PPTPD
 extern void start_pptpd(void);
 extern void stop_pptpd(void);
+extern void write_pptpd_dnsmasq_config(FILE* f);
 #endif
 
 // vpn.c
@@ -474,6 +479,11 @@ static inline void start_vpn_eas() { }
 static inline void stop_vpn_eas() { }
 #define write_vpn_resolv(f) (0)
 #endif
+
+// qoslimit.c
+extern void ipt_qoslimit(int chain);
+extern void start_qoslimit(void);
+extern void stop_qoslimit(void);
 
 // arpbind.c
 extern void start_arpbind(void);

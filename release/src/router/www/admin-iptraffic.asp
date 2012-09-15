@@ -327,8 +327,7 @@ REMOVE-END */
 <li>Monitoring of larger subnets is not supported.</li>
 </ul>
 
-<ul>
-<li><b>Other relevant notes/hints:</b>
+<p>Other relevant notes/hints:</p>
 <ul>
 <li>Before enabling this feature, please check your <a href="basic-network.asp">LAN Settings</a> and make sure the netmask on any/all of your LAN bridges has been configured properly (i.e. netmask with at least 16 bits set or "255.255.0.0").</li>
 <li>Although technically supported, it's not actually recommended having IP Traffic monitoring enabled with subnets larger than/the equivalent of a class C network (i.e. netmask with at least 24 bits set or "255.255.255.0").</li>
@@ -338,8 +337,6 @@ REMOVE-END */
 <li>Network traffic/communications flowing from/to/between different LAN bridges/subnets will be tracked/accounted separately/accordingly ("twice", as in: number of bytes/packets <i>coming from</i> the first LAN bridge and (the same) number of bytes/packets <i>going to</i> the second LAN bridge).</li>
 <!-- VLAN-END -->
 </ul>
-</ul>
-
 </div>
 
 <!-- / / / -->

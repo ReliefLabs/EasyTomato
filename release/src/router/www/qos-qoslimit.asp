@@ -228,7 +228,6 @@ function init()
 <input type='hidden' name='qosl_rules'>
 
 <div id='qoslimit'>
-
 	<h3>Bandwidth Limiter - QOS</h3>
 	<div class='section'>
 		<script type='text/javascript'>
