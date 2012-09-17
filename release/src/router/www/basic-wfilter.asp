@@ -178,10 +178,15 @@ for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 
 <h3>Wireless Client Filter</h3>
 <div class='section'>
-	<input type='radio' name='f_type' id='_f_disable' value='disabled'> <label for='_f_disable'>Disable filter</label><br>
-	<input type='radio' name='f_type' id='_f_allow' value='allow'> <label for='_f_allow'>Permit only the following clients</label><br>
-	<input type='radio' name='f_type' id='_f_deny' value='deny'> <label for='_f_deny'>Block the following clients</label><br>
-	<br>
+	<label class="radio">
+	<input type='radio' name='f_type' id='_f_disable' value='disabled'> Disable filter</label>
+	
+	<label class="radio">
+	<input type='radio' name='f_type' id='_f_allow' value='allow'> Permit only the following clients</label>
+	
+	<label class="radio">
+	<input type='radio' name='f_type' id='_f_deny' value='deny'> Block the following clients</label>
+	<hr/>
 	<table id='sm-grid' class='table table-striped table-condensed table-bordered'></table>
 </div>
 

@@ -68,8 +68,8 @@ function redraw()
 	block = '';
 	gn = 0;
 
-	grid = '<table class="table">';
-	grid += makeRow('header', 'Date', 'Download', 'Upload', 'Total');
+	grid = '<table class="table table-striped table-bordered">';
+	grid += '<thead><tr><th>Date</th><th>Download</th><th>Upload</th><th>Total</th></tr></thead>';
 
 	for (i = 0; i < monthly_history.length; ++i) {
 		h = monthly_history[i];
@@ -112,9 +112,8 @@ function init()
 <b>Date</b> <select onchange='changeDate(this, "ym")' id='dafm'><option value=0>yyyy-mm</option><option value=1>mm-yyyy</option><option value=2>mmm yyyy</option><option value=3>mm.yyyy</option></select><br>
 <b>Scale</b> <select onchange='changeScale(this)' id='scale'><option value=0>KB</option><option value=1>MB</option><option value=2 selected>GB</option></select><br>
 <br>
-&raquo; <a href="javascript:genData()">Data</a>
-<br>
-&raquo; <a href="admin-bwm.asp">Configure</a>
+<a href="javascript:genData()" class="btn">Data</a> 
+<a href="admin-bwm.asp" class="btn">Configure</a>
 <br><br><br>
 </div>
 <br>

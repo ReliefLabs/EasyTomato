@@ -17,7 +17,6 @@
 
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -43,8 +42,6 @@ function save()
 </script>
 </head>
 <body>
-
-
     
 <% include(header.html); %>
 
@@ -56,7 +53,7 @@ function save()
 <input type='hidden' name='_service' value='*'>
 
 
-<div class='section-title'>Router Identification</div>
+<h3>Router Identification</h3>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [

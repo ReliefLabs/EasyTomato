@@ -54,13 +54,13 @@
 var lg = new TomatoGrid();
 lg.setup = function() {
 	this.init('lan-grid', '', 4, [
-	{ type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3']], prefix: '<div class="centered">', suffix: '</div>' },
+	{ type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-mini' },
 	{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-	{ type: 'text', maxlen: 15, size: 17 },
-	{ type: 'text', maxlen: 15, size: 17 },
+	{ type: 'text', maxlen: 15, class: 'input-medium' },
+	{ type: 'text', maxlen: 15, class: 'input-medium' },
 	{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-	{ multi: [ { type: 'text', maxlen: 15, size: 17}, { type: 'text', maxlen: 15, size: 17 } ] },
-	{ type: 'text', maxlen: 6, size: 8 }] );
+	{ multi: [ { type: 'text', maxlen: 15, class: 'input-medium' }, { type: 'text', maxlen: 15, class: 'input-medium' } ] },
+	{ type: 'text', maxlen: 6, class: 'input-mini'  }] );
 	this.headerSet(['Bridge', 'STP', 'IP Address', 'Netmask', 'DHCP', 'IP&nbsp;Range&nbsp;<i>(first/last)</i>', 'Lease&nbsp;Time&nbsp;<i>(mins)</i>']);
 
 	var numBridges = 0;
@@ -1740,10 +1740,10 @@ if (wl_sunit(uidx)<0) {
 	W('<input type=\'hidden\' id=\'_wl'+u+'_nctrlsb\' name=\'wl'+u+'_nctrlsb\'>');
 	W('<input type=\'hidden\' id=\'_wl'+u+'_nbw\' name=\'wl'+u+'_nbw\'>');
 
-	W('<div class=\'section-title\'>Wireless');
+	W('<h3>Wireless');
 //	if (wl_ifaces.length > 1)
 		W(' (' + wl_display_ifname(uidx) + ')');
-	W('</div>');
+	W('</h3>');
 
 	W('<div class=\'section\'>');
 

@@ -19,4 +19,4 @@ Set up all the dependencies needed to build TomatoUSB/EasyTomato:
 Build the firmware image:
 1) cd ~/EasyTomato/release/src-rt
 2) make <target> V1=# V2=<name>
-       - It should be "make r2e V1=0 V2=ALPHA" (the "r2e" is the important thing)
+       - It should be "make r2nc V1=0 V2=ALPHA" (the "r2nc" is the important thing)

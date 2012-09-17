@@ -21,6 +21,7 @@
 
 <!-- / / / -->
 <style type='text/css'>
+/*
 #ara-grid .co1, #ara-grid .co2, #ara-grid .co3 {
 	width: 20%;
 }
@@ -43,6 +44,7 @@
 #ars-grid .co6 {
 	width: 24%;
 }
+*/
 </style>
 
 <script type='text/javascript' src='debug.js'></script>

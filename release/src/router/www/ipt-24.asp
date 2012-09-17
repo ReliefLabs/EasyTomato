@@ -18,7 +18,6 @@
 <title>[<% ident(); %>] IP Traffic: Last 24 Hours</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
@@ -293,7 +292,7 @@ function verifyFields(focused, quiet) {
 <!-- / / / -->
 
 <div id='cstats'>
-	<div id='tab-area'></div>
+	<div id='tab-area' class='btn-toolbar'></div>
 
 	<script type='text/javascript'>
 	if ((nvram.web_svg != '0') && (nvram.cstats_enable == '1')) {

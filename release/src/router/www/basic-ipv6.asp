@@ -280,7 +280,7 @@ function save()
 <input type='hidden' name='ipv6_rtr_addr'>
 <input type='hidden' name='ipv6_accept_ra'>
 
-<div class='section-title'>IPv6 Configuration</div>
+<h3>IPv6 Configuration</h3>
 <div class='section'>
 <script type='text/javascript'>
 dns = nvram.ipv6_dns.split(/\s+/);
