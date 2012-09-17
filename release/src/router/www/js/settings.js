@@ -59,7 +59,7 @@ $(document).ready(function() {
 					
 					//Time Zone settings
 					tomato_env.set('tm_sel', $('select[name=tm_sel]').val()); 
-					if ($('.auto_daylight').attr('checked')) {
+					if($('.auto_daylight').attr('checked')){
 						tomato_env.set('tm_dst','1');	
 					}else{	
 						tomato_env.set('tm_dst','0');	

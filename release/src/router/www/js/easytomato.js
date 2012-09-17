@@ -44,11 +44,17 @@ $(document).ready(function(){
 
 function updateClock(){
 
-    date = new Date(tomato_env.vars['time']);
-    date.setMinutes(date.getMinutes()+1);
-    tomato_env.vars['time'] = date;
-    var re = /(Mon|Tue|...|Sun)\s(Jan|Feb|...|Dec)\s\d{2}\s\d{4}\s\d{2}:\d{2}/;
- 	$('.tomato_time').html(date.toString().match(re)[0]);
+   var str = tomato_env.vars['time'],date;
+   if (str instanceof Date) {
+       date = str;
+   } else {
+       var re1 = /\d{2}\s(Jan|Feb|...|Dec)\s\d{4}\s\d{2}:\d{2}:\d{2}/g;
+       date = new Date(str.match(re1)[0]);
+   }
+   date.setMinutes(date.getMinutes()+1);
+   tomato_env.vars['time'] = date;
+   var re = /(Mon|Tue|...|Sun)\s(Jan|Feb|...|Dec)\s\d{2}\s\d{4}\s\d{2}:\d{2}/;
+   $('.tomato_time').html(date.toString().match(re)[0]);
 }
 
 //groups and rules
