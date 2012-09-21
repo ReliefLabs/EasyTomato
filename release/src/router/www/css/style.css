@@ -233,8 +233,8 @@ td { vertical-align: top; }
 	border: 1px #FFA852 solid;
 	outline: 1px #F05A28 solid;
 	text-shadow: 0 2px #F05A28;
-	padding: 10px 0;
-	margin-top: 2px;
+	padding: 8px 0;
+	/* margin-top: 2px; */
 }
 #apply_trigger:hover {
 
@@ -298,6 +298,7 @@ body{
     border: 1px #AAA solid;
     border-top: 0;
     padding-bottom: 20px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
 .mini_close{
@@ -526,6 +527,16 @@ th, td, caption {
 
 
 /*--------- Layout: Sidenav ------------*/
+
+#groups_sidenav{
+	box-shadow: 1px 0 4px #555555;
+	border-radius: 0 6px 6px 0;
+	border: 1px solid gray;
+	position: relative;
+	min-height: 246px;
+	background-color: #DCECFC;
+}
+
 .sidenav .device_list {
 	margin: 1px 0 1px 0;
 	padding: 0;
@@ -535,7 +546,7 @@ th, td, caption {
 	margin: -1px -1px -1px -1px;
 	padding: 3px 10px 3px 35px;
 	list-style: none;
-	border: 1px #0088DE solid;
+	border: 1px solid gray;
 	text-shadow: 0 1px white;
 	position: relative;
 	background-color: #DCECFC;
@@ -571,18 +582,24 @@ th, td, caption {
 
 .sidenav .sidenav_footer{
 	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
-	border: 1px #26A9E0 solid;
-	outline: 1px #00376E solid;
+	border: 1px solid gray;
+	border-left-width: 0px;
+	/* outline: 1px #00376E solid; */
 	text-align: center;
-	padding: 5px;
+	padding: 5px 0;
+	border-radius: 0 0 5px 0;
+	position: absolute;
+	bottom: 0px;
+	width: 100%
 }
 
 .sidenav .sidenav_header {
 	background: url("../img/sprite.png") repeat-x scroll 0px -440px transparent;
-	border: 1px #26A9E0 solid;
-	outline: 1px #00376E solid;
+	/*border: 1px #26A9E0 solid; */
+	/* outline: 1px #00376E solid; */
 	text-align: center;
 	padding: 2px 5px 5px 5px;
+	border-radius: 0 5px 0 0;
 }
 
 .sidenav .sidenav_header .extra_info {
