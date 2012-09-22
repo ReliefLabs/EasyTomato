@@ -143,8 +143,7 @@ if (a <= 5) {
 <!-- / / / -->
 
 <div id='footer'></div>
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

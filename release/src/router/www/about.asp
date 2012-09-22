@@ -179,9 +179,7 @@ suggestions and contributed to this project. ^ _ ^</b><br>
 </div>
 
 <!-- / / / -->
- </div><!--/row-->
-          
-        </div><!--/span-->
+ </div><!--/span-->
       </div><!--/row-->
 
       <hr>

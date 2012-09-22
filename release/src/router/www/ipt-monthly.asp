@@ -449,7 +449,7 @@ function verifyFields(focused, quiet) {
 <table id='monthly-grid' class='table table-striped table-condensed table-bordered'></table>
 </div>
 
-<div class='section-title'>Options <small><i><a href='javascript:toggleVisibility("options");'><span id='sesdivoptionsshowhide'>(Click here to show)</span></a></i></small></div>
+<h3>Options <small><i><a href='javascript:toggleVisibility("options");'><span id='sesdivoptionsshowhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdivoptions' style='display:none'>
 <script type='text/javascript'>
 var c;
@@ -478,7 +478,6 @@ createFieldTable('',c);
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div id='footer'>
 <input type='button' value='Refresh' onclick='reloadPage()' class='btn'>
 </div>

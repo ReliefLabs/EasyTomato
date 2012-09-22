@@ -123,8 +123,7 @@ W('<br><input type="checkbox" id="as-wordwrap" onclick="wordWrap()" onchange="wo
 <!-- / / / -->
 
 <div id='footer'></div>
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

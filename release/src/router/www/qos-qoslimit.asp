@@ -260,7 +260,6 @@ function init()
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div id='footer'>
 </div>
     </div><!--/span-->

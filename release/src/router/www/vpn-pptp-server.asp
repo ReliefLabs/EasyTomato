@@ -378,8 +378,7 @@ createFieldTable('', [
 
 <!-- / / / -->
 
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

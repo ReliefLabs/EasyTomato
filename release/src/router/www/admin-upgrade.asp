@@ -114,8 +114,7 @@ please backup the contents of the JFFS partition, disable it, then reboot the ro
 <!-- / / / -->
 
 <div id='footer'></div>
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

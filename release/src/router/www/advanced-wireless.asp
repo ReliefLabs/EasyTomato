@@ -211,8 +211,7 @@ if (wl_sunit(uidx)<0) {
 
 <!-- / / / -->
 
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

@@ -39,9 +39,7 @@
 #vlan-grid .co14 {
   text-align: center;
 }
-#vlan-grid .co2 {
-	width: 60px;
-}
+
 #vlan-grid .centered {
   text-align: center;
 }
@@ -369,8 +367,8 @@ if(port_vlan_supported) { // aka if(supported_hardware) block
   var vlg = new TomatoGrid();
   vlg.setup = function() {
     this.init('vlan-grid', '', (MAX_VLAN_ID + 1), [
-    { type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3'],[4, '4'],[5, '5'],[6, '6'],[7, '7'],[8, '8'],[9, '9'],[10, '10'],[11, '11'],[12, '12'],[13, '13'],[14, '14'],[15, '15']], prefix: '<div class="centered">', suffix: '</div>' },
-    { type: 'text', maxlen: 4, prefix: '<div class="centered">', suffix: '</div>' },
+    { type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3'],[4, '4'],[5, '5'],[6, '6'],[7, '7'],[8, '8'],[9, '9'],[10, '10'],[11, '11'],[12, '12'],[13, '13'],[14, '14'],[15, '15']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-mini' },
+    { type: 'text', maxlen: 4, prefix: '<div class="centered">', suffix: '</div>',class: 'input-mini' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
@@ -382,7 +380,7 @@ if(port_vlan_supported) { // aka if(supported_hardware) block
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-    { type: 'select', options: [[1, 'none'],[2, 'WAN'],[3, 'LAN (br0)'],[4, 'LAN1 (br1)'],[5, 'LAN2 (br2)'],[6, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>' }]);
+    { type: 'select', options: [[1, 'none'],[2, 'WAN'],[3, 'LAN (br0)'],[4, 'LAN1 (br1)'],[5, 'LAN2 (br2)'],[6, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-small' }]);
 
     this.headerSet(['VLAN', 'VID', 'Port 1', 'Tagged', 'Port 2', 'Tagged', 'Port 3', 'Tagged', 'Port 4', 'Tagged', 'WAN Port', 'Tagged', 'Default', 'Bridge']);
 
@@ -980,7 +978,6 @@ createFieldTable('', [
 </script>
 </div>
 </div>
-</div>
 </small>
 </div>
 </div>
@@ -1001,8 +998,7 @@ else {
 </div>
 </form>
 
-    </div><!--/row-->
-        </div><!--/span-->
+    </div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

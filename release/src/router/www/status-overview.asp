@@ -368,9 +368,7 @@ REMOVE-END */
 <div id='footer'>
 	<script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script></div>
 
- </div><!--/row-->
-          
-        </div><!--/span-->
+ </div><!--/span-->
       </div><!--/row-->
 
       <hr>

@@ -352,7 +352,6 @@ REMOVE-END */
 <!-- / / / -->
 
 	<div id='footer'></div>
-	</div><!--/row-->
 	</div><!--/span-->
 </div><!--/row-->
 	<hr>

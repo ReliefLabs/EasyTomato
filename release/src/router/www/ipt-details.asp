@@ -481,12 +481,9 @@ createFieldTable('',c);
 <!-- / / / -->
 
 </div>
-<br>
 
 <script type='text/javascript'>checkCstats();</script>
 
-
- </div><!--/row-->
  <div id='footer'>
 	<script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
 </div>

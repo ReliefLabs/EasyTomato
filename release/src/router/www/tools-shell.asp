@@ -23,15 +23,15 @@
 <!-- / / / -->
 
 <style type='text/css'>
-/*
+
 textarea {
 	
 	font: 12px monospace;
-	width: 99%;
+	width: 90%;
 	height: 12em;
 
 }
-*/
+
 </style>
 
 <script type='text/javascript' src='debug.js'></script>
@@ -42,16 +42,12 @@ textarea {
 var cmdresult = '';
 var cmd = null;
 
-
-
-
 var ref = new TomatoRefresh('/update.cgi', '', 0, 'tools-shell_refresh');
 
 ref.refresh = function(text)
 {
 	execute();
 }
-
 
 
 function verifyFields(focused, quiet)
@@ -131,9 +127,7 @@ function toggleVisibility(whichone) {
 
 <body onload='init()'>
 
-    
 <% include(header.html); %>
-
 
 <!-- / / / -->
 
@@ -161,7 +155,6 @@ createFieldTable('', [
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div id='footer'>&nbsp;</div>
     </div><!--/span-->
   </div><!--/row-->

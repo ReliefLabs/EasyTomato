@@ -218,8 +218,7 @@ Leave a blank space between each port number. Use only one of these two options 
 
 <div id='footer'>
 </div>
-</div><!--/row-->
-  </div><!--/span-->
+</div><!--/span-->
     </div><!--/row-->
       <hr>
       <footer>

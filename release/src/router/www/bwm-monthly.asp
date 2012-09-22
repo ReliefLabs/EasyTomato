@@ -122,7 +122,6 @@ function init()
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div class='form-actions'>
   <input type='button' value='Refresh' onclick='reloadPage()' class='btn'></div>
         </div><!--/span-->
