@@ -470,13 +470,11 @@ createFieldTable('',c);
 </div>
 </div>
 </div>
-<br>
 
 <script type='text/javascript'>checkCstats();</script>
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div id='footer'>
 <input type='button' value='Refresh' onclick='reloadPage()' class='btn'>
 </div>

@@ -240,8 +240,7 @@ else {
 	<img src='spin.gif' id='refresh-spinner' onclick='debugTime=1'>
 	<input type='button' value='Refresh' id='refresh-button' onclick='ref.toggleX()' class="btn">
 </div>
- </div><!--/row-->
-        </div><!--/span-->
+ </div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

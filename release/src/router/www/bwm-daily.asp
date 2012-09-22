@@ -138,7 +138,8 @@ function init()
 <!-- / / / -->
 
 <h3>WAN Bandwidth - Daily</h3>
-<div id='bwm-daily-grid' class="span6"></div>
+<div class="row">
+<div id='bwm-daily-grid' class="span5"></div>
 <div class="span4">
 <table class='table table-striped table-bordered table-condensed'>
 	<thead>

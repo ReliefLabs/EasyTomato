@@ -383,7 +383,6 @@ if (nvram.cstats_enable != '1') {
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div id='footer'>
 	<span id='dtime'></span>
 	<img src='spin.gif' id='refresh-spinner' onclick='debugTime=1'>

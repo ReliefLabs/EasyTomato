@@ -22,6 +22,7 @@
 
 <!-- / / / -->
 <style type='text/css'>
+/*
 #fo-grid .co1 {
 	width: 25px;
 	text-align: center;
@@ -41,7 +42,7 @@
 #fo-grid .co7 {
 	width: 300px;
 }
-
+*/
 </style>
 
 <script type='text/javascript' src='debug.js'></script>
@@ -113,10 +114,10 @@ fog.resetNewEditor = function() {
 fog.setup = function() {
 	this.init('fo-grid', 'sort', 50, [
 		{ type: 'checkbox' },
-		{ type: 'select', options: [[1, 'TCP'],[2, 'UDP'],[3,'Both']] },
-		{ type: 'text', maxlen: 140 },
-		{ type: 'text', maxlen: 140 },
-		{ type: 'text', maxlen: 16 },
+		{ type: 'select', options: [[1, 'TCP'],[2, 'UDP'],[3,'Both']], class : 'input-small' },
+		{ type: 'text', maxlen: 140, class : 'input-medium' },
+		{ type: 'text', maxlen: 140, class : 'input-medium' },
+		{ type: 'text', maxlen: 16, class : 'input-small' },
 		{ type: 'text', maxlen: 32 }]);
 	this.headerSet(['On', 'Proto', 'Src Address', 'Dest Address', 'Dest Ports', 'Description']);
 	var nv = nvram.ipv6_portforward.split('>');
@@ -194,7 +195,6 @@ Opens access to ports on machines inside the LAN, but does <b>not</b> re-map por
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div class='form-actions'>
 	<span id='footer-msg'></span>
 	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>

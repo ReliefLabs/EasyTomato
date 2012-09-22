@@ -69,9 +69,7 @@ if (nvram.log_file != '1') {
 
 <!-- / / / -->
 
- </div><!--/row-->
-          
-        </div><!--/span-->
+ </div><!--/span-->
       </div><!--/row-->
 
       <hr>

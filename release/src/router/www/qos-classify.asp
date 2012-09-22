@@ -23,90 +23,6 @@
 
 <!-- / / / -->
 
-<style type='text/css'>
-#qg div {
-	padding: 0 0 1px 0;
-	margin: 0;
-}
-
-#qg .co1 {
-	width: 370px;
-}
-#qg .co2 {
-	width: 80px;
-}
-#qg .co3 {
-	width: 300px;
-}
-#qg .co4 {
-	width: 40px;
-}
-#qg .x1a {
-	width: 34%;
-	float: left;
-}
-#qg .x1b {
-	width: 66%;
-	float: left;
-}
-
-#qg .x2a {
-	width: 35%;
-	float: left;
-	clear: left;
-}
-#qg .x2b {
-	width: 23%;
-	float: left;
-}
-#qg .x2c {
-	width: 41%;
-	float: left;
-}
-
-#qg .x3a {
-	width: 40%;
-	float: left;
-	clear: left;
-}
-#qg .x3b {
-	width: 60%;
-	float: left;
-}
-
-#qg .x4a {
-	width: 58%;
-	float: left;
-	clear: left;
-}
-#qg .x4b {
-	width: 41%;
-	float: left;
-}
-#qg .x5a {
-	float: left;
-	clear: left;
-	width: 70px;
-}
-
-#qg .x5b {
-	float: left;
-	padding: 2px 8px 0 8px;
-	width: 10px;
-	text-align: center;
-}
-#qg .x5c {
-	float: left;
-	width: 70px;
-}
-#qg .x5d {
-	float: left;
-	padding: 2px 0 0 8px;
-	width: 100px;
-}
-
-</style>
-
 <script type='text/javascript' src='debug.js'></script>
 
 <script type='text/javascript'>
@@ -467,8 +383,7 @@ else {
 
 <!-- / / / -->
 
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

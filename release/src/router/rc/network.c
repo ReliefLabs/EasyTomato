@@ -70,6 +70,10 @@ typedef u_int8_t u8;
 #include <etsockio.h>
 #endif
 
+void restart_wl(void);
+void stop_lan_wl(void);
+void start_lan_wl(void);
+
 static void set_lan_hostname(const char *wan_hostname)
 {
 	const char *s;
@@ -302,14 +306,16 @@ static void check_afterburner(void)
 	else {
 		return;
 	}
-	
+
 	nvram_set("boardflags", p);
-	
+
 	if (!nvram_match("debug_abrst", "0")) {
-		modprobe_r("wl");
-		modprobe("wl");
+		stop_wireless();
+		unload_wl();
+		load_wl();
+		start_wireless();
 	}
-	
+
 
 /*	safe?
 
@@ -322,6 +328,16 @@ static void check_afterburner(void)
 		nvram_set("boardflags", s);
 	}
 */
+}
+
+void unload_wl(void)
+{
+	modprobe_r("wl");
+}
+
+void load_wl(void)
+{
+	modprobe("wl");
 }
 
 static int set_wlmac(int idx, int unit, int subunit, void *param)
@@ -345,16 +361,19 @@ static int set_wlmac(int idx, int unit, int subunit, void *param)
 	return 1;
 }
 
-void start_wl(void)
+void stop_lan_wl(void)
 {
-	char *lan_ifname, *lan_ifnames, *ifname, *p;
+	char *p, *ifname;
+	char *wl_ifnames;
+	char *lan_ifname;
+#ifdef CONFIG_BCMWL5
 	int unit, subunit;
-	int is_client = 0;
+#endif
+
+	eval("ebtables", "-F");
 
 	char tmp[32];
 	char br;
-
-	foreach_wif(1, NULL, set_wlmac);
 
 	for(br=0 ; br<4 ; br++) {
 		char bridge[2] = "0";
@@ -367,17 +386,257 @@ void start_wl(void)
 		strcat(tmp,bridge);
 		strcat(tmp, "_ifname");
 		lan_ifname = nvram_safe_get(tmp);
-//		lan_ifname = nvram_safe_get("lan_ifname");
+
+		strcpy(tmp,"lan");
+		strcat(tmp,bridge);
+		strcat(tmp, "_ifnames");
+		if ((wl_ifnames = strdup(nvram_safe_get(tmp))) != NULL) {
+			p = wl_ifnames;
+			while ((ifname = strsep(&p, " ")) != NULL) {
+				while (*ifname == ' ') ++ifname;
+				if (*ifname == 0) continue;
+#ifdef CONFIG_BCMWL5
+				if (strncmp(ifname, "wl", 2) == 0 && strchr(ifname, '.')) {
+					if (get_ifname_unit(ifname, &unit, &subunit) < 0)
+						continue;
+				}
+				else if (wl_ioctl(ifname, WLC_GET_INSTANCE, &unit, sizeof(unit)))
+					continue;
+
+				eval("wlconf", ifname, "down");
+#endif
+				eval("brctl", "delif", lan_ifname, ifname);
+				ifconfig(ifname, 0, NULL, NULL);
+			}
+			free(wl_ifnames);
+		}
+	}
+}
+
+void start_lan_wl(void)
+{
+	char *lan_ifname;
+#ifdef CONFIG_BCMWL5
+	struct ifreq ifr;
+#endif
+	char *wl_ifnames, *ifname, *p;
+	uint32 ip;
+	int unit, subunit, sta;
+
+	char tmp[32];
+	char br;
+
+#ifdef CONFIG_BCMWL5
+	foreach_wif(0, NULL, set_wlmac);
+#else
+	foreach_wif(1, NULL, set_wlmac);
+#endif
+
+	for(br=0 ; br<4 ; br++) {
+		char bridge[2] = "0";
+		if (br!=0)
+			bridge[0]+=br;
+		else
+			strcpy(bridge, "");
+
+		strcpy(tmp,"lan");
+		strcat(tmp,bridge);
+		strcat(tmp, "_ifname");
+		lan_ifname = nvram_safe_get(tmp);
+
+		if (strncmp(lan_ifname, "br", 2) == 0) {
+			strcpy(tmp,"lan");
+			strcat(tmp,bridge);
+			strcat(tmp, "_ipaddr");
+			inet_aton(nvram_safe_get(tmp), (struct in_addr *)&ip);
+
+			strcpy(tmp,"lan");
+			strcat(tmp,bridge);
+			strcat(tmp, "_ifnames");
+
+			sta = 0;
+
+			if ((wl_ifnames = strdup(nvram_safe_get(tmp))) != NULL) {
+				p = wl_ifnames;
+				while ((ifname = strsep(&p, " ")) != NULL) {
+					while (*ifname == ' ') ++ifname;
+					if (*ifname == 0) continue;
+
+					unit = -1; subunit = -1;
+
+					// ignore disabled wl vifs
+#ifdef CONFIG_BCMWL5
+					if (strncmp(ifname, "wl", 2) == 0 && strchr(ifname, '.')) {
+#endif
+						char nv[40];
+						snprintf(nv, sizeof(nv) - 1, "%s_bss_enabled", ifname);
+						if (!nvram_get_int(nv))
+							continue;
+#ifdef CONFIG_BCMWL5
+						if (get_ifname_unit(ifname, &unit, &subunit) < 0)
+							continue;
+						set_wlmac(0, unit, subunit, NULL);
+					}
+					else
+						wl_ioctl(ifname, WLC_GET_INSTANCE, &unit, sizeof(unit));
+#endif
+
+					// bring up interface
+					if (ifconfig(ifname, IFUP, NULL, NULL) != 0) continue;
+
+#ifdef CONFIG_BCMWL5
+					if (wlconf(ifname, unit, subunit) == 0) {
+						const char *mode = nvram_safe_get(wl_nvname("mode", unit, subunit));
+
+						if (strcmp(mode, "wet") == 0) {
+							// Enable host DHCP relay
+							if (nvram_get_int("dhcp_relay")) {
+								wl_iovar_set(ifname, "wet_host_mac", ifr.ifr_hwaddr.sa_data, ETHER_ADDR_LEN);
+								wl_iovar_setint(ifname, "wet_host_ipv4", ip);
+							}
+						}
+
+						sta |= (strcmp(mode, "sta") == 0);
+						if ((strcmp(mode, "ap") != 0) && (strcmp(mode, "wet") != 0)) continue;
+					}
+#endif
+					eval("brctl", "addif", lan_ifname, ifname);
+				}
+				free(wl_ifnames);
+			}
+		}
+	}
+}
+
+void stop_wireless()
+{
+#ifdef CONFIG_BCMWL5
+	stop_nas();
+#endif
+	stop_lan_wl();
+}
+
+void start_wireless()
+{
+	start_lan_wl();
+
+#ifdef CONFIG_BCMWL5
+	start_nas();
+#endif
+	restart_wl();
+}
+
+void restart_wl(void)
+{
+	char *lan_ifnames, *ifname, *p;
+	int unit, subunit;
+	int is_client = 0;
+
+	char tmp[32];
+	char br;
+
+	for(br=0 ; br<4 ; br++) {
+		char bridge[2] = "0";
+		if (br!=0)
+			bridge[0]+=br;
+		else
+			strcpy(bridge, "");
+
+		strcpy(tmp,"lan");
+		strcat(tmp,bridge);
+		strcat(tmp, "_ifnames");
+		if ((lan_ifnames = strdup(nvram_safe_get(tmp))) != NULL) {
+			p = lan_ifnames;
+			while ((ifname = strsep(&p, " ")) != NULL) {
+				while (*ifname == ' ') ++ifname;
+				if (*ifname == 0) continue;
+
+				unit = -1; subunit = -1;
+
+				// ignore disabled wl vifs
+				if (strncmp(ifname, "wl", 2) == 0 && strchr(ifname, '.')) {
+					char nv[40];
+					snprintf(nv, sizeof(nv) - 1, "%s_bss_enabled", ifname);
+					if (!nvram_get_int(nv))
+						continue;
+					if (get_ifname_unit(ifname, &unit, &subunit) < 0)
+						continue;
+				}
+				// get the instance number of the wl i/f
+				else if (wl_ioctl(ifname, WLC_GET_INSTANCE, &unit, sizeof(unit)))
+					continue;
+
+				is_client |= wl_client(unit, subunit) && nvram_get_int(wl_nvname("radio", unit, 0));
+
+#ifdef CONFIG_BCMWL5
+				eval("wlconf", ifname, "start"); /* start wl iface */
+#endif	// CONFIG_BCMWL5
+			}
+			free(lan_ifnames);
+		}
+	}
+
+	killall("wldist", SIGTERM);
+	eval("wldist");
+
+	if (is_client)
+		xstart("radio", "join");
+}
+
+#ifdef CONFIG_BCMWL5
+static int disabled_wl(int idx, int unit, int subunit, void *param)
+{
+	char *ifname;
+
+	ifname = nvram_safe_get(wl_nvname("ifname", unit, subunit));
+
+	// skip disabled wl vifs
+	if (strncmp(ifname, "wl", 2) == 0 && strchr(ifname, '.') &&
+		!nvram_get_int(wl_nvname("bss_enabled", unit, subunit)))
+		return 1;
+	return 0;
+}
+#endif
+
+void start_wl(void)
+{
+	char *lan_ifname, *lan_ifnames, *ifname, *p;
+	int unit, subunit;
+	int is_client = 0;
+
+	char tmp[32];
+	char br;
+
+#ifdef CONFIG_BCMWL5
+		// HACK: When a virtual SSID is disabled, it requires two initialisation
+	if (foreach_wif(1, NULL, disabled_wl))
+	{
+		stop_wireless();
+		start_wireless();
+		return;
+	}
+#endif
+
+	for(br=0 ; br<4 ; br++) {
+		char bridge[2] = "0";
+		if (br!=0)
+			bridge[0]+=br;
+		else
+			strcpy(bridge, "");
+
+		strcpy(tmp,"lan");
+		strcat(tmp,bridge);
+		strcat(tmp, "_ifname");
+		lan_ifname = nvram_safe_get(tmp);
 		if (strncmp(lan_ifname, "br", 2) == 0) {
 			strcpy(tmp,"lan");
 			strcat(tmp,bridge);
 			strcat(tmp, "_ifnames");
-//			if ((lan_ifnames = strdup(nvram_safe_get("lan_ifnames"))) != NULL) {
 			if ((lan_ifnames = strdup(nvram_safe_get(tmp))) != NULL) {
 				p = lan_ifnames;
 				while ((ifname = strsep(&p, " ")) != NULL) {
 					while (*ifname == ' ') ++ifname;
-					if (*ifname == 0) break;
+					if (*ifname == 0) continue;
 
 					unit = -1; subunit = -1;
 
@@ -461,12 +720,22 @@ void start_lan(void)
 	char tmp[32];
 	char tmp2[32];
 	char br;
+	int vlan0tag;
+	int vid;
+	int vid_map;
+	char *iftmp;
+	char nv[64];
 
+#ifdef CONFIG_BCMWL5
+	foreach_wif(0, NULL, set_wlmac);
+#else
 	foreach_wif(1, NULL, set_wlmac);
+#endif
 	check_afterburner();
 #ifdef TCONFIG_IPV6
 	enable_ipv6(ipv6_enabled());
 #endif
+	vlan0tag = nvram_get_int("vlan0tag");
 
 	if ((sfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0) return;
 	for(br=0 ; br<4 ; br++) {
@@ -476,7 +745,6 @@ void start_lan(void)
 		else
 			strcpy(bridge, "");
 
-//		lan_ifname = strdup(nvram_safe_get("lan_ifname"));
 		strcpy(tmp,"lan");
 		strcat(tmp,bridge);
 		strcat(tmp, "_ifname");
@@ -512,24 +780,38 @@ void start_lan(void)
 			strcat(tmp, "_ifnames");
 			if ((lan_ifnames = strdup(nvram_safe_get(tmp))) != NULL) {
 				p = lan_ifnames;
-				while ((ifname = strsep(&p, " ")) != NULL) {
-					while (*ifname == ' ') ++ifname;
-					if (*ifname == 0) break;
+				while ((iftmp = strsep(&p, " ")) != NULL) {
+					while (*iftmp == ' ') ++iftmp;
+					if (*iftmp == 0) continue;
+					ifname = iftmp;
 
 					unit = -1; subunit = -1;
 
 					// ignore disabled wl vifs
 					if (strncmp(ifname, "wl", 2) == 0 && strchr(ifname, '.')) {
-						char nv[64];
 
 						snprintf(nv, sizeof(nv) - 1, "%s_bss_enabled", ifname);
 						if (!nvram_get_int(nv))
 							continue;
 						if (get_ifname_unit(ifname, &unit, &subunit) < 0)
 							continue;
+#ifdef CONFIG_BCMWL5
+						set_wlmac(0, unit, subunit, NULL);
+#endif
 					}
 					else
 						wl_ioctl(ifname, WLC_GET_INSTANCE, &unit, sizeof(unit));
+
+					// vlan ID mapping
+					if (strncmp(ifname, "vlan", 4) == 0) {
+						if (sscanf(ifname, "vlan%d", &vid) == 1) {
+							snprintf(tmp, sizeof(tmp), "vlan%dvid", vid);
+							vid_map = nvram_get_int(tmp);
+							if ((vid_map < 1) || (vid_map > 4094)) vid_map = vlan0tag | vid;
+							snprintf(tmp, sizeof(tmp), "vlan%d", vid_map);
+							ifname = tmp;
+						}
+					}
 
 					// bring up interface
 					if (ifconfig(ifname, IFUP|IFF_ALLMULTI, NULL, NULL) != 0) continue;
@@ -572,7 +854,7 @@ void start_lan(void)
 				}
 			
 				if ((nvram_get_int("wan_islan")) && (br==0) &&
-					((get_wan_proto() == WP_DISABLED) || (sta))) {
+					((get_wan_proto() == WP_DISABLED) || (get_wan_proto() == WP_PPP3G) || (sta))) {
 					ifname = nvram_get("wan_ifnameX");
 					if (ifconfig(ifname, IFUP, NULL, NULL) == 0)
 						eval("brctl", "addif", lan_ifname, ifname);
@@ -650,6 +932,10 @@ void stop_lan(void)
 	char *lan_ifnames, *p, *ifname;
 	char tmp[32];
 	char br;
+	int vlan0tag, vid, vid_map;
+	char *iftmp;
+
+	vlan0tag = nvram_get_int("vlan0tag");
 
 	for(br=0 ; br<4 ; br++) {
 		char bridge[2] = "0";
@@ -677,9 +963,20 @@ void stop_lan(void)
 		strcat(tmp, "_ifnames");
 			if ((lan_ifnames = strdup(nvram_safe_get(tmp))) != NULL) {
 				p = lan_ifnames;
-				while ((ifname = strsep(&p, " ")) != NULL) {
-					while (*ifname == ' ') ++ifname;
-					if (*ifname == 0) break;
+				while ((iftmp = strsep(&p, " ")) != NULL) {
+					while (*iftmp == ' ') ++iftmp;
+					if (*iftmp == 0) continue;
+					ifname = iftmp;
+					// vlan ID mapping
+					if (strncmp(ifname, "vlan", 4) == 0) {
+						if (sscanf(ifname, "vlan%d", &vid) == 1) {
+							snprintf(tmp, sizeof(tmp), "vlan%dvid", vid);
+							vid_map = nvram_get_int(tmp);
+							if ((vid_map < 1) || (vid_map > 4094)) vid_map = vlan0tag | vid;
+							snprintf(tmp, sizeof(tmp), "vlan%d", vid_map);
+							ifname = tmp;
+						}
+					}
 					eval("wlconf", ifname, "down");
 					ifconfig(ifname, 0, NULL, NULL);
 					eval("brctl", "delif", lan_ifname, ifname);

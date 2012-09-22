@@ -39,9 +39,7 @@
 #vlan-grid .co14 {
   text-align: center;
 }
-#vlan-grid .co2 {
-	width: 60px;
-}
+
 #vlan-grid .centered {
   text-align: center;
 }
@@ -72,6 +70,7 @@ switch(nvram['boardtype']) {
   case '0x04ef':  // WRT320N/E2000
   case '0x04cf':  // WRT610Nv2/E3000, RT-N16
   case '0xf52c':  // E4200v1
+  case '0xf582':  // RT-N66
     trunk_vlan_supported = 1;
     break;
   default:
@@ -102,12 +101,33 @@ switch(nvram['boardtype']) {
     break;
   case '0x04ef':  // WRT320N/E2000
   case '0x04cf':  // WRT610Nv2/E3000, RT-N16, WNR3500L
+  case '0xf582':  // RT-N66: not tested
     COL_P0N = '4';
     COL_P1N = '3';
     COL_P2N = '2';
     COL_P3N = '1';
     COL_P4N = '0';
     break;
+  case '0xf53a':  // E1000v2.1/E1200v1
+  case '0xf53b':   // E1000v2/E1500
+   if (((nvram['boot_hw_model'] == 'E1200') && (nvram['boot_hw_ver'] == '1.0')) || (nvram['boot_hw_model'] == 'E1500')) {
+     COL_P0N = '0';
+     COL_P1N = '1';
+     COL_P2N = '2';
+     COL_P3N = '3';
+     COL_P4N = '4';
+   break;
+   }
+   COL_P0N = '1';
+   COL_P1N = '2';
+   COL_P2N = '3';
+   COL_P3N = '4';
+   COL_P4N = '0';
+   break;
+  case '0xc550':  // E1550
+  case '0xf550':  // E2500
+  case '0x058e':  // E900
+  case '0xf52a':  // E3200
   case '0xf52c':  // E4200v1
     COL_P0N = '0';
     COL_P1N = '1';
@@ -115,6 +135,23 @@ switch(nvram['boardtype']) {
     COL_P3N = '3';
     COL_P4N = '4';
     break;
+  case '0x052b':
+   if (nvram['boardrev'] == '02') { //WNR3500Lv2
+    COL_P0N = '4';
+    COL_P1N = '3';
+    COL_P2N = '2';
+    COL_P3N = '1';
+    COL_P4N = '0';
+    break;
+   }
+   if (nvram['boardrev'] == '0x1204') { //rt-n15u
+    COL_P0N = '3';
+    COL_P1N = '2';
+    COL_P2N = '1';
+    COL_P3N = '0';
+    COL_P4N = '4';
+    break;
+   }
 // should work on WRT54G v2/v3, WRT54GS v1/v2 and others
   default:
     COL_P0N = '1';
@@ -330,8 +367,8 @@ if(port_vlan_supported) { // aka if(supported_hardware) block
   var vlg = new TomatoGrid();
   vlg.setup = function() {
     this.init('vlan-grid', '', (MAX_VLAN_ID + 1), [
-    { type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3'],[4, '4'],[5, '5'],[6, '6'],[7, '7'],[8, '8'],[9, '9'],[10, '10'],[11, '11'],[12, '12'],[13, '13'],[14, '14'],[15, '15']], prefix: '<div class="centered">', suffix: '</div>' },
-    { type: 'text', maxlen: 4, prefix: '<div class="centered">', suffix: '</div>' },
+    { type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3'],[4, '4'],[5, '5'],[6, '6'],[7, '7'],[8, '8'],[9, '9'],[10, '10'],[11, '11'],[12, '12'],[13, '13'],[14, '14'],[15, '15']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-mini' },
+    { type: 'text', maxlen: 4, prefix: '<div class="centered">', suffix: '</div>',class: 'input-mini' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
@@ -343,7 +380,7 @@ if(port_vlan_supported) { // aka if(supported_hardware) block
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-    { type: 'select', options: [[1, 'none'],[2, 'WAN'],[3, 'LAN (br0)'],[4, 'LAN1 (br1)'],[5, 'LAN2 (br2)'],[6, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>' }]);
+    { type: 'select', options: [[1, 'none'],[2, 'WAN'],[3, 'LAN (br0)'],[4, 'LAN1 (br1)'],[5, 'LAN2 (br2)'],[6, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-small' }]);
 
     this.headerSet(['VLAN', 'VID', 'Port 1', 'Tagged', 'Port 2', 'Tagged', 'Port 3', 'Tagged', 'Port 4', 'Tagged', 'WAN Port', 'Tagged', 'Default', 'Bridge']);
 
@@ -941,7 +978,6 @@ createFieldTable('', [
 </script>
 </div>
 </div>
-</div>
 </small>
 </div>
 </div>
@@ -962,8 +998,7 @@ else {
 </div>
 </form>
 
-    </div><!--/row-->
-        </div><!--/span-->
+    </div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

@@ -1383,12 +1383,10 @@ TomatoGrid.prototype = {
 		x = x.cells[x.cells.length - 1];
 		ofs = elem.getOffset(x);
 		n *= 18;
-		e.style.left = (ofs.x + x.offsetWidth - n) + 'px';
-		e.style.top = ofs.y + 'px';
-		e.style.width = n + 'px';
+		
 		e.innerHTML = s;
 
-		document.body.appendChild(e);
+		this.appendChild(e);
 	},
 
 	rpHide: tgHideIcons,
@@ -2637,7 +2635,7 @@ function createFieldTable(flags, desc)
 				buf2.push('</select>');
 				break;
 			case 'textarea':
-				buf2.push('<textarea rows="6" class="span12" ' + name + common + (f.wrap ? (' wrap=' + f.wrap) : '') + '>' + escapeHTML(UT(f.value)) + '</textarea>');
+				buf2.push('<textarea rows="6" ' + name + common + (f.wrap ? (' wrap=' + f.wrap) : '') + '>' + escapeHTML(UT(f.value)) + '</textarea>');
 				break;
 			default:
 				if (f.custom) buf2.push(f.custom);

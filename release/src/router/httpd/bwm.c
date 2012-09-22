@@ -60,7 +60,7 @@ void wo_iptbackup(char *url)
 		t = 0;
 	}
 	killall("cstats", SIGHUP);
-	for (i = 10; i > 0; --i) {
+	for (i = 20; i > 0; --i) { // may take a long time for gzip to complete
 		if ((stat(ifn, &st) == 0) && (st.st_mtime != t)) break;
 		sleep(1);
 	}
@@ -141,7 +141,7 @@ void wi_iptrestore(char *url, int len, char *boundary)
 		goto ERROR;
 	}
 
-	if ((len < 64) || (len > 10240)) {
+	if ((len < 64) || (len > 102400)) { // up to 100k
 		goto ERROR;
 	}
 
@@ -232,7 +232,13 @@ void asp_netdev(int argc, char **argv)
 
 			// <rx bytes, packets, errors, dropped, fifo errors, frame errors, compressed, multicast><tx ...>
 			if (sscanf(p + 1, "%lu%*u%*u%*u%*u%*u%*u%*u%lu", &rx, &tx) != 2) continue;
-				web_printf("%c'%s':{rx:0x%lx,tx:0x%lx}", comma, ifname, rx, tx);				
+			if (!strcmp(ifname, "imq1"))
+				web_printf("%c'%s':{rx:0x0,tx:0x%lx}", comma, ifname, rx, tx);
+			else if (!strcmp(ifname, "imq2"))
+				web_printf("%c'%s':{rx:0x%lx,tx:0x0}", comma, ifname, rx, tx);
+			else
+				web_printf("%c'%s':{rx:0x%lx,tx:0x%lx}", comma, ifname, rx, tx);
+				
 			comma = ',';
 		}
 

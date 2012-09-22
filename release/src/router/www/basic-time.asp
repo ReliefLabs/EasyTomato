@@ -278,8 +278,7 @@ The following NTP servers have been automatically blocked by request from the se
 <!-- / / / -->
 
 <div id='footer'></div>
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

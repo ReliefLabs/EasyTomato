@@ -508,7 +508,6 @@ createFieldTable('',c);
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div id='footer'>
 	<script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
 </div>

@@ -213,8 +213,7 @@ function init()
 <span id='dtime'></span>
 <img src='spin.gif' id='refresh-spinner' onclick='javascript:debugTime=1'>
 </div>
- </div><!--/row-->
-        </div><!--/span-->
+ </div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

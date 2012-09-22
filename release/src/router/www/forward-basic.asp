@@ -22,6 +22,7 @@
 
 <!-- / / / -->
 <style type='text/css'>
+/*
 #fo-grid .co1 {
 	width: 25px;
 	text-align: center;
@@ -44,7 +45,7 @@
 #fo-grid .co7 {
 	width: 300px;
 }
-
+*/
 </style>
 
 <script type='text/javascript' src='debug.js'></script>
@@ -137,12 +138,12 @@ fog.resetNewEditor = function() {
 fog.setup = function() {
 	this.init('fo-grid', 'sort', 50, [
 		{ type: 'checkbox' },
-		{ type: 'select', options: [[1, 'TCP'],[2, 'UDP'],[3,'Both']] },
-		{ type: 'text', maxlen: 32 },
-		{ type: 'text', maxlen: 16 },
-		{ type: 'text', maxlen: 5 },
-		{ type: 'text', maxlen: 15 },
-		{ type: 'text', maxlen: 32 }]);
+		{ type: 'select', options: [[1, 'TCP'],[2, 'UDP'],[3,'Both']], class : 'input-small' },
+		{ type: 'text', maxlen: 32, class : 'input-medium' },
+		{ type: 'text', maxlen: 16, class : 'input-medium' },
+		{ type: 'text', maxlen: 5, class : 'input-mini' },
+		{ type: 'text', maxlen: 15, class : 'input-medium' },
+		{ type: 'text', maxlen: 32, class : 'input-medium' }]);
 	this.headerSet(['On', 'Proto', 'Src Address', 'Ext Ports', 'Int Port', 'Int Address', 'Description']);
 	var nv = nvram.portforward.split('>');
 	for (var i = 0; i < nv.length; ++i) {
@@ -247,7 +248,6 @@ port.
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div class='form-actions'>
 	<span id='footer-msg'></span>
 	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>

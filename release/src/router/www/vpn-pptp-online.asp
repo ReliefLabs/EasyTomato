@@ -243,8 +243,7 @@ function init() {
 <a href="vpn-pptp-server.asp" class='btn'>&raquo; Configure</a>
 <script type='text/javascript'>genStdRefresh(1,1,'ref.toggle()');</script>
 
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

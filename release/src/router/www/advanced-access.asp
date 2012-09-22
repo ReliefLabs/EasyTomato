@@ -19,21 +19,13 @@
 <% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <style type='text/css'>
-#la-grid .co1 {
-  text-align: center;
-  width: 30px;
-}
-#la-grid .co3,
-#la-grid .co5 {
-  text-align: center;
-  width: 120px;
-}
-#la-grid .co6 {
-  text-align: center;
-  width: 250px;
-}
+#la-grid .co1,
 #la-grid .co2,
-#la-grid .co4 {
+#la-grid .co3,
+#la-grid .co4,
+#la-grid .co5,
+#la-grid .co6
+{
   text-align: center;
 }
 
@@ -50,12 +42,12 @@ var MAX_BRIDGE_ID = 3;
 var la = new TomatoGrid();
 la.setup = function() {
 	this.init('la-grid', 'sort', 50, [
-	{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-	{ type: 'select', options: [[0, 'LAN (br0)'],[1, 'LAN1 (br1)'],[2, 'LAN2 (br2)'],[3, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>' },
-	{ type: 'text', maxlen: 32 },
-	{ type: 'select', options: [[0, 'LAN (br0)'],[1, 'LAN1 (br1)'],[2, 'LAN2 (br2)'],[3, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>' },
-	{ type: 'text', maxlen: 32 },
-	{ type: 'text', maxlen: 32 }]);
+	{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>', class: 'input-medium' },
+	{ type: 'select', options: [[0, 'LAN (br0)'],[1, 'LAN1 (br1)'],[2, 'LAN2 (br2)'],[3, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-medium' },
+	{ type: 'text', maxlen: 32, class: 'input-medium' },
+	{ type: 'select', options: [[0, 'LAN (br0)'],[1, 'LAN1 (br1)'],[2, 'LAN2 (br2)'],[3, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-medium' },
+	{ type: 'text', maxlen: 32, class: 'input-medium' },
+	{ type: 'text', maxlen: 32, class: 'input-medium' }]);
 	this.headerSet(['On', 'Src', 'Src Address', 'Dst', 'Dst Address', 'Description']);
 
 	var r = nvram.lan_access.split('>');
@@ -238,7 +230,6 @@ function toggleVisibility(whichone) {
 <div class='section'>
   <table class='table table-striped table-condensed table-bordered' id='la-grid'></table>
 </div>
-</div>
 
 <h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></h3>
 <div class='section' id='sesdiv_notes' style='display:none'>
@@ -257,8 +248,7 @@ function toggleVisibility(whichone) {
 
 <!-- / / / -->
 
- </div><!--/row-->
-    </div><!--/span-->
+ </div><!--/span-->
   </div><!--/row-->
   <hr>
   <footer>

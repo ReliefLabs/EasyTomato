@@ -396,8 +396,7 @@ for (i = 0; i < tabs.length; ++i)
 
 <!-- / / / -->
 
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

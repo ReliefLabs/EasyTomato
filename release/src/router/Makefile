@@ -149,6 +149,8 @@ endif
 
 obj-y += wanuptime
 
+obj-$(TCONFIG_TCPDUMP) += lpcap tcpdump
+
 obj-clean := $(foreach obj, $(obj-y) $(obj-n) $(obj-), $(obj)-clean)
 obj-install := $(foreach obj,$(obj-y),$(obj)-install)
 
@@ -578,7 +580,7 @@ busybox-install:
 	$(MAKE) -C busybox install EXTRA_CFLAGS="-fPIC $(EXTRACFLAGS)" CONFIG_PREFIX=$(INSTALLDIR)/busybox
 
 busybox-clean:
-	$(MAKE) -C busybox distclean
+	-@$(MAKE) -C busybox distclean
 
 busybox-config:
 	$(MAKE) -C busybox menuconfig
@@ -606,7 +608,7 @@ matrixssl-install:
 	@true
 
 matrixssl-clean:
-	$(MAKE) -C matrixssl/src clean
+	-@$(MAKE) -C matrixssl/src clean
 
 cyassl/stamp-h1:
 	@cd cyassl && CC=$(CC) AR=$(AR) RANLIB=$(RANLIB) LD=$(LD) \
@@ -709,6 +711,11 @@ dnsmasq-install:
 	$(STRIP) $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
 
 iptables:
+ifeq ($(CONFIG_LINUX26),y)
+	cp -f iptables/extensions/libipt_ipp2p_K26.c iptables/extensions/libipt_ipp2p.c
+else
+	cp -f iptables/extensions/libipt_ipp2p_K24.c iptables/extensions/libipt_ipp2p.c
+endif
 	@$(SEP)
 	$(MAKE) -C iptables BINDIR=/usr/sbin LIBDIR=/usr/lib KERNEL_DIR=$(LINUXDIR) COPT_FLAGS="-Os $(EXTRACFLAGS) -U CONFIG_NVRAM_SIZE"
 
@@ -734,7 +741,7 @@ ifeq ($(TCONFIG_IPV6),y)
 endif
 
 iptables-clean:
-	-$(MAKE) -C iptables KERNEL_DIR=$(LINUXDIR) clean
+	-@$(MAKE) -C iptables KERNEL_DIR=$(LINUXDIR) clean
 
 ppp:
 	@$(SEP)
@@ -754,7 +761,7 @@ rp-pppoe: pppd rp-pppoe/src/stamp-h1
 	$(MAKE) -C rp-pppoe/src pppoe-relay rp-pppoe.so
 
 rp-pppoe-clean:
-	-$(MAKE) -C rp-pppoe/src clean
+	-@$(MAKE) -C rp-pppoe/src clean
 	@rm -f rp-pppoe/src/pppoe-relay
 	@rm -f rp-pppoe/src/stamp-h1
 
@@ -778,7 +785,7 @@ miniupnpd: iptables miniupnpd-config
 	LDFLAGS="-L$(TOP)/iptables -liptc" LIBS=""
 
 miniupnpd-clean:
-	-$(MAKE) -C miniupnpd -f Makefile.linux clean
+	-@$(MAKE) -C miniupnpd -f Makefile.linux clean
 	@rm -f miniupnpd/config.h
 
 miniupnpd-install:
@@ -963,8 +970,9 @@ pptpd-install: pptpd
 	@$(STRIP) $(INSTALLDIR)/pptpd/usr/sbin/bcrelay
 	@$(STRIP) $(INSTALLDIR)/pptpd/usr/sbin/pptpctrl
 
-pptpd-clean: pptpd/stamp-h1
-	cd $(TOP)/pptpd && make clean && rm -rf stamp-h1 .deps
+pptpd-clean:
+	-@$(MAKE) -C pptpd clean
+	rm -rf pptpd/.deps pptpd/stamp-h1
 
 
 pppd/Makefile: pppd/linux/Makefile.top
@@ -975,7 +983,7 @@ pppd: pppd/Makefile
 	@$(MAKE) -C pppd MFLAGS='$(if $(TCONFIG_IPV6),HAVE_INET6=y,) EXTRACFLAGS="$(EXTRACFLAGS)"'
 
 pppd-clean:
-	-$(MAKE) -C pppd clean
+	-@$(MAKE) -C pppd clean
 	@rm -f pppd/Makefile
 
 pppd-install: pppd
@@ -1044,10 +1052,6 @@ bpalogin-install:
 #		@$(SEP)
 #		@-mkdir -p libnet/lib
 #		@$(MAKE) -C libnet CC=$(CC) AR=$(AR) RANLIB=$(RANLIB)
-
-#	libpcap:
-#		@$(SEP)
-#		@$(MAKE) -C libpcap CC=$(CC) AR=$(AR) RANLIB=$(RANLIB)
 
 libbcm:
 	@[ ! -f libbcm/Makefile ] || $(MAKE) -C libbcm
@@ -1345,7 +1349,7 @@ igmpproxy-install: igmpproxy
 	$(STRIP) $(INSTALLDIR)/igmpproxy/usr/sbin/igmpproxy
 
 igmpproxy-clean:
-	-$(MAKE) -C igmpproxy/src clean
+	-@$(MAKE) -C igmpproxy/src clean
 	@rm -f igmpproxy/src/Makefile
 
 udev:
@@ -1381,7 +1385,7 @@ wanuptime: nvram shared
 	@$(MAKE) -C wanuptime
 
 wanuptime-clean:
-	$(MAKE) -C wanuptime clean
+	-@$(MAKE) -C wanuptime clean
 
 wanuptime-install:
 	install -D wanuptime/wanuptime $(INSTALLDIR)/wanuptime/usr/sbin/wanuptime
@@ -1410,10 +1414,10 @@ ebtables-install: ebtables
 	$(STRIP) $(INSTALLDIR)/ebtables/usr/lib/libebt*.so
 
 ebtables-clean:
-	make -C ebtables clean
+	-@$(MAKE) -C ebtables clean
 
 #Roadkill
-glib:
+glib/stamp-h1:
 	@$(SEP)
 	@cd glib && $(CONFIGURE) --prefix=/usr glib_cv_prog_cc_ansi_proto=no glib_cv_has__inline=yes glib_cv_has__inline__=yes glib_cv_hasinline=yes \
 		glib_cv_sane_realloc=yes glib_cv_va_copy=no glib_cv___va_copy=yes glib_cv_va_val_copy=yes glib_cv_rtldglobal_broken=no \
@@ -1421,31 +1425,37 @@ glib:
 		glib_cv_byte_contents_gmutex="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" glib_cv_sys_pthread_getspecific_posix=yes \
 		glib_cv_sys_pthread_mutex_trylock_posix=yes glib_cv_sys_pthread_cond_timedwait_posix=yes ac_cv_func_getpwuid_r=yes ac_cv_func_getpwuid_r_posix=yes
 	@$(MAKE) -C glib
+	touch glib/stamp-h1
+
+glib: glib/stamp-h1
 
 glib-clean:
-	$(MAKE) -C glib clean
+	-@$(MAKE) -C glib clean
+	rm -f glib/stamp-h1
 
-glib-install:
+glib-install: glib
 	@$(MAKE) -C glib DESTDIR=$(INSTALLDIR)/glib install
 
 #Roadkill
-nocat: glib glib-install
+nocat/stamp-h1: glib-install
 	@$(SEP)
 	@cd nocat && \
 	NC_CONF_PATH="/" \
 	$(CONFIGURE) --with-firewall=iptables --with-glib-prefix="$(INSTALLDIR)/glib/usr" --localstatedir=/var --sysconfdir=/etc
 	@$(MAKE) -C nocat
 
-	echo *** cleaning up glib staging after compile
-	rm -rfv $(INSTALLDIR)/glib/usr
 	echo *** integrate glib to nocat installdir
 	install -d $(INSTALLDIR)/nocat/usr/lib
 	install -D glib/.libs/libglib-1.2.so.0.0.10 $(INSTALLDIR)/nocat/usr/lib/libglib-1.2.so.0.0.10
 	cd $(INSTALLDIR)/nocat/usr/lib && ln -s libglib-1.2.so.0.0.10 libglib-1.2.so.0
 	$(STRIP) $(INSTALLDIR)/nocat/usr/lib/libglib-1.2.so.0.0.10
+	touch nocat/stamp-h1
+
+nocat: nocat/stamp-h1
 
 nocat-clean:
-	$(MAKE) -C nocat clean
+	-@$(MAKE) -C nocat clean
+	rm -f nocat/stamp-h1
 
 nocat-install:
 	install -D nocat/src/splashd $(INSTALLDIR)/nocat/usr/sbin/splashd
@@ -1461,7 +1471,7 @@ lzo/stamp-h1:
 lzo: lzo/stamp-h1
 
 lzo-clean:
-	-$(MAKE) -C lzo clean
+	-@$(MAKE) -C lzo clean
 	@rm -f lzo/stamp-h1
 
 lzo-install: lzo
@@ -1484,7 +1494,7 @@ openvpn/.conf:
 	touch openvpn/.conf
 
 openvpn-clean:
-	-$(MAKE) -C openvpn clean
+	-@$(MAKE) -C openvpn clean
 	@rm -f openvpn/.conf
 
 openvpn-install: openvpn
@@ -1500,7 +1510,7 @@ sd-idle/stamp-h1:
 	touch sd-idle/stamp-h1
 
 sd-idle-clean:
-	-$(MAKE) -C sd-idle clean
+	-@$(MAKE) -C sd-idle clean
 	@rm -f sd-idle/stamp-h1
 
 sd-idle-install: sd-idle/stamp-h1
@@ -1526,12 +1536,53 @@ snmp: snmp/stamp-h1
 	$(MAKE) -C snmp
 
 snmp-clean:
-	-$(MAKE) -C snmp clean
+	-@$(MAKE) -C snmp clean
 	@rm -f snmp/stamp-h1
 
 snmp-install: snmp
 	install -D snmp/agent/snmpd $(INSTALLDIR)/snmp/usr/sbin/snmpd
 	$(STRIP) $(INSTALLDIR)/snmp/usr/sbin/snmpd
+
+libpcap/stamp-h1: openssl
+	cd libpcap && \
+	CFLAGS="-Os -Wall $(EXTRACFLAGS)" \
+	ac_cv_linux_vers=2 \
+	$(CONFIGURE) --prefix=/usr --with-pcap=linux \
+	$(if $(TCONFIG_IPV6),--enable-ipv6,--disable-ipv6)
+	touch libpcap/stamp-h1
+
+libpcap: libpcap/stamp-h1
+	@$(SEP)
+	$(MAKE) -C libpcap
+
+libpcap-clean:
+	-@$(MAKE) -C libpcap clean
+	@rm -f libpcap/stamp-h1
+
+libpcap-install:
+	@$(SEP)
+
+tcpdump/stamp-h1: openssl libpcap
+	cd tcpdump && \
+	CFLAGS="-Os -Wall $(EXTRACFLAGS) -I$(TOP)/openssl/include" \
+	LDFLAGS="-L$(TOP)/openssl" \
+	ac_cv_linux_vers=2 ac_cv_search_getaddrinfo=no \
+	$(CONFIGURE) --prefix=/usr --disable-smb \
+	--without-smi --with-crypt \
+	$(if $(TCONFIG_IPV6),--enable-ipv6,--disable-ipv6)
+	touch tcpdump/stamp-h1
+
+tcpdump: tcpdump/stamp-h1
+	@$(SEP)
+	$(MAKE) -C tcpdump
+
+tcpdump-clean:
+	-@$(MAKE) -C tcpdump clean
+	@rm -f tcpdump/stamp-h1
+
+tcpdump-install: tcpdump
+	install -D tcpdump/tcpdump $(INSTALLDIR)/tcpdump/usr/sbin/tcpdump
+	$(STRIP) $(INSTALLDIR)/tcpdump/usr/sbin/tcpdump
 
 #
 # Generic rules
@@ -1557,4 +1608,4 @@ $(obj-y) $(obj-n) $(obj-clean) $(obj-install): dummy
 
 .PHONY: all clean distclean mrproper install package
 .PHONY: conf mconf oldconf kconf kmconf config menuconfig oldconfig
-.PHONY: dummy libnet libpcap
+.PHONY: dummy libnet

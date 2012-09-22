@@ -130,8 +130,7 @@ if ((!ses) && (!brau)) W('<i>This feature is not supported on this router.</i>')
 <!-- / / / -->
 
 <div id='footer'></div>
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

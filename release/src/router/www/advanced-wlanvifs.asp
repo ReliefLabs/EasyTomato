@@ -111,11 +111,11 @@ wlg = new TomatoGrid();
 
 wlg.setup = function() {
 	this.init('wlif-grid', '', max_no_vifs, [
-		{ type: 'select', options: vifs_possible },
+		{ type: 'select', options: vifs_possible, class: 'input-medium' },
 		{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-		{ type: 'text', maxlen: 32, size: 34, prefix: '<div class="centered">', suffix: '</div>' },
+		{ type: 'text', maxlen: 32, size: 34, prefix: '<div class="centered">', suffix: '</div>', class: 'input-medium' },
 		{ type: 'select', options: wl_modes_available , prefix: '<div class="centered">', suffix: '</div>' },
-		{ type: 'select', options: [[0,'LAN (br0)'],[1,'LAN1  (br1)'],[2,'LAN2 (br2)'],[3,'LAN3 (br3)'],[4,'none']] }
+		{ type: 'select', options: [[0,'LAN (br0)'],[1,'LAN1  (br1)'],[2,'LAN2 (br2)'],[3,'LAN3 (br3)'],[4,'none']], class: 'input-medium' }
 	]);
 
 	this.headerSet(['Interface', 'Enabled', 'SSID', 'Mode', 'Bridge']);
@@ -1600,8 +1600,6 @@ for (var i = 1; i < tabs.length; ++i) {
 <!-- / SESDIV / -->
 </div>
 
- </div><!--/row-->
-
  <span id='footer-msg'></span>
 	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
 	<input type='button' value='Cancel' id='cancel-button' onclick='cancel()' class='btn'>
@@ -1609,8 +1607,7 @@ for (var i = 1; i < tabs.length; ++i) {
 <!-- / / / -->
 
 <div id='footer'></div>
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

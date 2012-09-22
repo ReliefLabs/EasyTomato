@@ -324,7 +324,6 @@ if (nvram.qos_enable != '1') {
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div id='footer'>
 	<script type='text/javascript'>genStdRefresh(1,2,'ref.toggle()');</script>
 </div>

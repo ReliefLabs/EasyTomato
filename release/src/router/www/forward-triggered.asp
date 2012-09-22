@@ -99,7 +99,7 @@ tg.resetNewEditor = function() {
 tg.setup = function() {
 	this.init('tg-grid', 'sort', 50, [
 		{ type: 'checkbox' },
-		{ type: 'select', options: [[1, 'TCP'],[2, 'UDP'],[3,'Both']] },
+		{ type: 'select', options: [[1, 'TCP'],[2, 'UDP'],[3,'Both']], class : 'input-small' },
 		{ type: 'text', maxlen: 16 },
 		{ type: 'text', maxlen: 16 },
 		{ type: 'text', maxlen: 32 }]);
@@ -187,7 +187,6 @@ function toggleVisibility(whichone) {
 
 <!-- / / / -->
 
- </div><!--/row-->
  <div class='form-actions'>
 	<span id='footer-msg'></span>
 	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>

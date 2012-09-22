@@ -1121,6 +1121,23 @@ static const nvset_t nvset_list[] = {
 	{ "lan_ifnames",		V_TEXT(0,64)			},
 	{ "manual_boot_nv",		V_01				},
 	{ "trunk_vlan_so",		V_01				},
+	{ "vlan0tag",		V_TEXT(0,5)			},
+	{ "vlan0vid",		V_TEXT(0,5)			},
+	{ "vlan1vid",		V_TEXT(0,5)			},
+	{ "vlan2vid",		V_TEXT(0,5)			},
+	{ "vlan3vid",		V_TEXT(0,5)			},
+	{ "vlan4vid",		V_TEXT(0,5)			},
+	{ "vlan5vid",		V_TEXT(0,5)			},
+	{ "vlan6vid",		V_TEXT(0,5)			},
+	{ "vlan7vid",		V_TEXT(0,5)			},
+	{ "vlan8vid",		V_TEXT(0,5)			},
+	{ "vlan9vid",		V_TEXT(0,5)			},
+	{ "vlan10vid",		V_TEXT(0,5)			},
+	{ "vlan11vid",		V_TEXT(0,5)			},
+	{ "vlan12vid",		V_TEXT(0,5)			},
+	{ "vlan13vid",		V_TEXT(0,5)			},
+	{ "vlan14vid",		V_TEXT(0,5)			},
+	{ "vlan15vid",		V_TEXT(0,5)			},
 #endif
 
 // advanced-mac
@@ -1192,6 +1209,9 @@ static const nvset_t nvset_list[] = {
 	{ "dmz_enable",			V_01				},
 	{ "dmz_ipaddr",			V_LENGTH(0, 15)		},
 	{ "dmz_sip",			V_LENGTH(0, 512)	},
+#ifdef TCONFIG_VLAN
+	{ "dmz_ifname",			V_LENGTH(0, 5)			},
+#endif
 
 // forward-upnp
 	{ "upnp_enable",		V_NUM				},
@@ -1455,25 +1475,34 @@ static const nvset_t nvset_list[] = {
 	{ "ne_vbeta",			V_NUM				},
 	{ "ne_vgamma",			V_NUM				},
 
+// qos-bw-limiter
+	{ "qosl_enable",		V_01                   },
+	{ "qosl_rules",			V_LENGTH(0, 4096)      },
+	/*qosl_ibw unused - qos_ibw shared*/
+	/*qosl_obw unused - qos_obw shared*/
+
 //NoCatSplash. Victek.
 #ifdef TCONFIG_NOCAT
 	{ "NC_enable",			V_01				},
 	{ "NC_Verbosity",		V_RANGE(0, 10)			},
-		{ "NC_GatewayName",		V_LENGTH(0, 255)		},
+	{ "NC_GatewayName",		V_LENGTH(0, 255)		},
 	{ "NC_GatewayPort",		V_PORT				},
-		{ "NC_ForcedRedirect",		V_01				},
-		{ "NC_HomePage",		V_LENGTH(0, 255)		},
-		{ "NC_DocumentRoot",		V_LENGTH(0, 255)		},
-		{ "NC_SplashURL",		V_LENGTH(0, 255)		},
-		{ "NC_LoginTimeout",		V_RANGE(0, 86400000)		},
-		{ "NC_IdleTimeout",		V_RANGE(0, 86400000)		},
+	{ "NC_ForcedRedirect",		V_01				},
+	{ "NC_HomePage",		V_LENGTH(0, 255)		},
+	{ "NC_DocumentRoot",		V_LENGTH(0, 255)		},
+	{ "NC_SplashURL",		V_LENGTH(0, 255)		},
+	{ "NC_LoginTimeout",		V_RANGE(0, 86400000)		},
+	{ "NC_IdleTimeout",		V_RANGE(0, 86400000)		},
 	{ "NC_MaxMissedARP",		V_RANGE(0, 10)			},
 	{ "NC_PeerChecktimeout",	V_RANGE(0, 60)			},
-		{ "NC_ExcludePorts",		V_LENGTH(0, 255)		},
-		{ "NC_IncludePorts",		V_LENGTH(0, 255)		},
-		{ "NC_AllowedWebHosts",		V_LENGTH(0, 255)		},
-		{ "NC_MACWhiteList",		V_LENGTH(0, 255)		},
+	{ "NC_ExcludePorts",		V_LENGTH(0, 255)		},
+	{ "NC_IncludePorts",		V_LENGTH(0, 255)		},
+	{ "NC_AllowedWebHosts",		V_LENGTH(0, 255)		},
+	{ "NC_MACWhiteList",		V_LENGTH(0, 255)		},
 	{ "NC_SplashFile",		V_LENGTH(0, 8192)		},
+#ifdef TCONFIG_VLAN
+	{ "NC_BridgeLAN",		V_LENGTH(0, 50)			},
+#endif
 #endif
 
 #ifdef TCONFIG_OPENVPN
@@ -1618,6 +1647,7 @@ static const nvset_t nvset_list[] = {
 	{ "pptpd_wins2",		V_TEXT(0, 15)		},
 	{ "pptpd_mtu",			V_RANGE(576, 1500)	},
 	{ "pptpd_mru",			V_RANGE(576, 1500)	},
+	{ "pptpd_custom",		V_TEXT(0, 2048)		},
 
 /*
 ppp_static			0/1
@@ -1652,6 +1682,7 @@ port_rate_limit_4	0-8
 wl_ap_ip
 wl_ap_ssid
 */
+#ifdef TCONFIG_USERPPTP
 	{ "pptp_client_enable",   V_01                  },
 	{ "pptp_client_peerdns",  V_RANGE(0,2)          },
 	{ "pptp_client_mtuenable",V_01                  },
@@ -1683,6 +1714,7 @@ wl_ap_ssid
 	{ "easytomato_scratch_7", V_NONE },
 	{ "time", V_TEXT(0,50) },
 
+#endif
 	{ NULL }
 };
 
@@ -1847,6 +1879,7 @@ static void wo_tomato(char *url)
 	int nvset;
 	const char *red;
 	int commit;
+	int force_commit;
 
 //	_dprintf("tomato.cgi\n");
 
@@ -1854,6 +1887,7 @@ static void wo_tomato(char *url)
 	if (!*red) send_header(200, NULL, mime_html, 0);
 
 	commit = atoi(webcgi_safeget("_commit", "1"));
+	force_commit = atoi(webcgi_safeget("_force_commit", "0"));
 	ajax = atoi(webcgi_safeget("_ajax", "0"));
 
 	nvset = atoi(webcgi_safeget("_nvset", "1"));
@@ -1888,7 +1922,7 @@ static void wo_tomato(char *url)
 		}
 	}
 
-	if (commit) {
+	if (commit || force_commit) {
 		_dprintf("commit from tomato.cgi\n");
 		nvram_commit_x();
 	}

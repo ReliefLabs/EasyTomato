@@ -198,8 +198,7 @@ for (var uidx = 0; uidx < wl_ifaces.length; ++uidx) {
 <!-- / / / -->
 
 <div id='footer'></div>
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>

@@ -363,6 +363,10 @@ void start_dnsmasq()
 	write_vpn_dnsmasq_config(f);
 #endif
 
+#ifdef TCONFIG_PPTPD
+	write_pptpd_dnsmasq_config(f);
+#endif
+
 	fprintf(f, "%s\n\n", nvram_safe_get("dnsmasq_custom"));
 
 	fappend(f, "/etc/dnsmasq.custom");
@@ -1288,6 +1292,7 @@ void stop_splashd(void)
 {
 	pid_splashd = -1;
 	stop_nocat();
+	start_wan(BOOT);
 }
 #endif
 
@@ -2100,6 +2105,10 @@ void start_services(void)
 	start_snmp();
 #endif
 
+#ifdef TCONFIG_NOCAT
+	start_splashd();
+#endif
+
 }
 
 void stop_services(void)
@@ -2108,11 +2117,13 @@ void stop_services(void)
 // restart_nas_services(1, 0);	// stop Samba, FTP and Media Server
 
 
+#ifdef TCONFIG_NOCAT
+	stop_splashd();
+#endif
 
 #ifdef TCONFIG_SNMP
 	stop_snmp();
 #endif
-
 
 #ifdef TCONFIG_IPV6
 	stop_radvd();
@@ -2236,6 +2247,23 @@ TOP:
 			start_qos();
 			if (nvram_match("qos_reset", "1")) f_write_string("/proc/net/clear_marks", "1", 0, 0);
 		}
+		goto CLEAR;
+	}
+
+	if (strcmp(service, "qoslimit") == 0) {
+		if (action & A_STOP) {
+			stop_qoslimit();
+		}
+#ifdef TCONFIG_NOCAT
+		stop_splashd();
+#endif
+		stop_firewall(); start_firewall();		// always restarted
+		if (action & A_START) {
+			start_qoslimit();
+		}
+#ifdef TCONFIG_NOCAT
+		start_splashd();
+#endif
 		goto CLEAR;
 	}
 
@@ -2499,6 +2527,30 @@ TOP:
 #ifdef TCONFIG_USB
 			start_nas_services();
 #endif
+		}
+		goto CLEAR;
+	}
+
+	if (strcmp(service, "wireless") == 0) {
+		if(action & A_STOP) {
+			stop_wireless();
+		}
+		if(action & A_START) {
+			start_wireless();
+		}
+		goto CLEAR;
+	}
+
+	if (strcmp(service, "wl") == 0) {
+		if(action & A_STOP) {
+			stop_wireless();
+			unload_wl();
+		}
+		if(action & A_START) {
+			load_wl();
+			start_wireless();
+			stop_wireless();
+			start_wireless();
 		}
 		goto CLEAR;
 	}

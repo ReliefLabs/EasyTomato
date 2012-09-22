@@ -323,8 +323,7 @@ W('<br><input type="button" value="' + (mdup ? 'Res' : 'S') + 'tart Now" onclick
 
 <!-- / / / -->
 
-		</div><!--/row-->
-        </div><!--/span-->
+		</div><!--/span-->
       </div><!--/row-->
       <hr>
       <footer>
