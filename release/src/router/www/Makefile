@@ -266,3 +266,4 @@ endif
 	cp -r css/* $(INSTALLDIR)/www/css/.
 	mkdir -p $(INSTALLDIR)/www/js
 	cp -r js/* $(INSTALLDIR)/www/js/.
+	rm $(INSTALLDIR)/www/img/*.ai
