@@ -547,7 +547,7 @@ th, td, caption {
 	margin: -1px -1px -1px -1px;
 	padding: 3px 10px 3px 35px;
 	list-style: none;
-	border: 1px solid gray;
+	border: 1px solid #AAAAAA;
 	text-shadow: 0 1px white;
 	position: relative;
 	background-color: #DCECFC;
@@ -910,6 +910,15 @@ form .grid_row{
 
 
 /*--------- Rules: Sidenav ------------*/
+
+#rules_sidenav{
+	min-height: 565px;
+	background: #dcecfc;
+	border-radius: 0 6px 5px 0px;
+	border: 1px solid #AAAAAA;
+	
+}
+
 #rules_sidenav .delete_rule_trig{
 	background: url("../img/sprite.png") repeat-x scroll -303px -1749px  transparent;
 	float: right;
