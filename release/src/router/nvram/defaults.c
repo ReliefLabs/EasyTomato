@@ -107,7 +107,7 @@ const defaults_t defaults[] = {
 */
 	// DHCP server parameters
 	{ "dhcp_start",			"100"				},	//
-	{ "dhcp_num",			"50"				},	//
+	{ "dhcp_num",			"100"				},	//
 	{ "dhcpd_startip",		"" 				},	// if empty, tomato will use dhcp_start/dchp_num for better compatibility
 	{ "dhcpd_endip",		"" 				},	// "
 	{ "dhcp_lease",			"0"				},	// LAN lease time in minutes
@@ -601,7 +601,7 @@ const defaults_t defaults[] = {
 	{ "rstats_bak",			"0"				},
 
 // admin-ipt
-	{ "cstats_enable",		"0"				},
+	{ "cstats_enable",		"1"				},
 	{ "cstats_path",		""				},
 	{ "cstats_stime",		"48"			},
 	{ "cstats_offset",		"1"				},
