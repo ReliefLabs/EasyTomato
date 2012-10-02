@@ -29,7 +29,7 @@
 
 $(document).ready(function() {
 
-	$('#qg tr').append('<td class="btn-group"><button class="moveup btn">Up</button><button class="movedown btn">Down</button><button class="delete btn btn-danger">Delete</button></td>');
+	$('#qg tr.odd, #qg tr.even').append('<td class="btn-group"><button class="moveup btn">Up</button><button class="movedown btn">Down</button><button class="delete btn btn-danger">Delete</button></td>');
 
 	$('button.moveup').bind('click', function(e){
 		e.preventDefault();
@@ -42,6 +42,29 @@ $(document).ready(function() {
 		var myRow = $(this).closest('tr');
 		$(myRow).next().after(myRow);
 	})
+
+	$('button.delete').bind('click', function(e){
+		e.preventDefault();
+		var r = confirm("Are you sure?");
+		if(r) {
+			var myRow = $(this).closest('tr');
+			$(myRow).remove();
+		}
+	});
+
+
+	$("#qg").prepend($('<thead></thead>')
+		.append($('<tr>')
+			.append($('<th>Match Rule</th>'))
+			.append($('<th>Class</th>'))
+			.append($('<th>Description</th>'))
+			.append($('<th>#</th>'))
+			.append($('<th>Controls</th>'))
+		)
+    );
+
+	// Remove old header
+    $("#qg tbody tr:first").remove();
 });
 
 

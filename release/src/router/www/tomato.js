@@ -1356,7 +1356,7 @@ TomatoGrid.prototype = {
 
 	rpMouIn: function(evt) {
 		var e, x, ofs, me, s, n;
-
+/*
 		if ((evt = checkEvent(evt)) == null) return;
 
 		me = TGO(evt.target);
@@ -1388,7 +1388,7 @@ TomatoGrid.prototype = {
 		
 		e.innerHTML = s;
 
-		this.appendChild(e);
+		this.appendChild(e);*/
 	},
 
 	rpHide: tgHideIcons,
@@ -1431,7 +1431,7 @@ TomatoGrid.prototype = {
 		e.setRowData = function(data) { this._data = data; }
 
 		if ((this.canMove) || (this.canEdit) || (this.canDelete)) {
-			e.onmouseover = this.rpMouIn;
+			//e.onmouseover = this.rpMouIn;
 // ----			e.onmouseout = this.rpMouOut;
 			if (this.canEdit) e.title = 'Click to edit';
 		}
