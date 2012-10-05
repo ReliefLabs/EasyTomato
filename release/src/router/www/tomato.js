@@ -1315,7 +1315,7 @@ TomatoGrid.prototype = {
 		i.parentNode.insertBefore(e, i);
 
 		this.recolor();
-		this.rpHide();
+		//this.rpHide();
 	},
 
 	rpDn: function(e) {
@@ -1329,7 +1329,7 @@ TomatoGrid.prototype = {
 		i.parentNode.insertBefore(e, i.nextSibling);
 
 		this.recolor();
-		this.rpHide();
+		//this.rpHide();
 	},
 
 	rpMo: function(img, e) {
@@ -1339,7 +1339,7 @@ TomatoGrid.prototype = {
 		me = TGO(e);
 		if (me.moving == e) {
 			me.moving = null;
-			this.rpHide();
+			//this.rpHide();
 			return;
 		}
 		me.moving = e;
@@ -1351,20 +1351,22 @@ TomatoGrid.prototype = {
 		TGO(e).moving = null;
 		e.parentNode.removeChild(e);
 		this.recolor();
-		this.rpHide();
+		//this.rpHide();
 	},
 
 	rpMouIn: function(evt) {
 		var e, x, ofs, me, s, n;
-
+/*
 		if ((evt = checkEvent(evt)) == null) return;
 
 		me = TGO(evt.target);
 		if (me.isEditing()) return;
 		if (me.moving) return;
 
-		me.rpHide();
-		e = document.createElement('div');
+		if(evt.target.id != 'tg-row-panel')
+			me.rpHide();
+
+		e = document.createElement('td');
 		e.tgo = me;
 		e.ref = evt.target;
 		e.setAttribute('id', 'tg-row-panel');
@@ -1386,7 +1388,7 @@ TomatoGrid.prototype = {
 		
 		e.innerHTML = s;
 
-		this.appendChild(e);
+		this.appendChild(e);*/
 	},
 
 	rpHide: tgHideIcons,
@@ -1429,7 +1431,7 @@ TomatoGrid.prototype = {
 		e.setRowData = function(data) { this._data = data; }
 
 		if ((this.canMove) || (this.canEdit) || (this.canDelete)) {
-			e.onmouseover = this.rpMouIn;
+			//e.onmouseover = this.rpMouIn;
 // ----			e.onmouseout = this.rpMouOut;
 			if (this.canEdit) e.title = 'Click to edit';
 		}
