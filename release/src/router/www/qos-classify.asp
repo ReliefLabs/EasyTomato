@@ -29,7 +29,16 @@
 
 $(document).ready(function() {
 
-	$('#qg tr.odd, #qg tr.even').append('<td class="btn-group"><button class="moveup btn">Up</button><button class="movedown btn">Down</button><button class="delete btn btn-danger">Delete</button></td>');
+	$('#qg tr.odd, #qg tr.even').append('<td class="btn-group">' +
+		'<button class="moveup btn">Up</button>' +
+		'<button class="movedown btn">Down</button>' +
+		'<button class="delete btn btn-danger">Delete</button></td>');
+
+	$('#qg tr.odd, #qg tr.even').hover(
+		function () {
+    	$(this).toggleClass("info");
+    	}
+    );
 
 	$('button.moveup').bind('click', function(e){
 		e.preventDefault();
@@ -51,7 +60,6 @@ $(document).ready(function() {
 			$(myRow).remove();
 		}
 	});
-
 
 	$("#qg").prepend($('<thead></thead>')
 		.append($('<tr>')
