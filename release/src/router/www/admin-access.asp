@@ -344,7 +344,7 @@ createFieldTable('', [
 </div>
 
 <div id='footer'>
-	<input type='button' value='Save' id='save-button' onclick='save()' class='btn btn-primary'>
+	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
 	<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
 </div>
 </form>
