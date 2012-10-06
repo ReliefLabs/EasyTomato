@@ -245,8 +245,7 @@ sg.resetNewEditor = function() {
 
 sg.setup = function() {
 	this.init('bs-grid', 'sort', 250, [
-		{ multi: [ { type: 'text', class: 'input-medium' }, { type: 'text', class: 'input-medium' } ] },
-		{ multi: [ { type: 'text', maxlen: 17 }, { type: 'text', maxlen: 17 } ] },
+		{ multi: [ { type: 'text', maxlen: 17, class: 'input-medium' }, { type: 'text', maxlen: 17, class: 'input-medium' } ] },
 		{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
 		{ type: 'text', maxlen: 15, class: 'input-medium' },
 		{ type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
