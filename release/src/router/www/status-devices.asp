@@ -274,18 +274,36 @@ dg.populate = function()
 			e.qual = -1;
 		}
 
+		if(e.qual) {
+			var bar = '';
+			switch(MIN(MAX(Math.floor(e.qual / 10), 1), 6)) {
+				case 1:
+				case 2:
+					bar = 'bar-danger';
+				break;
+				case 3:
+				case 4:
+					bar = 'bar-warning';
+				break;
+				case 5:
+				case 6:
+					bar = 'bar-success';
+				break;
+			}
 		this.insert(-1, e, [
 			e.ifname, b, (e.ip == '-') ? '' : e.ip, e.name,
 			(e.rssi != 0) ? e.rssi + ' <small>dBm</small>' : '',
-			(e.qual < 0) ? '' : '<small>' + e.qual + '</small> <img src="bar' + MIN(MAX(Math.floor(e.qual / 10), 1), 6) + '.gif">',
+			(e.qual < 0) ? '' : 
+			'<div class="progress"><div class="bar ' + bar + '" style="width: ' + e.qual + '%;">' + e.qual + '%</div></div>',
 			e.txrx,	e.lease], false);
+		}
 	}
 }
 
 dg.setup = function()
 {
 	this.init('dev-grid', 'sort');
-	this.headerSet(['Interface', 'MAC Address', 'IP Address', 'Name', 'RSSI &nbsp; &nbsp; ', 'Quality', 'TX/RX Rate&nbsp;', 'Lease &nbsp; &nbsp; ']);
+	this.headerSet(['Interface', 'MAC Address', 'IP Address', 'Name', 'RSSI &nbsp; &nbsp; ', 'Quality (%)', 'TX/RX Rate&nbsp;', 'Lease &nbsp; &nbsp; ']);
 	this.populate();
 	this.sort(2);
 }

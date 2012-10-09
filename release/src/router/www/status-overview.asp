@@ -240,8 +240,10 @@ createFieldTable('', [
 ]);
 </script>
 <span id='b_dhcpc' style='display:none'>
+	<div class='btn-group'>
 	<input type='button' class='btn' onclick='dhcpc("renew")' value='Renew'>
 	<input type='button' class='btn' onclick='dhcpc("release")' value='Release'>
+	</div>
 </span>
 <input type='button' class='btn' onclick='wan_connect()' value='Connect' id='b_connect' style='display:none'>
 <input type='button' class='btn' onclick='wan_disconnect()' value='Disconnect' id='b_disconnect' style='display:none'>
@@ -356,9 +358,10 @@ REMOVE-END */
 		{ title: 'Signal Quality', rid: 'qual'+uidx, text: stats.qual[uidx] || '', ignore: ((!wlstats[uidx].client) || (wl_sunit(uidx)>=0)) }
 	]);
 
+	W('<div class="btn-group">');
 	W('<input type=\'button\' class=\'btn\' onclick=\'wlenable('+uidx+', 1)\' id=\'b_wl'+uidx+'_enable\' value=\'Enable\' style=\'display:none\'>');
 	W('<input type=\'button\' class=\'btn\' onclick=\'wlenable('+uidx+', 0)\' id=\'b_wl'+uidx+'_disable\' value=\'Disable\' style=\'display:none\'>');
-	W('</div>');
+	W('</div></div>');
 }
 </script>
 
