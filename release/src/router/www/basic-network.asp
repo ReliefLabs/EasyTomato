@@ -1769,7 +1769,7 @@ if (wl_sunit(uidx)<0) {
 			value: eval('nvram.wl'+u+'_nctrlsb') == 'none' ? 'lower' : eval('nvram.wl'+u+'_nctrlsb') },
 		null,
 		{ title: 'Security', name: 'wl'+u+'_security_mode', type: 'select',
-			options: [['disabled','Disabled'],['wep','WEP'],['wpa_personal','WPA Personal'],['wpa_enterprise','WPA Enterprise'],['wpa2_personal','WPA2 Personal'],['wpa2_enterprise','WPA2 Enterprise'],['wpaX_personal','WPA / WPA2 Personal'],['wpaX_enterprise','WPA / WPA2 Enterprise'],['radius','Radius']],
+			options: [['disabled','Disabled'],['wpa_personal','WPA Personal'],['wpa2_personal','WPA2 Personal'],['wpaX_personal','WPA / WPA2 Personal']],
 			value: eval('nvram.wl'+u+'_security_mode') },
 		{ title: 'Encryption', indent: 2, name: 'wl'+u+'_crypto', type: 'select',
 			options: [['tkip','TKIP'],['aes','AES'],['tkip+aes','TKIP / AES']], value: eval('nvram.wl'+u+'_crypto') },
