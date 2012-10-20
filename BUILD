@@ -1,5 +1,3 @@
-These instructions were written for Ubuntu 12.04
-
 Set up Git:
 1) Create an rsa public/private key pair to use with github
        - ssh-keygen <enter>
@@ -19,6 +17,6 @@ Set up all the dependencies needed to build TomatoUSB/EasyTomato:
 5) source ~/.profile
 
 Build the firmware image:
-1) cd ~/EasyTomato/release/src-rt
+1) cd ~/EasyTomato/release/src
 2) make <target> V1=# V2=<name>
-       - It should be "make r2nc V1=0 V2=ALPHA" (the "r2nc" is the important thing)
+       - I think it should be "make s V1=0 V2=ALPHA" (the "s" is the important thing)
