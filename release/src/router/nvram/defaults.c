@@ -60,7 +60,7 @@ const defaults_t defaults[] = {
 
 	{ "lan_gateway",		"0.0.0.0"			},	// LAN Gateway
 	{ "wl_wds_enable",		"0"				},	// WDS Enable (0|1)
-
+	{ "easytomato_scratch_4",	"wpa2_personal"		}, //sets default encryption to WPA2
 #ifdef TCONFIG_VLAN
 	{ "lan1_ipaddr",		""				},
 	{ "lan1_netmask",		""				},
@@ -1076,4 +1076,5 @@ const defaults_t if_vlan[] = {
 	{ "wan_ifname",		"vlan1"					},
 	{ "wan_ifnames",	"vlan1"					},
 	{ NULL, NULL }
+
 };
