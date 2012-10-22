@@ -1,3 +1,5 @@
+These instructions were written for Ubuntu 12.04
+
 Set up Git:
 1) Create an rsa public/private key pair to use with github
        - ssh-keygen <enter>
