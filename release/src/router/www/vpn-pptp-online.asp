@@ -19,7 +19,6 @@
 <title>[<% ident(); %>] VPN：PPTP Online</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <style type='text/css'>
 #dev-grid .co1 {

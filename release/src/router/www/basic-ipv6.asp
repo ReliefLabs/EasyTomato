@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Basic: IPv6</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

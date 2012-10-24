@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Tools: Wireless Survey</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 
 <!-- / / / -->
 

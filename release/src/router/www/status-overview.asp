@@ -17,7 +17,6 @@
 
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='interfaces.js'></script>
 <script type='text/javascript' src='debug.js'></script>

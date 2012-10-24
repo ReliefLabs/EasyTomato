@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Bandwidth: Monthly</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <!-- / / / -->
 

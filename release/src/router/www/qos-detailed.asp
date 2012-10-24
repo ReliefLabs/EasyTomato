@@ -20,7 +20,6 @@
 <title>[<% ident(); %>] QoS: View Details</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

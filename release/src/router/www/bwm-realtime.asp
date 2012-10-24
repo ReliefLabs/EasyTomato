@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Bandwidth: Real-Time</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <style type='text/css'>

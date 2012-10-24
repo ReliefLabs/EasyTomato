@@ -14,7 +14,6 @@
 <title>[<% ident(); %>] Bandwidth: Real-Time Client Monitor</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

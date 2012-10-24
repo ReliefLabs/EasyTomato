@@ -15,7 +15,6 @@
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] Admin: Bandwidth Monitoring</title>
 <% include("common-header.html"); %>
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Tools: Ping</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 
 <!-- / / / -->
 

@@ -14,7 +14,6 @@
 <title>[<% ident(); %>] Tools: System Commands</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 
 <!-- / / / -->
 

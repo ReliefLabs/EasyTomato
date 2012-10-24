@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Admin: Access</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='interfaces.js'></script>
 

@@ -19,7 +19,6 @@
 
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript' src='vpn.js'></script>
 <script type='text/javascript'>

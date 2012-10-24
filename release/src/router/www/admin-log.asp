@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Admin: Logging</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

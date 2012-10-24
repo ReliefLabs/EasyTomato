@@ -20,7 +20,6 @@
 <title>[<% ident(); %>] Basic: Static DHCP/ARP &amp; Bandwidth Monitoring of LAN Clients</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

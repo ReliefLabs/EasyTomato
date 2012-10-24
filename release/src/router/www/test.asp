@@ -13,7 +13,6 @@
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] About</title>
 <link rel='stylesheet' type='text/css' href='tomato.css'>
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript'>
 //	<% nvram(''); %>	// http_id

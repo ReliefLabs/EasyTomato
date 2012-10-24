@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Basic: Network</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

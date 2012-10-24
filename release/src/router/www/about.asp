@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] About</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <script type='text/javascript'>
 //	<% nvram(''); %>	// http_id

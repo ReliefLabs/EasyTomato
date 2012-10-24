@@ -23,7 +23,6 @@
 <title>[<% ident(); %>] Advanced: Virtual Wireless Interfaces</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 <style type='text/css'>
 #wlif-grid .co2,

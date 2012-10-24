@@ -20,7 +20,6 @@
 <title>[<% ident(); %>] QoS - Bandwidth Limiter</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->

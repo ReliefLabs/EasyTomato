@@ -16,7 +16,6 @@
 <title>[<% ident(); %>] Admin: IP Traffic Monitoring</title>
 <% include("common-header.html"); %>
 
-<% css(); %>
 <script type='text/javascript' src='tomato.js'></script>
 
 <!-- / / / -->
