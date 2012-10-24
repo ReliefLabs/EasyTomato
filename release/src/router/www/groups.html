@@ -176,13 +176,20 @@
 		    <input type="text" class="edit_group_name" />
 		    <div class="devices_box droppable">
 	    		<ul>
-                    {{#devices}}
-					<li class="device draggable">
+                    {{#online_devices}}
+					<li class="device draggable online">
 				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
                         <span class="device_name">{{name}}</span>
 				  		<a href="javascript:void(0);" class="edit_trig hideme">more info</a>
 					</li>
-                    {{/devices}}
+                    {{/online_devices}}
+                    {{#offline_devices}}
+					<li class="device draggable offline">
+				  		<a href="javascript:void(0);" class="box_handle">Drag Me</a>
+                        <span class="device_name">{{name}}</span>
+				  		<a href="javascript:void(0);" class="edit_trig hideme">more info</a>
+					</li>
+                    {{/offline_devices}}
 				</ul>
 		    </div>
 			<a href="javascript:void(0);" class="device_box_actions nicebutton del_group_trig"><span class="del_button">Ungroup</span></a>

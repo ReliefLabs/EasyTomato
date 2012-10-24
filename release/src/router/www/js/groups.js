@@ -3,12 +3,44 @@ var full_restart_required = false;
 var render_groups = function() {
 	var group_template = $('#group_template').html(),
 		$target = $('.group_boxes');
-
-	$target.html(Mustache.render(group_template, {'groups': groups}));
+		var clone_groups = JSON.parse(JSON.stringify(groups));
+	$.each(clone_groups, function(i, group) {
+        	group.online_devices = [];
+        	group.offline_devices = [];
+        	$.each(group.devices, function(j, gd) {
+        		var online = false;
+                $.each(devices, function(k, device) {
+                    if (device.mac.toLowerCase() == gd.mac.toLowerCase()) {
+                        online = true;
+                        return false;
+                    }
+                });
+                if (!online) {
+                    group.offline_devices.push(gd);
+                } else {
+                	group.online_devices.push(gd);
+                }
+        	});
+        	// sort them both alphabetically
+        	group.online_devices = group.online_devices.sort(function(a, b) {
+		    	return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+		    });
+		    group.offline_devices = group.offline_devices.sort(function(a, b) {
+		    	return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+		    })
+    });
+	//$target.html(Mustache.render(group_template, {'groups': groups}));
+	$target.html(Mustache.render(group_template, {
+            //'groups': groups
+            'groups' : clone_groups
+        }));
 	
 	$target.find('.group_box').each(function(i, element) {
 		var group = groups[i],
 			$this = $(this);
+
+		group.devices = clone_groups[i].online_devices.concat(clone_groups[i].offline_devices);
+			
 
 		$this.data('group', group);
 
@@ -30,42 +62,6 @@ var render_groups = function() {
 			}
 		});
 
-		
-			// online devices highlighted, stored in var devices
-$this.find('.device').each(function(j, element){
-			var online = false;
-			$.each(devices, function(i, device) {
-				if (device.mac.toLowerCase() == group.devices[j].mac.toLowerCase()) {
-					online = true;
-					return false;
-				}
-			});
-			if (!online) {
-				$(this).addClass('offline');
-			}
-		});
-
-		
-		//Sorts groups by online/offline and name
-		var array_to_sort = $this.find('li.device');
-	
-			$this.find('.devices_box ul')
-			.empty()
-			.append(
-				array_to_sort.sort(function(a, b) {
-					return $(a).find('.device_name').text().toLowerCase()>$(b).find('.device_name').text().toLowerCase() ? 1 : -1;
-				})
-				.sort(function(a, b) {
-					if ($(a).hasClass('offline') && !$(b).hasClass('offline')) {
-						return 1;
-					} else if (!$(a).hasClass('offline') && $(b).hasClass('offline')){
-						return -1;
-					} else {
-						return 0;
-					}
-				})
-			);
-		
 		$this.find('.device').each(function(j, element) {
 			$(this).data('device', group.devices[j]);
 			$(this).data('group', group);
