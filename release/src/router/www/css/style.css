@@ -475,6 +475,12 @@ th, td, caption {
 	padding: 3px 5px;
 }
 
+.pretty_table tr:hover td
+{
+	background: #d0dafd;
+	color: #339;
+}
+
 
 
 
@@ -732,8 +738,16 @@ th, td, caption {
 }
 
 
+/*
 .group_boxes .devices_box li:nth-child(odd) {  }
 .group_boxes .devices_box li:nth-child(even) { 	background: #EEE; }
+*/
+.group_boxes .devices_box li:hover{
+	background: #DCECFC;
+	border: 1px solid gray;
+	padding-right: 3px;
+	border-radius: 2px;
+}
 
 .group_boxes .devices_box li.offline { color: grey;}
 

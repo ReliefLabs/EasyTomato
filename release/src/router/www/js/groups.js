@@ -30,18 +30,9 @@ var render_groups = function() {
 			}
 		});
 
-		$this.find('.device').each(function(j, element) {
-			$(this).data('device', group.devices[j]);
-			$(this).data('group', group);
-			$(this).draggable({
-				scroll: false,
-				revert: true,
-				distance: 5, //Fixes listener issue in Ubuntu. Before always fires drag event after only clicking.
-				start: function(event, ui) {
-					$(this).css('z-index','2')
-				}
-			});
+		
 			// online devices highlighted, stored in var devices
+$this.find('.device').each(function(j, element){
 			var online = false;
 			$.each(devices, function(i, device) {
 				if (device.mac.toLowerCase() == group.devices[j].mac.toLowerCase()) {
@@ -54,13 +45,17 @@ var render_groups = function() {
 			}
 		});
 
-		/*
-		var array_to_sort = $this.find('li.device');
 		
-		$this.find('.devices_box ul')
+		//Sorts groups by online/offline and name
+		var array_to_sort = $this.find('li.device');
+	
+			$this.find('.devices_box ul')
 			.empty()
 			.append(
 				array_to_sort.sort(function(a, b) {
+					return $(a).find('.device_name').text().toLowerCase()>$(b).find('.device_name').text().toLowerCase() ? 1 : -1;
+				})
+				.sort(function(a, b) {
 					if ($(a).hasClass('offline') && !$(b).hasClass('offline')) {
 						return 1;
 					} else if (!$(a).hasClass('offline') && $(b).hasClass('offline')){
@@ -70,8 +65,19 @@ var render_groups = function() {
 					}
 				})
 			);
-*/
 		
+		$this.find('.device').each(function(j, element) {
+			$(this).data('device', group.devices[j]);
+			$(this).data('group', group);
+			$(this).draggable({
+				scroll: false,
+				revert: true,
+				distance: 5, //Fixes listener issue in Ubuntu. Before always fires drag event after only clicking.
+				start: function(event, ui) {
+					$(this).css('z-index','2')
+				}
+			});
+			});
 		//group box hover, edit behavior
 		$this.find('.group_name').bind({
 			mouseenter:

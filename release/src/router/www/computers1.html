@@ -24,8 +24,8 @@
 	<link rel="stylesheet" href="css/text.css" />
 	<link rel="stylesheet" href="css/960.css" />
 	<link rel="stylesheet" href="css/style.css">
-	<link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
-    <link type="text/css" href="css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/table-style.css">
+
 
 
      <style>
@@ -120,18 +120,18 @@ circle.highlight {
 	<div id="content" class="container">
      <div class="row">
       <div class="span6">
-        <h2>Received</h2>
+        <h2>Downloaded</h2>
         <div id="rxGraph" class="row"></div>
       </div>
     </div>
     <div class="row">
       <div class="span6">
-        <h2>Transmitted</h2>
+        <h2>Uploaded</h2>
         <div id="txGraph" class="row"></div>
       </div>
     </div>
-    <h2>Details</h2>
-    <div id="table" class="row"></div>
+    
+    <div id="table" class="pretty_table"><h4>Currently Connected Devices</h4></div>
   </div>
 	  <!-- end #content -->
 	  
@@ -139,11 +139,14 @@ circle.highlight {
   <!-- end #main -->
 
   <footer class="container_16" id="footer">
-		<p>Copyright 2012 EasyTomato.org - Version 0.7.7 Alpha 1</p>
+		<p>Copyright 2012 EasyTomato.org - Version 0.7.7 Beta</p>
   </footer>
 
 
   <!-- JavaScript at the bottom for fast page loading -->
+  <script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="js/libs/jquery-ui-1.8.20/js/jquery-ui-1.8.20.custom.min.js"></script>
+  <script type="text/javascript" src="js/easytomato.js"></script>
   <script type="text/javascript" src="js/libs/d3.v2.js"></script>
   <script type="text/javascript" src="js/libs/underscore-min.js"></script>
   <script type="text/javascript" src="js/data.js"></script>
