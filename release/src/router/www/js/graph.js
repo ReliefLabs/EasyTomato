@@ -47,14 +47,22 @@ function usageGraph(uniqueId) {
     .x(function(d) { return xScale(xValue(d)); })
     .y0(height)
     .y1(function(d) { return yScale(yValue(d)); });
+
+  function updateXDomain(domain) {
+    xScale.domain(domain);
+    redrawGraph(graph, 500);
+  }
     
+  // Internal variables to save
+  var svg = null;
+  var graph = null;
      
   function chart(selection) {
     selection.each(function(data) {
       // We don't actually want to bind to data here, but we
       // do want to see if it hasn't been created. Use a
       // dummy array to bind to.
-      var svg = d3.select(this).selectAll("svg").data([,]);
+      svg = d3.select(this).selectAll("svg").data([,]);
       
       svg.enter()
           .append("svg")
@@ -69,7 +77,7 @@ function usageGraph(uniqueId) {
         .attr("width", plotWidth)
         .attr("height", plotHeight);
 
-      var graph  = svg.selectAll(uS("graph")).data([,]);
+      graph  = svg.selectAll(uS("graph")).data([,]);
       
       var graphEnter = graph.enter()
           .append("g")
@@ -290,6 +298,24 @@ function usageGraph(uniqueId) {
     showArea = value;
     return chart;
   };
+
+  /**
+   * The tick format for the y Label
+   */
+  chart.yLabelFunction = function(value) {
+    yAxis.tickFormat(value)
+    return chart;
+  };
+
+  /*
+   * The x domain. Use this for zooming in/out from external tools.
+   */
+  chart.xDomain = function(value) {
+    if (!arguments.length) return xScale.domain();
+
+    updateXDomain(value);
+    return chart;
+  }
   
   return chart;
 }

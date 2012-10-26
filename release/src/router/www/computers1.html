@@ -207,71 +207,79 @@ circle.highlight {
      }
    }));
    
-   // This relies on having everything the same length, for now
-   var totalsData = _.reduce(
-     data, 
-     function(total, current) {
-       _.each(current.rxData, function(d, i) {
-         if (!total.rxData[i]) {
-           total.rxData[i] = {
-             x: d.x,
-             y: d.y
-           }
-         } else {
-           total.rxData[i].y = total.rxData[i].y + d.y;
-         }
-       });
-       _.each(current.txData, function(d, i) {
-         if (!total.txData[i]) {
-           total.txData[i] = {
-             x: d.x,
-             y: d.y
-           }
-         } else {
-           total.txData[i].y = total.txData[i].y + d.y;
-         }
-       })
-       
-       return total;       
-     }, 
-     { name : "Totals", color : "blue", rxData: [], txData: []});
+   function isSubnet(d) {
+    reg = /\.0$/;
+    return reg.test(d.name);
+   }
+
+   // Default function, puts out raw.
+  function rawFormat(d) { 
+    return d; 
+  }
+  function formatSpeed(speed) {
+    var suffix = ["bps", "kbps", "mbps", "tbps"];
+
+    return reduceToPower(speed, suffix);
+  }
+
+  function formatSize(size) {
+    var suffix = ["B", "KB", "MB", "TB", "PT"];
+
+    return reduceToPower(size, suffix);
+  }
+
+  function reduceToPower(number, suffixes) {
+    var power = 0;
+    while (number >= 1000) {
+      number = number / 1000;
+      power++;
+    }
+
+    return Math.round(number) + suffixes[power];
+  }
+
+   // Anything ending in a .0 is a subnet total.
+   totalsData = _.filter(data, isSubnet)
+   perComputerData = _.filter(data, function(d) { return !isSubnet(d); })
      
    var rxGraph = new usageGraph("rx")
      .plotDataFunction(function(d) { return d.rxData; })
      .height(175)
      .width(900)
+     .yLabelFunction(formatSpeed)
      //.plotInterestingPointFunction(function(d) { return d.rxData; });
      .plotInterestingPointFunction(function(d) { return []; });
    
-   d3.select("#rxGraph").datum([totalsData]).call(rxGraph);
+   d3.select("#rxGraph").datum(totalsData).call(rxGraph);
 
    var txGraph = new usageGraph("tx")
      .plotDataFunction(function(d) { return d.txData; })
      .height(175)
      .width(900)
+     .yLabelFunction(formatSpeed)
      //.plotInterestingPointFunction(function(d) { return d.rxData; });
      .plotInterestingPointFunction(function(d) { return []; });
 
-   d3.select("#txGraph").datum([totalsData]).call(txGraph);
+   d3.select("#txGraph").datum(totalsData).call(txGraph);
 
    var highlightOverFunction = function(d) {
     var dataToPlot = data.filter(function(dataSet) { return d.name == dataSet.name; });
-    dataToPlot.unshift(totalsData);
+    dataToPlot = dataToPlot.concat(totalsData);
     d3.select("#rxGraph").datum(dataToPlot).call(rxGraph);
     d3.select("#txGraph").datum(dataToPlot).call(txGraph);
    }
 
    var highlightOutFunction = function(d) {
     // reset to just plot the single one
-    d3.select("#rxGraph").datum([totalsData]).call(rxGraph);
-    d3.select("#txGraph").datum([totalsData]).call(txGraph);
+    d3.select("#rxGraph").datum(totalsData).call(rxGraph);
+    d3.select("#txGraph").datum(totalsData).call(txGraph);
    }
 
    var dataTable = new usageTable("usage")
      .rowOnMouseOver(highlightOverFunction)
      .rowOnMouseOut(highlightOutFunction);
    
-   d3.select("#table").datum(data).call(dataTable);
+   d3.select("#table").datum(perComputerData).call(dataTable);
 
  </script>
 

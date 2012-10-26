@@ -9,14 +9,14 @@ function usageTable(uniqueId) {
   var u = uniqueElementId;
   var uS = uniqueElementIdSelector;
 
-  var columnHeaders = [["name", "IP Address"], ["rx_avg", "Received Average"], ["rx_max", "Received Max"], ["rx_total", "Received Total"], ["tx_avg", "Transmitted Total"], ["tx_max", "Transmitted Max"], ["tx_total", "Transmitted Total"]];
+  var columnHeaders = [["name", "IP Address", rawFormat], ["rx_avg", "Received Average", formatSpeed], ["rx_max", "Received Max", formatSpeed], ["rx_total", "Received Total", formatSize], ["tx_avg", "Transmitted Average", formatSpeed], ["tx_max", "Transmitted Max", formatSpeed], ["tx_total", "Transmitted Total", formatSize]];
   var rowOnMouseOver = function(d) { };
   var rowOnMouseOut = function(d) { };
 
   function chart(selection) {
     selection.each(function(data) {
       // We don't actually want to bind to data here, but we
-      // do want to see if it haipsn't been created. Use a
+      // do want to see if it hasn't been created. Use a
       // dummy array to bind to.
       var table = d3.select(this).selectAll("table").data([,]);
 
@@ -45,7 +45,7 @@ function usageTable(uniqueId) {
               .on("mouseout", rowOnMouseOut);
 
       tableRow.selectAll("td")
-        .data(function(d) { return columnHeaders.map(function(c) { return d[c[0]]; });})
+        .data(function(d) { return columnHeaders.map(function(c) { return c[2](d[c[0]]); });})
           .enter()
             .append("td")
               .text(function(t) { return t;})
