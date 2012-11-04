@@ -60,7 +60,8 @@ const defaults_t defaults[] = {
 
 	{ "lan_gateway",		"0.0.0.0"			},	// LAN Gateway
 	{ "wl_wds_enable",		"0"				},	// WDS Enable (0|1)
-	{ "easytomato_scratch_4",	"wpa2_personal"		}, //sets default encryption to WPA2
+	{ "easytomato_scratch_4",	"wpa2_personal"		        }, //sets default encryption to WPA2
+	{ "adblock",	                "0"             		}, // By default don't run the adblock script
 #ifdef TCONFIG_VLAN
 	{ "lan1_ipaddr",		""				},
 	{ "lan1_netmask",		""				},

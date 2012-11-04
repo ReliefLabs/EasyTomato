@@ -5,8 +5,16 @@
 ## Updated by ~nephelim~, Syl, jochen, groosh, ng12345, ray123, mstombs
 ## base64 decoder by Danny Chouinard's
 
-echo "ADBLOCKING SCRIPT TEMPORARILY DISABLED!!"
-exit # remove this to reenable adblocking
+
+# EasyTomato Addition: Check an nvram variable named "adblock" to determine if we should run this at startup
+
+if [ $(nvram get adblock) = "1" ]; then
+    echo "Adblocking is enabled, starting it up...\n" >> /tmp/mylog
+else
+    echo "Adblocking sciprt disabled via nvram variable: nvram get adblock=" >> /tmp/mylog
+    echo `nvram get adblock` >> /tmp/mylog
+    exit
+fi
 
 echo `cat /proc/uptime` >> /tmp/mylog
 echo "Starting adblocker.sh \n" >> /tmp/mylog
