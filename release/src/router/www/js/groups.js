@@ -175,6 +175,28 @@ var render_groups = function() {
 		}
 	});
 
+	//Turns adblocking script on and off
+	$('input[name=block_ads]').click(function() {
+            if ($('input[name=block_ads]').is(':checked')){
+            	$.when(tomato_env.get('adblock'))
+            .then(function(){
+            		tomato_env.set('adblock', '1');
+            		$('#apply_trigger').fadeIn();
+            	});
+            }
+            else{
+            	tomato_env.set('adblock', '0');
+            	$('#apply_trigger').fadeIn();
+            }
+  		});
+		tomato_env.set('_service','*'); //Full restart on apply
+        full_restart_required = true;  
+
+		if(block_ad_status){
+			$('input[name=block_ads]').attr('checked', true);
+		}else{
+			$('input[name=block_ads]').attr('checked', false);
+		}
 
 }
 
@@ -301,7 +323,7 @@ $(document).ready(function() {
 
 
 	$.when(load_groups()).then(function(){
-		$.when(load_devices(), load_adult_block()).then(function() {
+		$.when(load_devices(), load_adult_block(), load_adblock()).then(function() {
 		render_groups();
 		render_devices();
 		});

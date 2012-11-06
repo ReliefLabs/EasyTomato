@@ -29,7 +29,7 @@
 <% include(header.html); %>
 
 <div style='margin:30px 30px;font-size:14px;color:#555;'>
-<b>EasyTomato Firmware Version 0.7.7 Beta</b><br>
+<b>EasyTomato Firmware Version 0.7.7.1 Beta</b><br>
 <b>Based on Toastman's 1.28.7500.4 Tomato Relase</b><br>
 <br>
 Based on TomatoUSB by Fedor Kozhevnikov<br>
