@@ -1713,6 +1713,7 @@ wl_ap_ssid
 	{ "easytomato_scratch_6", V_NONE },
 	{ "easytomato_scratch_7", V_NONE },
 	{ "time", V_TEXT(0,50) },
+	{ "adblock", V_NONE },
 
 #endif
 	{ NULL }

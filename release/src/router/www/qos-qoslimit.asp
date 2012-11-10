@@ -228,6 +228,10 @@ function init()
 
 <div id='qoslimit'>
 	<h3>Bandwidth Limiter - QOS</h3>
+	<div style="text-align:center; font-size: 30px; background: red;">
+	  	<p>Enabling Bandwidth Limter Causes Router To Become Unstable.  DO NOT USE EXECPT FOR TESTING!</p>
+	  	
+	  </div>
 	<div class='section'>
 		<script type='text/javascript'>
 			createFieldTable('', [

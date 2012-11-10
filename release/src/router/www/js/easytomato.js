@@ -68,6 +68,7 @@ var groups = [],
 	unassigned_rules_nvram_id = 'easytomato_rules',
 	block_adult_content_nvram_id = 'wan_dns',
 	block_adult_content_status = false,
+	block_ad_status = false,
 	unsaved_groups = {};
 
 
@@ -75,6 +76,13 @@ var load_adult_block = function(){
 	return $.when(tomato_env.get(block_adult_content_nvram_id),tomato_env.get('easytomato_scratch_2'))
 			.then(function() {
 			block_adult_content_status = tomato_env.vars[block_adult_content_nvram_id]=='208.67.222.123 208.67.220.123';	
+	});
+};
+
+var load_adblock = function(){
+	return $.when(tomato_env.get('adblock'))
+			.then(function() {
+			block_ad_status = tomato_env.vars['adblock']=='1';	
 	});
 };
 
