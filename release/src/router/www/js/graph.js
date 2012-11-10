@@ -17,7 +17,7 @@ function usageGraph(uniqueId) {
       xValue = function(d) { return d.x; },
       yValue = function(d) { return d.y; },
       margin = {top: 10, right: 10, bottom: 20, left: 70},
-      dataKeyFunction = function(d) { return d.name; },
+      dataKeyFunction = function(d, i) { return i; },
       dataPointKeyFunction  = function(d) { return d.x; },
       plotDataFunction = function(d) { return d.data; },
       plotColorFunction = function(d) { return d.color; },
@@ -111,13 +111,15 @@ function usageGraph(uniqueId) {
     var plotGroupEnter = plotGroup.enter().append("g")
       .classed("plotGroup", true);
 
-    plotGroupEnter
+    plots = plotGroup.selectAll("path.plot").data(function(d) { return [d]; });
+
+    plots.enter()
           .append("path")
-            .attr("class", "plot")
+            .classed("plot", true)
             .attr("clip-path", "url(" + uS("clip") + ")")
-            .style("opacity", 1) // To be transitioned in
-            .attr("stroke", plotColorFunction)
-            .attr("d", function(d) { return lineGen(plotDataFunction(d)); });
+            .style("opacity", 1); // To be transitioned in
+
+    plots.attr("stroke", plotColorFunction)
             
     if (showArea) {
       
@@ -192,7 +194,7 @@ function usageGraph(uniqueId) {
     if (showArea) {        
       d3.selectAll("path.area")
         .style("opacity", 1) // To be transitioned in
-        .attr("d", function(d) { debugger; return fillArea(d); });
+        .attr("d", function(d) { return fillArea(d); });
     }
   }
   
@@ -314,6 +316,19 @@ function usageGraph(uniqueId) {
     if (!arguments.length) return xScale.domain();
 
     updateXDomain(value);
+    return chart;
+  }
+
+  /*
+   * Redraw the chart without doing most of the checking, for speed
+   * This does not recalculate the axes.
+   */
+  chart.quickRedraw = function(selection) {
+    selection.each(function(data) {
+      drawLine(graph, data);      
+      redrawGraph(graph, transitionSpeed);
+    });
+
     return chart;
   }
   

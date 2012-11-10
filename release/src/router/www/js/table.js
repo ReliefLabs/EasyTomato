@@ -41,8 +41,8 @@ function usageTable(uniqueId) {
           .enter()
             .append("tr")
               .classed("dataRow", true)
-              .on("mouseover", rowOnMouseOver)
-              .on("mouseout", rowOnMouseOut);
+              .on("mouseover.custom", rowOnMouseOver)
+              .on("mouseout.custom", rowOnMouseOut);
 
       tableRow.selectAll("td")
         .data(function(d) { return columnHeaders.map(function(c) { return c[2](d[c[0]]); });})

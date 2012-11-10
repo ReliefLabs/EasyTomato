@@ -263,21 +263,26 @@ circle.highlight {
    d3.select("#txGraph").datum(totalsData).call(txGraph);
 
    var highlightOverFunction = function(d) {
-    var dataToPlot = data.filter(function(dataSet) { return d.name == dataSet.name; });
-    dataToPlot = dataToPlot.concat(totalsData);
-    d3.select("#rxGraph").datum(dataToPlot).call(rxGraph);
-    d3.select("#txGraph").datum(dataToPlot).call(txGraph);
+    setTimeout(function() {
+      var dataToPlot = data.filter(function(dataSet) { return d.name == dataSet.name; });
+      dataToPlot = totalsData.concat(dataToPlot);
+      d3.select("#rxGraph").datum(dataToPlot).call(rxGraph.quickRedraw);
+      d3.select("#txGraph").datum(dataToPlot).call(txGraph.quickRedraw);
+    }, 0);  
    }
 
    var highlightOutFunction = function(d) {
-    // reset to just plot the single one
-    d3.select("#rxGraph").datum(totalsData).call(rxGraph);
-    d3.select("#txGraph").datum(totalsData).call(txGraph);
+    setTimeout(function() {
+      // reset to just plot the single one
+      d3.select("#rxGraph").datum(totalsData).call(rxGraph);
+      d3.select("#txGraph").datum(totalsData).call(txGraph);
+    }, 0);
+    
    }
 
    var dataTable = new usageTable("usage")
-     .rowOnMouseOver(highlightOverFunction)
-     .rowOnMouseOut(highlightOutFunction);
+     .rowOnMouseOver(highlightOverFunction);
+  //   .rowOnMouseOut(highlightOutFunction);
    
    d3.select("#table").datum(perComputerData).call(dataTable);
 
