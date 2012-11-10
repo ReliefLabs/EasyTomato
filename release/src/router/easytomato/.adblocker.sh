@@ -8,26 +8,32 @@
 
 # EasyTomato Addition: Check an nvram variable named "adblock" to determine if we should run this at startup
 
-if [ $(nvram get adblock) = "1" ]; then
-    echo "Adblocking is enabled, starting it up...\n" >> /tmp/mylog
+if [ "$(nvram get adblock)" = "1" ]; then
+    echo "Adblocking is enabled, starting it up..." >> /tmp/mylog
 else
-    echo "Adblocking sciprt disabled via nvram variable: nvram get adblock=" >> /tmp/mylog
-    echo `nvram get adblock` >> /tmp/mylog
+    echo "Adblocking script disabled via nvram variable: nvram get adblock=$(nvram get adblock)" >> /tmp/mylog
     exit
 fi
 
 echo `cat /proc/uptime` >> /tmp/mylog
-echo "Starting adblocker.sh \n" >> /tmp/mylog
+echo "Starting .adblocker.sh" >> /tmp/mylog
 
 sleep 10
 
 echo `cat /proc/uptime` >> /tmp/mylog
-echo "Checkpoint 1 adblocker.sh \n" >> /tmp/mylog
+echo "Checkpoint 1 .adblocker.sh" >> /tmp/mylog
 
-ADB="/tmp/ADBLOCK.sh"
-{
-cat <<'ENDF' >$ADB
-#!/bin/sh
+UPDATE="Y"
+
+##ADB="/easytomato/.adblocker.sh"
+
+##AUP() {
+##if [[ "$UPDATE" == "Y" ]] ; then
+## if [[ "$(cru l | grep AdUpd | cut -d '#' -f2)" != "AdUpd" ]] ; then
+## cru a AdUpd "0 4 * * * $ADB"
+## fi
+##fi
+##}
 
 OPTIMISE="Y"
 GETS="1 2 3 4"
@@ -45,10 +51,11 @@ WURL="http://example.com/whitelist.txt"
 WHITE="intel.com"
 BLACK=""
 
-USEPIXELSERV="N"
-PXL_IP=192.168.1.2
-PXL_EXE="/tmp/pixelserv"
-PXL_URL="http://example.com/pixelserv"
+USEPIXELSERV="Y"
+PXL_IP=$(nvram get dhcpd_endip)
+PXL_EXE="/easytomato/pixelserv"
+PXL_OPT="-g /easytomto/adblock.gif"
+PXL_URL=""
 
 UPLOAD="N"
 FTP_SERVER="example.com"
@@ -63,69 +70,262 @@ ROUTER="Y"
 
 NIP="0.0.0.0"
 
-ENDF
+ARGS=$#
+GEN="/tmp/gen"
+TMP="/tmp/temp"
+CONF="/tmp/conf"
+HOSTS="/tmp/hosts"
+WFILE="/tmp/white"
+
+
+
+if [[ $ARGS != 0 ]] || [[ "$(ps | grep -e '--conf' | grep 'nobody')" == "" ]]; then
+rm -f $GEN.md5
+rm -f $GEN.last
+fi
+
+
+
+CLR() {
+rm -f $GEN
+rm -f $TMP
+rm -f $CONF
+rm -f $WFILE
 }
 
-UPDATE="Y"
-AUP() {
-if [[ "$UPDATE" == "Y" ]] ; then
-if [[ "$(cru l | grep AdUpd | cut -d '#' -f2)" != "AdUpd" ]] ; then
-cru a AdUpd "0 4 * * * $ADB"
+
+
+PXL() {
+if [[ "$USEPIXELSERV" == "Y" ]]; then
+if [[ ! -x $PXL_EXE ]]; then
+wget -O $PXL_EXE $PXL_URL
+chmod +x $PXL_EXE
+fi
+ifconfig br0:0 $PXL_IP
+if [[ "$(pidof pixelserv)" == "" ]]; then $PXL_EXE $PXL_IP $PXL_OPT; sleep 1 ; else  kill -SIGUSR1 $(pidof pixelserv); fi
+if [[ "$(pidof pixelserv)" == "" ]]; then
+logger ADBLOCK ERROR: cannot start pixelserv
+else
+eval "NIP=$PXL_IP"
 fi
 fi
 }
 
-#### DO NOT EDIT BELOW ####
 
-b64="openssl enc -base64 -d"
-[[ "$(echo WQ==|$b64)" != "Y" ]] && b64="b64" 
 
-b64(){
-awk 'BEGIN{b64="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"}
-{for(i=1;i<=length($0);i++){c=index(b64,substr($0,i,1));if(c--)
-for(b=0;b<6;b++){o=o*2+int(c/32);c=(c*2)%64;if(++obc==8){if(o)
-{printf"%c",o}else{system("echo -en \"\\0\"")}obc=o=0}}}}';}
+NC() {
+UNDEF=0
+for i in $GETS; do 
+eval url="\$S$i" 
+P1=$(echo $url| sed 's|^http[s]*://[^/]*\(/.*\)$|\1|')
+H1=$(echo $url| sed 's|^http[s]*://\([^/]*\)/.*$|\1|')
+for x in 1 2 3; do
+time=$(echo -e "HEAD $P1 HTTP/1.1\r\nHost: $H1\r\nConnection: close\r\n"|
+nc -w 5 $H1 80|grep -i Last-Modified:|tr -d "\r")
+if [ "$time" != "" ]; then break; fi
+done
+if [ "$time" == "" ]; then UNDEF=1; fi
+echo $time>>$GEN.new
+done
 
-{
-cat <<'ENDF'| $b64 |gunzip >>$ADB
-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
-AocMj8rT81cK0v4De76CG9wPAAA=
-ENDF
+if [ $UNDEF -eq 1 ]; then rm -f $GEN.last; fi
+
+if [ -f $GEN.last ]; then
+MD1=$(md5sum $GEN.last|cut -d " " -f1) 
+MD2=$(md5sum $GEN.new|cut -d " " -f1) 
+if [ "$MD1" == "$MD2" ]; then
+logger ADBLOCK: no changes since last time, exiting.
+rm -f $GEN.new
+exit
+fi
+fi
+mv -f $GEN.new $GEN.last
 }
 
-chmod 775 $ADB
-$ADB
+
+
+TRIM() {
+sed -ie '
+s/\#.*$//
+s/^127\.0\.0\.1[ \t]*//
+s/[ \t]*$//
+s/^::1[ \t]*//
+s/localhost$//
+/^$/d' $TMP
+}
+
+
+
+DS() {
+for i in $GETS; do
+eval url="\$S$i"
+if wget $url -O - | tr -d "\r" > $TMP ; then
+if [[ $i -ge $TRIM_BEGIN ]]; then TRIM ; fi
+cat $TMP >> $GEN
+logger ADBLOCK: $url
+else
+logger ADBLOCK ERROR: cannot get $url
+fi
+done
+}
+
+
+
+TST(){
+MD5=$(md5sum $GEN|cut -d " " -f1)
+if [[ -f $GEN.md5 ]] && [[ $MD5 == $(cat $GEN.md5) ]];  then
+logger ADBLOCK: no changes since last time, exiting.
+CLR; exit
+else
+echo $MD5>$GEN.md5
+fi
+}
+
+
+
+LWHT() {
+if [[ "$USEWHITELIST" == "Y" ]]; then
+for site in $WHITE
+do
+sed -i "/$(echo $site|sed 's/\./\\./g')/d" $GEN
+done
+elif [[ "$USEWHITELIST" == "R" ]]; then 
+if wget $WURL -O - | tr -d "\r" > $WFILE ; then
+logger ADBLOCK: whitelist $WURL
+sed -i -e '/\#.*$/ s/\#.*$//' -e '/^$/d' $WFILE
+for site in $(cat $WFILE)
+do
+sed -i "/$(echo $site|sed 's/\./\\./g')/d" $GEN
+done
+else
+logger ADBLOCK ERROR: cannot get whitelist $WURL
+fi
+fi
+echo "$BLACK" |sed 's/[ \t]*/\n/g'|sed '/^$/d' >> $GEN
+}
+
+
+
+OPT() {
+if [[ "$OPTIMISE" == "Y" ]]; then
+logger ADBLOCK: sorting hosts...
+if [[ "$USEHOSTS" == "Y" ]]; then
+sort -u -o $TMP $GEN
+else
+awk -F '.' 'BEGIN{ORS=""}{for(i=NF;i>0;i--)print $i"#";print "\n"}' $GEN|sort|
+awk -F '#' 'BEGIN{ORS="";d = "%"}{if(index($0,d)!=1&&NF!=0){d=$0;print $--NF;
+for(i=--NF;i>0;i--)print "."$i;print "\n"}}' > $TMP
+fi
+logger ADBLOCK: hosts sorted.
+fi
+mv -f $TMP $GEN
+}
+
+
+
+CNT() {
+TOT=$(wc -l < $GEN)
+logger ADBLOCK: $TOT entries
+}
+
+
+
+FTPUP() {
+if [[ "$UPLOAD" == "Y" ]]; then
+if [[ "$ROUTER" == "Y" ]]; then
+ftpput -u $FTP_USER -p $FTP_PASS -P $FTP_PORT $FTP_SERVER $FTP_PATH $GEN
+else
+ncftpput -u $FTP_USER -p $FTP_PASS -P $FTP_PORT $FTP_SERVER $FTP_PATH $GEN
+fi
+fi
+}
+
+
+
+FDNSM() {
+if [[ "$USEHOSTS" == "Y" ]]; then
+cp -f $GEN $HOSTS
+chmod 644 $HOSTS
+sed -i -e 's|^|'$NIP' |' $HOSTS
+sed -i -e '1i127.0.0.1 localhost' $HOSTS
+else
+sed -i 's|^.*$|address=/&/'$NIP'|' $GEN
+fi
+}
+
+
+
+LCFG() {
+if [[ "$USEHOSTS" == "Y" ]]; then 
+cat /etc/dnsmasq.conf >> $CONF
+cat >> $CONF <<EOF
+addn-hosts=/tmp/hosts
+EOF
+else
+cat /etc/dnsmasq.conf >> $GEN
+fi
+}
+
+
+
+ADDCFG() {
+if [[ "$ADD_CONF" == "Y" ]]; then 
+if [[ "$USEHOSTS" == "Y" ]]; then 
+eval "CFG=$CONF"
+else
+eval "CFG=$GEN"
+fi
+cat >> $CFG <<EOF
+dhcp-authoritative
+cache-size=2048
+log-async=5
+EOF
+fi
+}
+
+
+
+LBLK() {
+service dnsmasq stop
+if [[ "$USEHOSTS" == "Y" ]]; then 
+dnsmasq --conf-file=$CONF
+else
+dnsmasq --conf-file=$GEN
+fi
+}
+
+
+
+FS() { 
+if ps | grep 'dnsmasq' | grep 'nobody' ; then 
+logger ADBLOCK: dnsmasq is running
+else
+logger ADBLOCK ERROR: restarting dnsmasq...
+dnsmasq
+fi
+}
+
+
+
+CLR
+PXL
+
+NC
+DS
+TST
+LWHT
+CNT
+OPT
+CNT
+FTPUP
+
+if [[ "$ROUTER" == "Y" ]]; then
+FDNSM
+LCFG
+ADDCFG
+LBLK
+FS
+fi
+
+CLR
 AUP

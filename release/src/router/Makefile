@@ -599,6 +599,8 @@ easytomatoscripts-install:
 	cp easytomato/.adblocker.sh $(TARGETDIR)/easytomato/.
 	cp easytomato/.autorun $(TARGETDIR)/easytomato/.
 	cp easytomato/easyoptionals_setup.sh $(TARGETDIR)/easytomato/.
+	cp easytomato/adblock.gif $(TARGETDIR)/easytomato/.
+	cp easytomato/pixelserv $(TARGETDIR)/easytomato/.
 
 matrixssl:
 	@$(SEP)
