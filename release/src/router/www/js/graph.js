@@ -21,6 +21,7 @@ function usageGraph(uniqueId) {
       dataPointKeyFunction  = function(d) { return d.x; },
       plotDataFunction = function(d) { return d.data; },
       plotColorFunction = function(d) { return d.color; },
+      plotAreaColorFunction = function(d) { return d.areaColor; },
       plotInterestingPointFunction = function(d) { return d.data; },
       eventHandling = function(d) { /* Do nothing */ },
       onlyShowPointsOnMouseOver = false,
@@ -117,20 +118,20 @@ function usageGraph(uniqueId) {
           .append("path")
             .classed("plot", true)
             .attr("clip-path", "url(" + uS("clip") + ")")
-            .style("opacity", 1); // To be transitioned in
+            .style("opacity", 0); // To be transitioned in
 
     plots.attr("stroke", plotColorFunction)
-            
-    if (showArea) {
-      
-      var area = graph.selectAll("path.area").data(plotDataFunction(d));      
+        
+    if (showArea) {    
+      var area = plotGroup.selectAll("path.area").data(function(d) { return [d] });      
       var areaEnter = area.enter()
         .append("path")
         .classed("area", true)
         .attr("clip-path", "url(" + uS("clip") + ")")
-        .style("opacity", 1) // To be transitioned in
-        .style("background-color", "black")
-        .attr("d", function(d) { return fillArea(d); });
+        .style("fill", plotColorFunction)
+        .style("opacity", 0.0) // To be transitioned in
+        .style("background-color", "black");
+        
     }
             
     var interestingPoints = plotGroup.selectAll("circle.highlight")
@@ -178,9 +179,7 @@ function usageGraph(uniqueId) {
   // Redraw the current focus window
   function redrawGraph(graph, duration) {
     var selection = duration ? graph.transition().duration(duration) : graph;
-    selection.selectAll("path.area")
-      .style("opacity", 1)
-      .attr("d", areaGen);
+    
     selection.selectAll("path.plot")
       .style("opacity", 1)  
       .attr("d", function(d) { return lineGen(plotDataFunction(d)); }); 
@@ -191,10 +190,12 @@ function usageGraph(uniqueId) {
     selection.select(".x.axis").call(xAxis).selectAll(".tick").style("opacity", 0.2);
     selection.select(".y.axis").call(yAxis).selectAll(".tick").style("opacity", 0.2);
     
-    if (showArea) {        
-      d3.selectAll("path.area")
-        .style("opacity", 1) // To be transitioned in
-        .attr("d", function(d) { return fillArea(d); });
+    if (showArea) {    
+      selection.selectAll("path.area")
+      .style("opacity", 0.6)   
+      .attr("d", function(d) { return areaGen(plotDataFunction(d)); })
+      .style("fill", plotAreaColorFunction);
+        
     }
   }
   
@@ -259,6 +260,15 @@ function usageGraph(uniqueId) {
   chart.plotColorFunction = function(value) {
     if (!arguments.length) return plotColorFunction;
     plotColorFunction = value;
+    return chart;
+  };
+
+   /**
+   * The function which tells the chart what color to display for this data series
+   */
+  chart.plotAreaColorFunction = function(value) {
+    if (!arguments.length) return plotAreaColorFunction;
+    plotAreaColorFunction = value;
     return chart;
   };
   

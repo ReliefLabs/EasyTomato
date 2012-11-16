@@ -24,7 +24,11 @@
 	<link rel="stylesheet" href="css/text.css" />
 	<link rel="stylesheet" href="css/960.css" />
 	<link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/table-style.css">
+  <link rel="stylesheet" href="js/libs/jquery-ui-1.9.1.custom/css/blitzer/jquery-ui-1.9.1.custom.min.css" type="text/css" media="screen" />
+   <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript" src="js/libs/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js"></script>
 
 
 
@@ -39,8 +43,6 @@ path.area {
 
 path.area {
   stroke: none;
-  fill: aliceblue;
-
 }
 
 path.plot {
@@ -70,7 +72,11 @@ circle.highlight {
   <!-- All JavaScript at the bottom, except this Modernizr build.
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
-  
+    <script>
+    $(function() {
+        $( "#tabs" ).tabs();
+    });
+    </script>
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -87,7 +93,7 @@ circle.highlight {
 		    <div class="tomato_time"></div>
 		  </div>
 	
-		    <h1> EasyTomato!!!!!!!!!!!!!!!!!!!!!!! </h1>
+		    <h1> EasyTomato</h1>
 		  <div class="clear"></div>	  
   </header>
   <!-- end #header -->
@@ -115,22 +121,59 @@ circle.highlight {
 		<div class="clear"></div>
 	  </div>
 	  <!-- end #topnav -->
-	  
+ 
 
-	<div id="content" class="container">
-     <div class="row">
-      <div class="span6">
-        <h2>Downloaded</h2>
-        <div id="rxGraph" class="row"></div>
+<div id="net_usage_box" class="grid_16">
+      <div class="usage_header">
+      <div class="time_toggle_box">
+        <span>Time Range:</span>
+        
+        <a href="javascript:void(0);" class="time_toggle" data-hours="1">1</a>
+        <a href="javascript:void(0);" class="time_toggle" data-hours="2">2</a>
+        <a href="javascript:void(0);" class="time_toggle" data-hours="6">6</a>
+        <a href="javascript:void(0);" class="time_toggle" data-hours="12">12</a>
+        <a href="javascript:void(0);" class="time_toggle time_toggle_active" data-hours="24">24</a>
+      
+      </div>
+      
+      <p class="blue_bgme">Internet Usage</p>
+    </div>  
+
+
+
+  <!-- TABS -->
+	 <div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Download</a></li>
+        <li><a href="#tabs-2">Upload</a></li>
+        <li><a href="#tabs-3">Download/Upload</a></li>
+      </ul>
+      <div id="tabs-1">
+          <div id="content" class="container">
+              <div class="row">
+                <div class="span6">
+                  <h2>Downloaded</h2>
+                    <div id="rxGraph" class="row"></div>
+    
+        </div>
       </div>
     </div>
-   <!--<div class="row">
-      <div class="span6">
+    </div>
+    <div id="tabs-2">
+        <div class="row">
+          <div class="span6">
         <h2>Uploaded</h2>
         <div id="txGraph" class="row"></div>
       </div>
     </div>
-   </div> -->
+   </div>
+    <div id="tabs-3">
+        <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
+    </div>
+</div> 
+
+	
+   
     
     <div id="table" class="pretty_table"><h4>Currently Connected Devices</h4></div>
   </div>
@@ -147,6 +190,7 @@ circle.highlight {
   <!-- JavaScript at the bottom for fast page loading -->
   <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
   <script type="text/javascript" src="js/libs/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script type="text/javascript" src="js/computers.js"></script>
   <script type="text/javascript" src="js/easytomato.js"></script>
   <script type="text/javascript" src="js/libs/d3.v2.js"></script>
   <script type="text/javascript" src="js/libs/underscore-min.js"></script>
@@ -191,8 +235,10 @@ circle.highlight {
        });
        
        return [{
+         ip: series.key,
          name: series.key,
          color: colors(i),
+         areaColor: colors(i),
          rxData: rxTransformed,
          txData: txTransformed,
          rx_avg: series.value.rx_avg,
@@ -245,18 +291,25 @@ circle.highlight {
      
    var rxGraph = new usageGraph("rx")
      .plotDataFunction(function(d) { return d.rxData; })
-     .height(400)
+     .height(300)
      .width(900)
+     .showArea(true)
      .yLabelFunction(formatSpeed)
      //.plotInterestingPointFunction(function(d) { return d.rxData; });
      .plotInterestingPointFunction(function(d) { return []; });
    
-   d3.select("#rxGraph").datum(totalsData).call(rxGraph);
+   if (rxIsActive) {
+     d3.select("#rxGraph").datum(totalsData).call(rxGraph);
+   } else {
+     d3.select("#rxGraph").datum([]).call(rxGraph);
+   }
+   
 
    var txGraph = new usageGraph("tx")
      .plotDataFunction(function(d) { return d.txData; })
-     .height(175)
+     .height(300)
      .width(900)
+     .showArea(true)
      .yLabelFunction(formatSpeed)
      //.plotInterestingPointFunction(function(d) { return d.rxData; });
      .plotInterestingPointFunction(function(d) { return []; });
@@ -282,10 +335,13 @@ circle.highlight {
    }
 
    var dataTable = new usageTable("usage")
+    // .dataKeyFunc(function(d) { return d.ip; })
      .rowOnMouseOver(highlightOverFunction);
   //   .rowOnMouseOut(highlightOutFunction);
-   
-   d3.select("#table").datum(perComputerData).call(dataTable);
+  
+  perComputerData = _.sortBy(perComputerData, function(d) { return -1 * + d.rx_total; }) 
+
+  d3.select("#table").datum(perComputerData).call(dataTable);
 
  </script>
 

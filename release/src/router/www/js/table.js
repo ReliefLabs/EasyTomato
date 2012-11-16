@@ -13,8 +13,13 @@ function usageTable(uniqueId) {
   var rowOnMouseOver = function(d) { };
   var rowOnMouseOut = function(d) { };
 
+  var dataKeyFunc = function(d, i) { return i; }
+
+
+
   function chart(selection) {
     selection.each(function(data) {
+
       // We don't actually want to bind to data here, but we
       // do want to see if it hasn't been created. Use a
       // dummy array to bind to.
@@ -22,35 +27,74 @@ function usageTable(uniqueId) {
 
       table.enter().append("table").classed("table table-striped table-bordered table-hover", true);
 
-      var headerRow = table.selectAll("thead").data([,]).enter().append("thead")
+      var headerRow = table.selectAll("thead").data([,]);
+      headerRow.enter().append("thead")
         .append("tr");
 
-      headerRow.selectAll("th.header")
+      var columnHeader = headerRow.selectAll("th.header")
           .data(columnHeaders)
             .enter()
               .append("th")
                 .classed("header", true)
-                .text(function(conf) { return conf[1]})
+                .text(function(conf) { return conf[1]});
 
+      var tableBody = table.selectAll("tbody").data([,])
+      tableBody.enter().append("tbody");
 
-      var tableBody = table.selectAll("tbody").data([,]).enter().append("tbody");
+      var redraw = function() {
+        tableBody.selectAll("td").text(function(t) { return t;})
+      }
+
+      columnHeader.append("i").classed("icon-arrow-up icon-chevron-up sortArrow", true).on("click", function(conf) {
+         data = _.sortBy(data, function(d) { return d[conf[0]]; });
+
+         headerRow.selectAll(".sortArrow").classed("icon-white", false);
+         d3.select(this).classed("icon-white", true);
+
+         var tableRow = tableBody.selectAll("tr.dataRow")
+          .data(data, dataKeyFunc);
+
+         tableRow.selectAll("td")
+          .data(function(d) { return columnHeaders.map(function(c) { return c[2](d[c[0]]); });})
+         redraw();
+
+      })
+
+      columnHeader.append("i").classed("icon-arrow-down sortArrow", true).on("click", function(conf) {
+         data = _.sortBy(data, function(d) { return d[conf[0]]; });
+         data = data.reverse();
+
+         headerRow.selectAll(".sortArrow").classed("icon-white", false);
+         d3.select(this).classed("icon-white", true);
+
+         var tableRow = tableBody.selectAll("tr.dataRow")
+          .data(data, dataKeyFunc);
+
+         tableRow.selectAll("td")
+          .data(function(d) { return columnHeaders.map(function(c) { return c[2](d[c[0]]); });})
+         redraw();
+
+      })
+      
 
 
       var tableRow = tableBody.selectAll("tr.dataRow")
-        .data(data)
-          .enter()
-            .append("tr")
-              .classed("dataRow", true)
-              .on("mouseover.custom", rowOnMouseOver)
-              .on("mouseout.custom", rowOnMouseOut);
+        .data(data, dataKeyFunc);
+          
+
+
+      tableRow.enter().append("tr")
+        .classed("dataRow", true)
+        .on("mouseover.custom", rowOnMouseOver)
+        .on("mouseout.custom", rowOnMouseOut);
 
       tableRow.selectAll("td")
         .data(function(d) { return columnHeaders.map(function(c) { return c[2](d[c[0]]); });})
           .enter()
             .append("td")
-              .text(function(t) { return t;})
+              .text(function(t) { return t;});
 
-      
+      redraw();
     });
   }
   
@@ -73,6 +117,12 @@ function usageTable(uniqueId) {
   chart.rowOnMouseOut = function(value) {
     if (!arguments.length) return rowOnMouseOut;
     rowOnMouseOut = value;
+    return chart;
+  }
+
+  chart.dataKeyFunc = function(value) {
+    if (!arguments.length) return dataKeyFunc;
+    dataKeyFunc = value;
     return chart;
   }
   
