@@ -28,10 +28,10 @@
 
 $(document).ready(function() {
 
-	$('#qg tr.odd, #qg tr.even').append('<td class="btn-group">' +
+	$('#qg tr.odd, #qg tr.even').append('<td><div class="btn-group">' +
 		'<button class="moveup btn">Up</button>' +
 		'<button class="movedown btn">Down</button>' +
-		'<button class="delete btn btn-danger">Delete</button></td>');
+		'<button class="delete btn btn-danger">Delete</button></div></td>');
 
 	$('#qg tr.odd, #qg tr.even').hover(
 		function () {
