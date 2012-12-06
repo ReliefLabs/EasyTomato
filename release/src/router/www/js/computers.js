@@ -1,6 +1,8 @@
 var txGraph;
 var rxGraph;
+var rx_slice;
 var dataTable;
+var maxGraphTime;
 var tableMap = {};
 
 
@@ -15,30 +17,37 @@ $(document).ready(function() {
 
 $.when(load_groups()).then(function(){
     $.when(load_devices()).then(function() {
-
-      $.each(devices, function(k, device) {
+      var devices_with_names = unassigned.concat(_.flatten(_.map(groups, function(g){ return g.devices; })));
+      $.each(devices_with_names, function(k, device) {
           tableMap[device.ip] = {
-            device_name : device_names[device.mac] ? device_names[device.mac] : device.name
+            device_name : device_names[device.mac] ? device_names[device.mac] : device.name,
+            group_name : 'Unassigned'
           };
           $.each(groups, function(i, g) { //Assinging Device Group to table
             var match = _.find(g.devices, function(d){
               return d.ip === device.ip;
             });
-
-            tableMap[device.ip].group_name = match ? g.name : 'Unassigned';
-
+            if (match) {
+              tableMap[device.ip].group_name = g.name;
+              return false;
+            }
         });
-      });
-      
-
-      renderGraph(); 
+      });    
+    updateAndRenderGraph();
     });
   });
-  
+setInterval(updateAndRenderGraph, 120000);
 });
 
+
+function updateAndRenderGraph(){
+      updateData(function(){ 
+        renderGraph(); 
+  });
+}
+
 function updateScale(hours) {
-	now = new Date;
+	now = maxGraphTime;
 
 	then = new Date;
 
@@ -56,7 +65,7 @@ function speedHistorySubset(hours) {
 
 		// if ip is not a subnet
 		if (!/\.0$/.test(ip)) { 
-			var rx_slice = speed_history[ip].rx.slice(
+			rx_slice = speed_history[ip].rx.slice(
 				speed_history[ip].rx.length-(hours*30),
 				speed_history[ip].rx.length-1
 			),
@@ -241,4 +250,13 @@ function newColors(i) {
     //}
 
     return Math.round(number) + " MB";
+  }
+
+  function updateData(callback){
+      maxGraphTime = new Date;
+
+      $.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
+      delete speed_history["_next"];
+      callback();
+    });
   }
