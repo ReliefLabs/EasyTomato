@@ -22,7 +22,9 @@ var tomato_env = {
 	apply: function() {
 		data = this.vars_to_save;
 		data._http_id = this.http_id;
-		return $.post('/tomato.cgi', data);
+		return $.post('/tomato.cgi', data, function() {
+			tomato_env.set('_service', 'restrict-restart'); //returns the restart to the default after applying changes
+		});
 	}
 }
 

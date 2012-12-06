@@ -192,7 +192,7 @@ function usageGraph(uniqueId) {
     
     if (showArea) {    
       selection.selectAll("path.area")
-      .style("opacity", 0.6)   
+      .style("opacity", 0.5)   
       .attr("d", function(d) { return areaGen(plotDataFunction(d)); })
       .style("fill", plotAreaColorFunction);
         

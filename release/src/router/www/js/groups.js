@@ -165,7 +165,7 @@ var render_groups = function() {
             	$('#apply_trigger').fadeIn();
             }
             tomato_env.set('_service','*'); //Full restart on apply
-            full_restart_required = true;  
+            full_restart_required = true;
 		});
 
 		if(block_adult_content_status){
@@ -188,9 +188,10 @@ var render_groups = function() {
             	tomato_env.set('adblock', '0');
             	$('#apply_trigger').fadeIn();
             }
-  		});
-		tomato_env.set('_service','*'); //Full restart on apply
-        full_restart_required = true;  
+  		
+			tomato_env.set('_service','*'); //Full restart on apply
+        	full_restart_required = true;  
+        });
 
 		if(block_ad_status){
 			$('input[name=block_ads]').attr('checked', true);
@@ -304,6 +305,7 @@ var apply_trigger_changes = function(callback) {
 		$('#apply_trigger').fadeOut();
 		if(full_restart_required){
 			setTimeout('$.fancybox.close()', 7000);
+			full_restart_required = false; //returns to the default false state
 		} else{
 			$.fancybox.close();
 		}

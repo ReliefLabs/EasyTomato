@@ -9,7 +9,7 @@ function usageTable(uniqueId) {
   var u = uniqueElementId;
   var uS = uniqueElementIdSelector;
 
-  var columnHeaders = [["name", "IP Address", rawFormat], ["rx_avg", "Received Average", formatSpeed], ["rx_max", "Received Max", formatSpeed], ["rx_total", "Received Total", formatSize], ["tx_avg", "Transmitted Average", formatSpeed], ["tx_max", "Transmitted Max", formatSpeed], ["tx_total", "Transmitted Total", formatSize]];
+  var columnHeaders = [["name", "Device Name", rawFormat], ["group", "Group", rawFormat], ["rx_total", "Download Total", formatSize],  ["tx_total", "Upload Total", formatSize]];
   var rowOnMouseOver = function(d) { };
   var rowOnMouseOut = function(d) { };
 

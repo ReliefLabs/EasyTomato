@@ -24,17 +24,73 @@
 	<link rel="stylesheet" href="css/text.css" />
 	<link rel="stylesheet" href="css/960.css" />
 	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="js/libs/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/table-style.css">
+  <link rel="stylesheet" href="js/libs/jquery-ui-1.9.1.custom/css/blitzer/jquery-ui-1.9.1.custom.min.css" type="text/css" media="screen" />
+   <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript" src="js/libs/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js"></script>
+
+
+
+     <style>
+  svg {
+  font: 10px sans-serif;
+}
+
+path.area {
+  fill: black;
+}
+
+path.area {
+  stroke: none;
+}
+
+path.plot {
+ /*  stroke: steelblue; This is now set by the elements */
+  stroke-width: 2px;
+  fill-rule: evenodd;
+  fill: none;
+}
+
+circle.highlight {
+ stroke: steelblue;
+ fill: black;
+}
+
+.axis path, .axis line, .grid path, .grid line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+  
+  </style>
+
 
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
   <!-- All JavaScript at the bottom, except this Modernizr build.
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
-  
-  <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
-  <script type="text/javascript" src="js/libs/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js"></script>
-  <script type="text/javascript" src="js/easytomato.js"></script>
+    <script>
+    $(function() {
+        $( "#tabs" ).tabs();
+        $( "#tabs" ).bind( "tabsselect", function(event, ui) {
+          rxIsActive = ui.index === 0;
+          txIsActive = ui.index === 1;
+          if (rxIsActive) {
+            d3.select("#rxGraph").datum(totalsData).call(rxGraph);
+          } else {
+            d3.select("#rxGraph").datum([]).call(rxGraph);
+          }
+          if (txIsActive) {
+            d3.select("#txGraph").datum(totalsData).call(txGraph);
+          } else {
+            d3.select("#txGraph").datum([]).call(txGraph);
+          }
+        }); 
+    });
+    </script>
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -51,7 +107,7 @@
 		    <div class="tomato_time"></div>
 		  </div>
 	
-		    <h1> EasyTomato </h1>
+		    <h1> EasyTomato</h1>
 		  <div class="clear"></div>	  
   </header>
   <!-- end #header -->
@@ -79,138 +135,58 @@
 		<div class="clear"></div>
 	  </div>
 	  <!-- end #topnav -->
-	  
+ 
 
-	  <div id="content">
-	  	  
-	  <div style="text-align:center; font-size: 30px; background: red;">
-	  	<p>This page is under construction.  No live data here!</p>
-	  	
-	  </div>
-	  <br>
+<div id="net_usage_box" class="grid_16">
+      
 
 
-	  <div id="net_usage_box" class="grid_16">
-	  	<div class="usage_header">
-			<div class="time_toggle_box">
-				<span>Time Range:</span>
-				<a href="javascript:void(0);" class="time_toggle time_toggle_active">1 day</a>
-				<a href="javascript:void(0);" class="time_toggle">1 week</a>
-				<a href="javascript:void(0);" class="time_toggle">2 weeks</a>
-				<a href="javascript:void(0);" class="time_toggle">1 month</a>
-			</div>
-			
-			<p class="blue_bgme">Internet Usage</p>
-			<span>9 devices connected right now - </span>
-			<a href="javascript:void(0);">view devices</a>
-		</div>	 
-		
-		
-		<div class="usage_body">
-			stuff that graphs things here
 
-		</div>	 
-		
-		  <div class="clear"></div>
-	  </div>
-	  <!-- end #net_usage_box -->
-	  
-	  
-	  <div class="pretty_table grid_16">
-	  	<h4>Currently Connected Devices <a href="javascript:void(0);" class="info_trig"></a></h4>
-		<table>
-			<thead>
-			<tr>
-			<th>Computer Name</th>
-			<th>Group</th>
-			<th>Data usage (1 week)</th>
-			</tr>
-			</thead>
-			
-		
-			
-			<tbody>
-			<tr>
-				<td>Suzie's Laptop</td>
-				<td>Nurses Stations</td>
-				<td>2342MB</td>
-			</tr>
-			<tr class="grayme">
-				<td>Suzie's Laptop</td>
-				<td>Nurses Stations</td>
-				<td>2342MB</td>
-			</tr>
-			<tr>
-				<td>Suzie's Laptop</td>
-				<td>Nurses Stations</td>
-				<td>2342MB</td>
-			</tr>
-			<tr class="grayme">
-				<td>Suzie's Laptop</td>
-				<td>Nurses Stations</td>
-				<td>2342MB</td>
-			</tr>
-			
-			</tbody>
-		</table>
-		  <div class="clear"></div>
-	  </div>
-	  
-	  
-	  <div class="pretty_table grid_16">
-	  	<h4>Previously Connected Devices <a href="javascript:void(0);" class="info_trig"></a></h4>
-		<table>
-		<thead>
-		<tr>
-		<th>Computer Name</th>
-		<th>Group</th>
-		<th>Last Connected</th>
-		<th>Last 1 week usage</th>
-		</tr>
-		</thead>
+  <!-- TABS -->
+	 <div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Download</a></li>
+        <li><a href="#tabs-2">Upload</a></li>
+        <li><a href="#tabs-3">Download/Upload</a></li>
+        <div class="time_toggle_box">
+        <span>Time Range:</span>
+        
+        <a href="javascript:void(0);" class="time_toggle" data-hours="1">1</a>
+        <a href="javascript:void(0);" class="time_toggle" data-hours="2">2</a>
+        <a href="javascript:void(0);" class="time_toggle" data-hours="6">6</a>
+        <a href="javascript:void(0);" class="time_toggle" data-hours="12">12</a>
+        <a href="javascript:void(0);" class="time_toggle time_toggle_active" data-hours="24">24</a>
+      
+      </div>
+      </ul>
+      <div id="tabs-1">
+          <div id="content" class="container">
+              <div class="row">
+                <div class="span6">
+    
+                    <div id="rxGraph" class="row"></div>
+    
+        </div>
+      </div>
+    </div>
+    </div>
+    <div id="tabs-2">
+        <div class="row">
+          <div class="span6">
+        <div id="txGraph" class="row"></div>
+      </div>
+    </div>
+   </div>
+    <div id="tabs-3">
+        <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
+    </div>
+</div> 
+
 	
-		<tbody>
-		<tr>
-		<td>Suzie's Laptop</td>
-		<td>Nurses' Stations</td>
-		<td>1 hour ago</td>
-		<td>2342MB</td>
-		</tr>
-		
-		<tr class="grayme">
-		<td>Suzie's Laptop</td>
-		<td>Nurses' Stations</td>
-		<td>1 hour ago</td>
-		<td>2342MB</td>
-		</tr>
-		
-		<tr>
-		<td>Suzie's Laptop</td>
-		<td>Nurses' Stations</td>
-		<td>1 hour ago</td>
-		<td>2342MB</td>
-		</tr>
-		
-		<tr class="grayme"> 
-		<td>Suzie's Laptop</td>
-		<td>Nurses' Stations</td>
-		<td>1 hour ago</td>
-		<td>2342MB</td>
-		</tr>
-		
-
-		</tbody>
-		</table>
-	  
-	  </div>
-
-	  
-	  
-	  
-	  
-
-		  <div class="clear"></div>
-	  </div>
+   
+    
+    <div id="table" class="pretty_table"><h4>Network Devices</h4></div>
+  </div>
 	  <!-- end #content -->
 	  
   </div>
@@ -222,7 +198,18 @@
 
 
   <!-- JavaScript at the bottom for fast page loading -->
+  <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript" src="js/libs/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js"></script>
+  <script type="text/javascript" src="js/easytomato.js"></script>
+  <script type="text/javascript" src="js/libs/d3.v2.js"></script>
+  <script type="text/javascript" src="js/libs/underscore-min.js"></script>
+  <script type="text/javascript" src="js/data.js"></script>
+  <script type="text/javascript" src="js/table.js"></script>
+  <script type="text/javascript" src="js/graph.js"></script>
+  <script type="text/javascript" src="js/computers.js"></script>
+
   <!-- end scripts -->
+
 
 </body>
 </html>

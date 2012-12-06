@@ -3,6 +3,7 @@
 ## http://goo.gl/mhykQ
 ## Original script by YAQUI
 ## Updated by ~nephelim~, Syl, jochen, groosh, ng12345, ray123, mstombs
+## Further Updated for ET by mstombs, Lynx Williams, djfurie, and sFabre
 ## base64 decoder by Danny Chouinard's
 
 
@@ -25,15 +26,15 @@ echo "Checkpoint 1 .adblocker.sh" >> /tmp/mylog
 
 UPDATE="Y"
 
-##ADB="/easytomato/.adblocker.sh"
+ADB="/easytomato/.adblocker.sh"
 
-##AUP() {
-##if [[ "$UPDATE" == "Y" ]] ; then
-## if [[ "$(cru l | grep AdUpd | cut -d '#' -f2)" != "AdUpd" ]] ; then
-## cru a AdUpd "0 4 * * * $ADB"
-## fi
-##fi
-##}
+AUP() {
+if [[ "$UPDATE" == "Y" ]] ; then
+if [[ "$(cru l | grep AdUpd | cut -d '#' -f2)" != "AdUpd" ]] ; then
+cru a AdUpd "0 4 * * * $ADB"
+fi
+fi
+}
 
 OPTIMISE="Y"
 GETS="1 2 3 4"
@@ -51,10 +52,17 @@ WURL="http://example.com/whitelist.txt"
 WHITE="intel.com"
 BLACK=""
 
+##Finds end of DHCP range to assign pixelserv ip
+DHCP_BASE=$(nvram get lan_ipaddr)
+DHCP_START=$(nvram get dhcp_start)
+DHCP_NUM=$(nvram get dhcp_num) 
+DHCP_END=$((DHCP_START + DHCP_NUM))
+SERVER_IP=`echo $DHCP_BASE | sed 's/.[0-9]*$/.'"$DHCP_END"'/g'`
+
 USEPIXELSERV="Y"
-PXL_IP=$(nvram get dhcpd_endip)
+PXL_IP=$SERVER_IP
 PXL_EXE="/easytomato/pixelserv"
-PXL_OPT="-g /easytomto/adblock.gif"
+PXL_OPT="-g /easytomato/adblock.gif"
 PXL_URL=""
 
 UPLOAD="N"
