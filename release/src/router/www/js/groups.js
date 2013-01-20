@@ -150,30 +150,34 @@ var render_groups = function() {
 		//$this.find('.edit_group_trig').attr('href', 'rules.html?g='+i);
 		$this.find('.edit_group_trig').attr('href', 'javascript:goToPage("rules.html?g='+i+'",'+i+')');
 
-		//Changes the DNS servers over to OpenDNS' FamilyShield and back
-		$('input[name=block_adult]').click(function() {
-            if ($('input[name=block_adult]').is(':checked')){
-            	$.when(tomato_env.get('wan_dns'))
-            .then(function(){
-            		tomato_env.set('easytomato_scratch_2', tomato_env.vars['wan_dns']);
-            	    tomato_env.set('wan_dns', '208.67.222.123 208.67.220.123');	
-            		$('#apply_trigger').fadeIn();
-            	});
-            }
-            else{
-            	tomato_env.set('wan_dns', tomato_env.vars['easytomato_scratch_2']);
-            	$('#apply_trigger').fadeIn();
-            }
-            tomato_env.set('_service','*'); //Full restart on apply
-            full_restart_required = true;
-		});
-
-		if(block_adult_content_status){
-			$('input[name=block_adult]').attr('checked', true);
-		}else{
-			$('input[name=block_adult]').attr('checked', false);
-		}
+		
 	});
+
+    //Toggles the DNS servers over to OpenDNS' FamilyShield and Intercepts DNS requests
+	$('input[name=block_adult]').click(function() {
+    	if ($('input[name=block_adult]').is(':checked')){
+        	$.when(tomato_env.get('wan_dns'))
+            .then(function(){
+           		tomato_env.set('easytomato_scratch_2', tomato_env.vars['wan_dns']); //saving old DNS ips to toggle back
+           	    tomato_env.set('wan_dns', '208.67.222.123 208.67.220.123'); 
+           	    tomato_env.set('dns_intcpt', '1');
+           		$('#apply_trigger').fadeIn();
+           	});
+        }
+        else{
+            tomato_env.set('wan_dns', tomato_env.vars['easytomato_scratch_2']);
+            tomato_env.set('dns_intcpt', '0');
+          	$('#apply_trigger').fadeIn();
+        }
+        tomato_env.set('_service','*'); //Full restart on apply
+        full_restart_required = true;
+	});
+
+	if(block_adult_content_status){
+		$('input[name=block_adult]').attr('checked', true);
+	}else{
+		$('input[name=block_adult]').attr('checked', false);
+	}
 
 	//Turns adblocking script on and off
 	$('input[name=block_ads]').click(function() {

@@ -2,7 +2,6 @@ var txGraph;
 var rxGraph;
 var rx_slice;
 var dataTable;
-var maxGraphTime;
 var tableMap = {};
 
 
@@ -47,7 +46,8 @@ function updateAndRenderGraph(){
 }
 
 function updateScale(hours) {
-	now = maxGraphTime;
+	now = new Date;
+  now.setMinutes(now.getMinutes()-2.1); //to fix offset data (why is it offset?)
 
 	then = new Date;
 
@@ -75,11 +75,13 @@ function speedHistorySubset(hours) {
 			),
 			rx_sum = _.reduce(rx_slice, function(memo, num){ return memo + num; }, 0),
 			tx_sum = _.reduce(tx_slice, function(memo, num){ return memo + num; }, 0);
+      total_sum = tx_sum + rx_sum;
 			
 			// Update table data object
 			var perComputerDataRow = _.find(perComputerData, function(item){ return item.ip == ip; });
 			perComputerDataRow.rx_total = rx_sum;
 			perComputerDataRow.tx_total = tx_sum;
+      perComputerDataRow.total_total = total_sum;
 		}
 	};
 	
@@ -132,6 +134,13 @@ function newColors(i) {
             y: spotValue
           }
        });
+
+       var totals = _.zip(txTransformed, rxTransformed).map(function(pair) {
+        return { 
+          x: pair[0].x,
+          y: pair[0].y + pair[1].y
+        }
+       });
        
        return [{
          ip: series.key,
@@ -142,12 +151,14 @@ function newColors(i) {
          areaColor: newColors(i),
          rxData: rxTransformed,
          txData: txTransformed,
+         totals: totals,
          rx_avg: series.value.rx_avg,
          rx_max: series.value.rx_max,
          rx_total: series.value.rx_total,
          tx_avg: series.value.tx_avg,
          tx_max: series.value.tx_max,
-         tx_total: series.value.tx_total
+         tx_total: series.value.tx_total,
+         total_total: series.value.total_total
        }];
      }
      else {
@@ -158,7 +169,7 @@ function newColors(i) {
    // Anything ending in a .0 is a subnet total.
    totalsData = _.filter(data, isSubnet)
    perComputerData = _.filter(data, function(d) { return !isSubnet(d); })
-     
+
    rxGraph = new usageGraph("rx")
      .plotDataFunction(function(d) { return d.rxData; })
      .height(350)
@@ -166,7 +177,8 @@ function newColors(i) {
      .showArea(true)
      .yLabelFunction(formatSpeed)
      //.plotInterestingPointFunction(function(d) { return d.rxData; });
-     .plotInterestingPointFunction(function(d) { return []; });
+     .plotInterestingPointFunction(function(d) { return []; })
+     .xDomain()
    
    var rxIsActive = true,
     txIsActive = false;
@@ -249,14 +261,15 @@ function newColors(i) {
     //  power++;
     //}
 
-    return Math.round(number) + " MB";
-  }
+    return Math.round(number*10)/10 + " MB";
+   }
 
   function updateData(callback){
-      maxGraphTime = new Date;
+      
 
       $.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
       delete speed_history["_next"];
       callback();
     });
+    //updateScale();
   }

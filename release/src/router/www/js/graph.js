@@ -26,7 +26,7 @@ function usageGraph(uniqueId) {
       eventHandling = function(d) { /* Do nothing */ },
       onlyShowPointsOnMouseOver = false,
       showArea = false,
-      transitionSpeed = 500;
+      transitionSpeed = 750;
     
   var plotWidth = function() { return width - margin.left - margin.right; };      
   var plotHeight = function() { return (height - margin.top - margin.bottom); };   
