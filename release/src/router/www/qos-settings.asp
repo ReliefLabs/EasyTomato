@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,10 +7,8 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] QoS: Basic Settings</title>
@@ -26,7 +24,7 @@
 /* REMOVE-BEGIN
 	!!TB - added qos_pfifo
 REMOVE-END */
-//	<% nvram("qos_classnames,qos_enable,qos_ack,qos_syn,qos_fin,qos_rst,qos_icmp,qos_udp,qos_default,qos_pfifo,qos_obw,qos_ibw,qos_orates,qos_irates,qos_reset,ne_vegas,ne_valpha,ne_vbeta,ne_vgamma"); %>
+//	<% nvram("qos_classnames,qos_enable,qos_ack,qos_syn,qos_fin,qos_rst,qos_icmp,qos_udp,qos_default,qos_pfifo,qos_obw,qos_ibw,qos_orates,qos_irates,qos_reset,ne_vegas,ne_valpha,ne_vbeta,ne_vgamma,atm_overhead"); %>
 
 var classNames = nvram.qos_classnames.split(' ');		// Toastman - configurable class names
 
@@ -180,7 +178,6 @@ function save()
 
 <!-- / / / -->
 
-<form id='_fom' method='post' action='tomato.cgi'>
 <input type='hidden' name='_nextpage' value='qos-settings.asp'>
 <input type='hidden' name='_service' value='qos-restart'>
 
@@ -199,7 +196,7 @@ function save()
 
 
 
-<h3>Basic Settings</h3>
+<div class='section-title'>Basic Settings</div>
 <div class='section'>
 <script type='text/javascript'>
 
@@ -227,7 +224,23 @@ REMOVE-END */
 </script>
 </div>
 
-<h3>Outbound Rates / Limits</h3>
+<div class='section-title'>Settings for DSL only</div>
+<div class='section'>
+<script type='text/javascript'>
+
+createFieldTable('', [
+		{ title: 'DSL Overhead Value - ATM Encapsulation Type', multi:[
+		{name: 'atm_overhead', type: 'select', options: [['0','None'],['32','32-PPPoE VC-Mux'],['40','40-PPPoE LLC/Snap'],
+						['10','10-PPPoA VC-Mux'],['14','14-PPPoA LLC/Snap'],
+						['8','8-RFC2684/RFC1483 Routed VC-Mux'],['16','16-RFC2684/RFC1483 Routed LLC/Snap'],
+						['24','24-RFC2684/RFC1483 Bridged VC-Mux'],
+						['32','32-RFC2684/RFC1483 Bridged LLC/Snap']], value:nvram.atm_overhead }
+		] }
+]);
+</script>
+</div>
+
+<div class='section-title'>Outbound Rates / Limits</div>
 <div class='section'>
 <script type='text/javascript'>
 cc = nvram.qos_orates.split(/[,-]/);
@@ -248,7 +261,7 @@ createFieldTable('', f);
 </script>
 </div>
 
-<h3>Inbound Rates / Limits</h3>
+<div class='section-title'>Inbound Rates / Limits</div>
 <div class='section'>
 <script type='text/javascript'>
 allRates = nvram.qos_irates.split(',');
@@ -281,7 +294,7 @@ createFieldTable('', f);
 </script>
 </div>
 
-<h3>QOS Class Names <small><i><a href='javascript:toggleFiltersVisibility();'>(Toggle Visibility)</a></i></small></h3>
+<div class='section-title'>QOS Class Names <small><i><a href='javascript:toggleFiltersVisibility();'>(Toggle Visibility)</a></i></small></div>
 <div class='section' id='qosclassnames' style='display:none'>
 <script type='text/javascript'>
 
@@ -300,7 +313,7 @@ createFieldTable('', f);
 </div>
 
 <span id='s_vegas' style='display:none'>
-<h3>TCP Vegas <small>(network congestion control)</small></h3>
+<div class='section-title'>TCP Vegas <small>(network congestion control)</small></div>
 <div class='section'>
 <script type='text/javascript'>
 /* move me? */
@@ -314,22 +327,16 @@ createFieldTable('', [
 </div>
 </span>
 
-<span id='footer-msg'></span>
-<div class='form-actions'>
-	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();' class='btn'>
-</div>
-</form>
-
 <!-- / / / -->
 
-		</div><!--/span-->
-      </div><!--/row-->
-      <hr>
-      <footer>
-        <p>&copy; Tomato 2012</p>
-      </footer>
-    </div><!--/.fluid-container-->
+</td></tr>
+<tr><td id='footer' colspan=2>
+	<span id='footer-msg'></span>
+	<input type='button' value='Save' id='save-button' onclick='save()'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='reloadPage();'>
+</td></tr>
+</table>
+</form>
 <script type='text/javascript'>verifyFields(null, 1);</script>
 </body>
 </html>
