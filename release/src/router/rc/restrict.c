@@ -396,7 +396,16 @@ void ipt_restrictions(void)
 				*p = 0;
 			}
 			else p = NULL;
-			ip46t_write("-A %s -p tcp -m web --hore \"%s\" -j %s\n", reschain, http, chain_out_reject);
+
+			// Trim trailing whitespace from http
+			char *p2 = http + strlen(http) - 1;
+			while (*p2 == ' ')
+			{
+			     *p2-- = '\0';
+			}
+
+			//ip46t_write("-A %s -p tcp -m web --hore \"%s\" -j %s\n", reschain, http, chain_out_reject);
+			ip46t_write("-I FORWARD 1 -m string --string \"%s\" --algo bm  --from 1 --to 600 -j REJECT\n", http);
 			need_web = 1;
 			blockall = 0;
 			if (p == NULL) break;
