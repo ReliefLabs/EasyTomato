@@ -7,7 +7,7 @@
 
 #include "rc.h"
 #include <time.h>
-
+#include <string.h>
 
 #define MAX_NRULES	50
 
@@ -404,8 +404,15 @@ void ipt_restrictions(void)
 			     *p2-- = '\0';
 			}
 
-			//ip46t_write("-A %s -p tcp -m web --hore \"%s\" -j %s\n", reschain, http, chain_out_reject);
-			ip46t_write("-I FORWARD 1 -m string --string \"%s\" --algo bm  --from 1 --to 600 -j REJECT\n", http);
+			// Split the string delimited by whitespace.  Each substring should be a new iptables entry.
+			char delim[] = " ";
+			p2 = strtok(http, delim);
+			while (p2 != NULL)
+			{
+			     ip46t_write("-I FORWARD 1 -m string --string \"%s\" --algo bm  --from 1 --to 600 -j REJECT\n", p2);
+			     p2 = strtok(NULL, delim);
+			}
+			
 			need_web = 1;
 			blockall = 0;
 			if (p == NULL) break;
