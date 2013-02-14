@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN'>
+<!DOCTYPE html>
 <!--
 	Tomato GUI
 	Copyright (C) 2006-2010 Jonathan Zarate
@@ -7,12 +7,15 @@
 	For use with Tomato Firmware only.
 	No part of this file may be used without permission.
 -->
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv='content-type' content='text/html;charset=utf-8'>
 <meta name='robots' content='noindex,nofollow'>
 <title>[<% ident(); %>] QoS: View Graphs</title>
 <% include("common-header.html"); %>
+
 
 <script type='text/javascript' src='tomato.js'></script>
 
@@ -107,10 +110,10 @@ function showData()
 		E('cpct' + i).innerHTML = p.toFixed(2) + '%';
 	}
 	E('ccnt-total').innerHTML = totalConnections;
-		
+
 	obwrate = nvram.qos_obw * 1000;
 	ibwrate = nvram.qos_ibw * 1000;
-	
+
 	if(toggle == false)
 	{
 		totalorate = totalOutgoingBandwidth;
@@ -139,6 +142,7 @@ function showData()
 	}
 	E('bocnt-total').innerHTML = (totalOutgoingBandwidth / 1000).toFixed(2)
 	E('bocntx-total').innerHTML = (totalOutgoingBandwidth / 8192).toFixed(2)
+	
 	E('rateout').innerHTML = totalrateout;
 
 	for (i = 1; i < 11; ++i) {
@@ -153,6 +157,7 @@ function showData()
 	E('bicntx-total').innerHTML = (totalIncomingBandwidth / 8192).toFixed(2)
 	E('ratein').innerHTML = totalratein;
 }
+
 
 var ref = new TomatoRefresh('update.cgi', 'exec=qrate', 2, 'qos_graphs');
 
@@ -248,7 +253,7 @@ function showGraph()
 	if(toggle == true)
 	{
 		toggle=false;
-		qrates_out = qrates_out.slice(0, -1);	
+		qrates_out = qrates_out.slice(0, -1);   
 		qrates_in = qrates_in.slice(0, -1);
 		showData();
 		checkSVG();
@@ -276,7 +281,7 @@ function init()
 
 <!-- / / / -->
 
-<div class="section-title">Connections Distribution</div>
+<h3>Connections Distribution</h3>
 <div class="section">
 <table border=0 width="100%"><tr><td>
 	<table style="width:250px">
@@ -301,7 +306,7 @@ if (nvram.web_svg != '0') {
 </table>
 </div>
 
-<div class="section-title">Bandwidth Distribution (Outbound)</div>
+<h3>Bandwidth Distribution (Outbound)</h3>
 <div class="section">
 <table border=0 width="100%"><tr><td>
 	<table style="width:250px">
@@ -328,7 +333,7 @@ if (nvram.web_svg != '0') {
 </table>
 </div>
 
-<div class="section-title">Bandwidth Distribution (Inbound)</div>
+<h3>Bandwidth Distribution (Inbound)</h3>
 <div class="section">
 <table border=0 width="100%"><tr><td>
 	<table style="width:250px">
@@ -363,12 +368,16 @@ if (nvram.qos_enable != '1') {
 
 <!-- / / / -->
 
-</td></tr>
-<tr><td id='footer'></td>
-	<td id='footer' width="528"><input name="mybtn" style="width:100px" value="Zoom Graphs" type="button" onclick="showGraph()" ></td>
-	<td id='footer' width="237"><script type='text/javascript'>genStdRefresh(1,2,'ref.toggle()');</script></td>
-	</tr>
-</table>
-</form>
+ <div id='footer'>
+ 	<input name="mybtn" value="Zoom Graphs" type="button" onclick="showGraph()" class='btn' />
+	<script type='text/javascript'>genStdRefresh(1,2,'ref.toggle()');</script>
+</div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <hr>
+  <footer>
+     <p>&copy; Tomato 2012</p>
+  </footer>
+</div><!--/.fluid-container-->
 </body>
 </html>
