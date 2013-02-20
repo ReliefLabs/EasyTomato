@@ -235,9 +235,13 @@ ifneq ($(NVRAM_SIZE),60)
 endif
 endif
 	# Create generic TRX image
+	$(eval TRX_OUT_FILE:=image/tomato-$(ND)$(current_BUILD_USB)$(if $(filter $(NVRAM_SIZE),0),,-NVRAM$(NVRAM_SIZE)K)-$(current_TOMATO_VER).$(current_TOMATO_V1)$(mips_rev)$(beta)$(current_TOMATO_V2)-$(current_BUILD_DESC).trx)
 	@btools/fpkg -i lzma-loader/loader.gz -i $(LINUXDIR)/arch/mips/brcm-boards/bcm947xx/compressed/vmlinuz -a 1024 -i router/mipsel-uclibc/target.image \
-		-t image/tomato-$(ND)$(current_BUILD_USB)$(if $(filter $(NVRAM_SIZE),0),,-NVRAM$(NVRAM_SIZE)K)-$(current_TOMATO_VER).$(current_TOMATO_V1)$(mips_rev)$(beta)$(current_TOMATO_V2)-$(current_BUILD_DESC).trx \
+		-t $(TRX_OUT_FILE) \
 		| tee -a fpkg.log
+
+	# Create an image for ASUS RT-N16
+	@../tools/trx_asus -i $(TRX_OUT_FILE) -r RT-N16,3.0.0.3,image/EasyTomato_$(current_TOMATO_V1).$(current_TOMATO_V2).trx
 
 	@cp fpkg.log image/fpkg-$(current_TOMATO_V1)$(mips_rev)$(beta)$(current_TOMATO_V2).log
 	@echo ""
