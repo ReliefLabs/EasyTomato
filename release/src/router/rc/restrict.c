@@ -409,7 +409,7 @@ void ipt_restrictions(void)
 			p2 = strtok(http, delim);
 			while (p2 != NULL)
 			{
-			     ip46t_write("-I FORWARD 1 -m string --string \"%s\" --algo bm  --from 1 --to 600 -j REJECT\n", p2);
+			  ip46t_write("-I %s 1 -p tcp -m string --string \"%s\" --algo bm  --from 1 --to 600 -j %s\n", reschain, p2, chain_out_reject);
 			     p2 = strtok(NULL, delim);
 			}
 			
