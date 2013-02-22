@@ -178,7 +178,7 @@ function newColors(i) {
      .yLabelFunction(formatSpeed)
      //.plotInterestingPointFunction(function(d) { return d.rxData; });
      .plotInterestingPointFunction(function(d) { return []; })
-     .xDomain()
+     //.xDomain()
    
    var rxIsActive = true,
     txIsActive = false;
@@ -267,7 +267,8 @@ function newColors(i) {
   function updateData(callback){
       
 
-      $.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
+      //$.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
+      $.getScript("js/data.js", function(data, textStatus, jqxhr) {
       delete speed_history["_next"];
       callback();
     });
