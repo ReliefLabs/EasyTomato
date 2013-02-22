@@ -7,6 +7,7 @@ var tableMap = {};
 
 
 $(document).ready(function() {
+  updateAndRenderGraph() // only here to call fake data, remove when online
   $('.time_toggle').click(function() {
     $('.time_toggle').removeClass('time_toggle_active')
     $(this).addClass('time_toggle_active')
