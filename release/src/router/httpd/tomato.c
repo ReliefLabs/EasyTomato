@@ -1712,6 +1712,9 @@ wl_ap_ssid
 	{ "easytomato_scratch_5", V_NONE },
 	{ "easytomato_scratch_6", V_NONE },
 	{ "easytomato_scratch_7", V_NONE },
+	{ "easytomato_saved_wan_dns", V_NONE },
+	{ "easytomato_device_names", V_NONE },
+	{ "easytomato_saved_encrypt_type", V_NONE },
 	{ "time", V_TEXT(0,50) },
 	{ "adblock", V_NONE },
 

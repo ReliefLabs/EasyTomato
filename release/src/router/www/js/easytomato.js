@@ -75,7 +75,7 @@ var groups = [],
 
 
 var load_adult_block = function(){
-	return $.when(tomato_env.get(block_adult_content_nvram_id),tomato_env.get('easytomato_scratch_2'))
+	return $.when(tomato_env.get(block_adult_content_nvram_id),tomato_env.get('easytomato_saved_wan_dns'))
 			.then(function() {
 			block_adult_content_status = tomato_env.vars[block_adult_content_nvram_id]=='208.67.222.123 208.67.220.123';	
 	});
@@ -89,7 +89,7 @@ var load_adblock = function(){
 };
 
 var load_devices = function() {
-	return $.when(tomato_env.get('lan_ipaddr'),tomato_env.get('devlist'), tomato_env.get('easytomato_scratch_3')).then(function() {
+	return $.when(tomato_env.get('lan_ipaddr'),tomato_env.get('devlist'), tomato_env.get('easytomato_device_names')).then(function() {
 		var mac_addrs = {};
 		$.each(tomato_env.vars['arplist'], function() {
 			var mac = this[2],
@@ -127,7 +127,7 @@ var load_devices = function() {
 		
 		//loads device names
 		try {
-			device_names = JSON.parse(unescape(tomato_env.vars['easytomato_scratch_3']));
+			device_names = JSON.parse(unescape(tomato_env.vars['easytomato_device_names']));
 		} catch(e) {
 			device_names = {};
 		}
@@ -208,7 +208,7 @@ var set_rules = function() {
 	});
 	
 	tomato_env.set(groups_nvram_id, escape(JSON.stringify(groups)));
-	tomato_env.set('easytomato_scratch_3', escape(JSON.stringify(device_names)));
+	tomato_env.set('easytomato_device_names', escape(JSON.stringify(device_names)));
 
 
 	for (saved; saved < 100; saved++) {

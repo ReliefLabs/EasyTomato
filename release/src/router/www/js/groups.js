@@ -158,14 +158,14 @@ var render_groups = function() {
     	if ($('input[name=block_adult]').is(':checked')){
         	$.when(tomato_env.get('wan_dns'))
             .then(function(){
-           		tomato_env.set('easytomato_scratch_2', tomato_env.vars['wan_dns']); //saving old DNS ips to toggle back
+           		tomato_env.set('easytomato_saved_wan_dns', tomato_env.vars['wan_dns']); //saving old DNS ips to toggle back
            	    tomato_env.set('wan_dns', '208.67.222.123 208.67.220.123'); 
            	    tomato_env.set('dns_intcpt', '1');
            		$('#apply_trigger').fadeIn();
            	});
         }
         else{
-            tomato_env.set('wan_dns', tomato_env.vars['easytomato_scratch_2']);
+            tomato_env.set('wan_dns', tomato_env.vars['easytomato_saved_wan_dns']);
             tomato_env.set('dns_intcpt', '0');
           	$('#apply_trigger').fadeIn();
         }

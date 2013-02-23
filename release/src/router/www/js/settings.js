@@ -3,7 +3,7 @@ var PASSWORD_MIN_LENGTH =8;
 
 $(document).ready(function() {
 	$.when(tomato_env.get('wl0_ssid'), tomato_env.get('wl0_wpa_psk'), tomato_env.get('wl0_security_mode'),
-		tomato_env.get('tm_sel'), tomato_env.get('tm_dst'), tomato_env.get('easytomato_scratch_4'))
+		tomato_env.get('tm_sel'), tomato_env.get('tm_dst'), tomato_env.get('easytomato_saved_encrypt_type'))
 			.then(function(data1, data2, data3, timezone, dst_status, last_encryption_type){
 				$('input[name=net_name]').attr('value', data1[0].wl0_ssid);
 				wl_password_status = data3[0].wl0_security_mode != 'disabled';
@@ -12,11 +12,11 @@ $(document).ready(function() {
 				if(wl_password_status){
 					$('input[name=no_net_pw]').attr('checked', false);
 					$('input[name=net_pw]').attr('value', data2[0].wl0_wpa_psk);
-					tomato_env.set('easytomato_scratch_4',data3[0].wl0_security_mode); //saving encryption mode	
+					tomato_env.set('easytomato_saved_encrypt_type',data3[0].wl0_security_mode); //saving encryption mode	
 				}else{
 					$('input[name=no_net_pw]').attr('checked', true);
 					$('input[name=net_pw]').attr('disabled','disabled');
-					tomato_env.set('easytomato_scratch_4',last_encryption_type[0].easytomato_scratch_4);
+					tomato_env.set('easytomato_saved_encrypt_type',last_encryption_type[0].easytomato_saved_encrypt_type);
 				}
 				if(dst_status[0].tm_dst==='1'){
 					$('input[name=auto_daylight]').attr('checked', true);
@@ -52,9 +52,9 @@ $(document).ready(function() {
 						tomato_env.set('wl0_akm','');
 						
 					}else{
-						tomato_env.set('wl0_security_mode',tomato_env.vars['easytomato_scratch_4']);
+						tomato_env.set('wl0_security_mode',tomato_env.vars['easytomato_saved_encrypt_type']);
 						tomato_env.set('wl0_wpa_psk',$('input[name=net_pw]').val());
-						switch(tomato_env.vars['easytomato_scratch_4']){
+						switch(tomato_env.vars['easytomato_saved_encrypt_type']){
 							case 'wpa_personal' : tomato_env.set('wl0_akm','psk');
 							         break;
 							case 'wpa2_personal': tomato_env.set('wl0_akm','psk2');
