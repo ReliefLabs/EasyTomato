@@ -62,7 +62,7 @@ $build = sprintf("%04d", $build);
 # read the build number from the command line
 if ($#ARGV > 0) {
 	if ($ARGV[1] ne "--def") {
-		$build = sprintf("%04d", $ARGV[1]);
+		$build = sprintf("%d", $ARGV[1]);
 	}
 }
 
@@ -89,7 +89,7 @@ print F <<"END";
 #define TOMATO_MINOR		"$minor"
 #define TOMATO_BUILD		"$build"
 #define	TOMATO_BUILDTIME	"$time"
-#define TOMATO_VERSION		"$major.$minor.$build $suffix"
+#define TOMATO_VERSION		"EasyTomato 0.$build.$suffix"
 #define TOMATO_SHORTVER		"$major.$minor"
 #endif
 END

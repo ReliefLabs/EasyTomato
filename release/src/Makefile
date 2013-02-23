@@ -112,7 +112,7 @@ beta = $(if $(filter $(TOMATO_EXPERIMENTAL),1),-beta,)
 
 tomato_ver:
 	@echo ""
-	@btools/uversion.pl --gen $(current_TOMATO_V1) $(mips_rev)$(beta)$(current_TOMATO_V2) $(ND) $(current_BUILD_USB) $(current_BUILD_DESC)
+	btools/uversion.pl --gen $(current_TOMATO_V1) $(current_TOMATO_V2)
 
 ifeq ($(TOMATO_BUILD),)
 
