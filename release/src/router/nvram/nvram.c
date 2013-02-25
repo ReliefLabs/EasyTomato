@@ -782,11 +782,12 @@ CORRUPT:
 			goto CORRUPT;
 		}
 		*bv = 0;
-		if (strcmp(bk, "et0macaddr") == 0) {
+		if (strcmp(bk, "os_version") == 0) {
 			if (!nvram_match(bk, bv + 1)) {
 				if (!force) {
-					printf("Cannot restore on a different router.\n");
-					return 1;
+				  printf("Cannot restore on a different version of EasyTomato!. The given file was created from version %s and you are running version %s.",
+					 nvram_get(bk), bv + 1);
+				  return 1;
 				}
 			}
 		}
