@@ -81,12 +81,12 @@ ars.verifyFields = function(row, quiet) {
 
 ars.setup = function() {
 	this.init('ars-grid', '', 20, [
-		{ type: 'text', maxlen: 15 }, { type: 'text', maxlen: 15 }, { type: 'text', maxlen: 15 },
+		{ type: 'text', maxlen: 15, class: 'input-medium' }, { type: 'text', maxlen: 15, class: 'input-medium' }, { type: 'text', maxlen: 15, class: 'input-medium' },
 /* VLAN-BEGIN */
-		{ type: 'text', maxlen: 3 }, { type: 'select', options: [['LAN','LAN'],['LAN1','LAN1'],['LAN2','LAN2'],['LAN3','LAN3'],['WAN','WAN'],['MAN','MAN']] }, { type: 'text', maxlen: 32 }]);
+		{ type: 'text', maxlen: 3, class: 'input-mini' }, { type: 'select', options: [['LAN','LAN'],['LAN1','LAN1'],['LAN2','LAN2'],['LAN3','LAN3'],['WAN','WAN'],['MAN','MAN']], class: 'input-small' }, { type: 'text', maxlen: 32 }]);
 /* VLAN-END */
 /* NOVLAN-BEGIN */
-		{ type: 'text', maxlen: 3 }, { type: 'select', options: [['LAN','LAN'],['WAN','WAN'],['MAN','MAN']] }, { type: 'text', maxlen: 32 }]);
+		{ type: 'text', maxlen: 3, class: 'input-mini' }, { type: 'select', options: [['LAN','LAN'],['WAN','WAN'],['MAN','MAN']], class: 'input-small' }, { type: 'text', maxlen: 32 }]);
 /* NOVLAN-END */
 
 	this.headerSet(['Destination', 'Gateway', 'Subnet Mask', 'Metric', 'Interface', 'Description']);
