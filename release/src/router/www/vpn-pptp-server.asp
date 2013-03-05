@@ -341,7 +341,7 @@ createFieldTable('', [
 <!-- <h3>PPTP User List <small> <span id='user_count'></span> <i><a href='javascript:toggleVisibility("userlist");'><span id='sesdiv_userlist_showhide'>(Click here to hide)</span></a></i></small></h3> -->
 <!--REMOVE-END -->
 <div class='section' id='sesdiv_userlist'>
-  <table class='tomato-grid' cellspacing=1 id='ul-grid'></table>
+  <table class='table table-striped table-condensed table-bordered' id='ul-grid'></table>
 </div>
 
 <h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></h3>
