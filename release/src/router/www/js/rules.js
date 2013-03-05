@@ -229,7 +229,7 @@ x Enable/disable rule
 
 			//Grabs the blocked sites if there are any
 			result.block_sites = $form.find('textarea[name="block_sites"]').val() !== '' ?
-									$form.find('textarea[name="block_sites"]').val().split(/\s+/) : [];
+									$form.find('textarea[name="block_sites"]').val().toLowerCase().split(/\s+/) : [];			
 
 			if( result.block_sites.length == 0 && !result.block_all){
 				alert('You must either list a site(s) to block or block all internet')
