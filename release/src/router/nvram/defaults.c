@@ -579,7 +579,7 @@ const defaults_t defaults[] = {
 	{ "web_svg",			"1"				},
 	{ "telnetd_eas",		"1"				},
 	{ "telnetd_port",		"23"				},
-	{ "sshd_eas",			"0"				},
+	{ "sshd_eas",			"1"				},
 	{ "sshd_pass",			"1"				},
 	{ "sshd_port",			"22"				},
 	{ "sshd_remote",		"0"				},
