@@ -20,7 +20,7 @@
 
 #include "nvram_convert.h"
 #include "defaults.h"
-
+#include <sys/reboot.h>
 
 __attribute__ ((noreturn))
 static void help(void)
@@ -268,6 +268,25 @@ static int defaults_main(int argc, char **argv)
 
 	if ((!nvram_match("restore_defaults", "0")) || (!nvram_match("os_name", "linux"))) {
 		force = 1;
+	}
+
+	// EasyTomato: whenever we change major versions, force a clearing of nvram to prevent problems.  We really don't trust our users...
+	if ((p = nvram_get("os_version")) != NULL) {
+	  // Check if the major and minor version matches.  Small "build" revisions shouldn't require clearing nvram
+	  // Example: EasyTomato 0.8.3ALPHA and we want to check if the 0 or 8 changed, but don't take any action if only the 3ALPHA changed.
+	  int major_ver_old, minor_ver_old, major_ver_new, minor_ver_new;
+	  sscanf(p,"EasyTomato %d.%d.%*s", &major_ver_old, &minor_ver_old);
+	  sscanf(tomato_version,"EasyTomato %d.%d.%*s", &major_ver_new, &minor_ver_new);
+	  //printf("tomato_version=%s p=%s \n", tomato_version, p);
+	  //printf("major_ver_old=%d, minor_ver_old=%d, major_ver_new=%d, minor_ver_new=%d \n", major_ver_old, minor_ver_old, major_ver_new, minor_ver_new);
+
+	  if ((major_ver_old != major_ver_new) || (minor_ver_old != minor_ver_new)) {
+	    //printf("Found some major or minor version difference \n");
+	    // Erase the actual nvram
+	    eval("mtd-erase", "-d", "nvram");
+	    // Force a reboot after erasing the actual nvram because linux maintains a shadow copy in RAM that needs to be refetched
+	    reboot(RB_AUTOBOOT);
+	  }
 	}
 
 #if 0	// --need to test--
