@@ -33,8 +33,7 @@
                     <link rel="stylesheet" href="css/text.css" />
                     <link rel="stylesheet" href="css/960.css" />
                     <link rel="stylesheet" href="css/style.css">
-                    <link rel="stylesheet" href="css/bootstrap.min.css">
-                    <link rel="stylesheet" href="css/table-style.css">
+                    <link rel="stylesheet" href="css/tablestyle.css">
                     <link rel="stylesheet" href="js/libs/jquery-ui-1.9.1.custom/css/blitzer/jquery-ui-1.9.1.custom.min.css"
                     type="text/css" media="screen" />
                     <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js">
@@ -104,6 +103,25 @@
                         </div>
                         <!-- end #topnav -->
                         <div id="container" style="height: 400px; min-width: 600px"></div>
+                        <button id="button">Hide series</button>
+                        <div id="table" ><h4>Currently Connected Devices</h4>
+                            <table id="myTable" class="tablesorter"><thead><tr><th>Device</th><th>Group</th><th class="download">Download Total</th><th class="upload">Upload Total</th><th>Device Total</th></tr></thead><tbody></tbody></table>
+                            <div id="pager" class="pager">
+                                <form>
+                                    <img src="img/first.png" class="first"/>
+                                    <img src="img//prev.png" class="prev"/>
+                                    <input type="text" class="pagedisplay"/>
+                                    <img src="img/next.png" class="next"/>
+                                    <img src="img/last.png" class="last"/>
+                                    <select class="pagesize">
+                                        <option selected="selected"  value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option  value="40">40</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <!-- end #main -->
                     <footer class="container_16" id="footer">
@@ -113,18 +131,18 @@
                         <a href="http://www.easytomato.org/support-easytomato/" target="_blank"> <font color="#777">Support EasyTomato</font></a>
                     </footer>
                     <!-- JavaScript at the bottom for fast page loading -->
-                    <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js">
-                    </script>
-                    <script type="text/javascript" src="js/libs/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js">
-                    </script>
-                    <script type="text/javascript" src="js/libs/highstock-1.2.5/highstock.js">
-                    </script>
-                    <script type="text/javascript" src="js/easytomato.js">
-                    </script>
-                    <script type="text/javascript" src="js/libs/underscore-min.js">
-                    </script>
-                    <script type="text/javascript" src="js/bandwidth.js">
-                    </script>
+
+                    <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+                    <script type="text/javascript" src="js/libs/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js"></script>
+                    <script type="text/javascript" src="js/libs/highstock-1.2.5/highstock.js"></script>
+                    <script type="text/javascript" src="js/easytomato.js"></script>
+                    <script type="text/javascript" src="js/libs/underscore-min.js"></script>
+                    <script type="text/javascript" src="js/table.js"></script>
+                    <script type="text/javascript" src="js/bandwidth.js"></script>
+                    <script type="text/javascript" src="js/libs/TableSorter/jquery.tablesorter.min.js"></script>
+                    <script type="text/javascript" src="js/libs/TableSorter/jquery.tablesorter.pager.js"></script>
+                    
+
                     <!-- end scripts -->
                 </body>
                 
