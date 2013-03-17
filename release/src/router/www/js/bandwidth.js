@@ -29,16 +29,35 @@ setInterval(updateAndRenderGraph, 120000);
 });
 */
 
+
 function updateAndRenderGraph() {
 
     updateData(function() {
         renderGraph();
         renderTable();
+        // add parser for MB data
+        $.tablesorter.addParser({
+            id: 'bandwidth',
+            is: function(s) {
+                // return false so this parser is not auto detected 
+                return false;
+            },
+            format: function(s) {
+                // format your data for normalization 
+                return parseFloat(s);
+            },
+            // set type, either numeric or text 
+            type: 'numeric'
+        });
         $("#myTable").tablesorter({
             widthFixed: true, 
             widgets: ['zebra'], 
             headers:{
-                0: {sorter: "ipAddress"}}
+                0: {sorter: "ipAddress"},
+                2: {sorter: "bandwidth"},
+                3: {sorter: "bandwidth"},
+                4: {sorter: "bandwidth"}
+            }
         })
         .tablesorterPager({container: $("#pager")});       
    
@@ -58,13 +77,13 @@ function renderTable(){
             'group'+
             '</td>'+
             '<td>'+
-            speed_history[id].rx_total +
+            formatBandwidthNumber(speed_history[id].rx_total) +
             '</td>'+
             '<td>'+
-            speed_history[id].tx_total +
+            formatBandwidthNumber(speed_history[id].tx_total) +
             '</td>'+
             '<td>'+
-            (speed_history[id].rx_total + speed_history[id].tx_total) +
+            formatBandwidthNumber(speed_history[id].rx_total + speed_history[id].tx_total) +
             '</td>'+
             '</tr>'
             )
@@ -346,4 +365,9 @@ function prepareDataforHighCharts(sh, time) {
         total_minutes = 24 * 60;
     }
     return data_massaged;
+}
+function formatBandwidthNumber(number) {
+    number = number / 1000000;
+
+    return Math.round(number*10)/10 + " MB";
 }
