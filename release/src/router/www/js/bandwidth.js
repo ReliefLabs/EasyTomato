@@ -50,7 +50,7 @@ function updateAndRenderGraph() {
 function renderTable(){
     for (id in speed_history) {
         $('#table tbody').append(
-            '<tr>'+
+            '<tr data-ip='+id+'>'+
             '<td>'+
             id +
             '</td>'+
@@ -79,32 +79,40 @@ function renderGraph() {
 
     var seriesData = [];
 
-    for (id in preparedData) {
-        seriesData.push({
+    var download_color = '#2c99ce',
+        upload_color = '#2cb78a',
+        download_color_device = '#0c7fb5',
+        upload_color_device = '#0a9a5b';
+    seriesData.push({
             name: 'Download Rate',
-            data: preparedData[id].rx,
+            data: preparedData['192.168.1.0'].rx,
             type: 'areaspline',
-            yAxis: 0
-        })
-        seriesData.push({
+            yAxis: 0,
+            id: 'download',
+            color: download_color
+    })
+    seriesData.push({
             name: 'Upload Rate',
-            data: preparedData[id].tx,
+            data: preparedData['192.168.1.0'].tx,
             type: 'areaspline',
-            yAxis: 1
-        })
-    }
+            yAxis: 1,
+            id : 'upload',
+            color: upload_color
+    })
 
-    console.log(seriesData[0])
     Highcharts.setOptions({
         lang: {
             rangeSelectorZoom: "Hours"
         }
     });
-    
+    /********************
+    * Chart
+    *********************/
     var chart = new Highcharts.StockChart({
 
         chart: {
-            renderTo: 'container'
+            renderTo: 'chart_container',
+            alignTicks: false
         },
 
         plotOptions: {
@@ -121,7 +129,8 @@ function renderGraph() {
                 title: {
                     text: 'Download Speed',
                     style: {
-                        color: '#89A54E'
+                        //color: '#89A54E'
+                        color: download_color
                     }
                 },
                 labels: {
@@ -130,14 +139,16 @@ function renderGraph() {
                     }
                 },
                 min: 0,
-                max: maxYDownvalue
+                max: maxYDownvalue,
+                height: 115,
+                lineWidth: 2
     
             }, { // Secondary yAxis
-                gridLineWidth: 0,
+                //gridLineWidth: 0,
                 title: {
                     text: 'Upload Speed',
                     style: {
-                        color: '#AA4643'
+                        color: upload_color
                     }
                 },
                 labels: {
@@ -145,10 +156,14 @@ function renderGraph() {
                         return this.value/1000000 +' kBps';
                     }
                 },
-                opposite: true,
                 min: 0,
-                max: maxYUpvalue
-        }],
+                max: maxYUpvalue,
+                top: 170,
+                height: 115,
+                offset: 0,
+                lineWidth: 2
+        }
+        ],
 
         xAxis: {
             minRange: 3600000
@@ -194,29 +209,96 @@ function renderGraph() {
                 enabled : false
             },
 
-        series: seriesData.splice(0,2)
+        series: seriesData
     });
 
     
     $button = $('#button');
     $button.click(function() {
-    chart.series[0].setData(preparedData['192.168.1.212'].rx, true);
-    chart.addSeries({
-            name: 'test',
-            data:preparedData['192.168.1.212'].rx,
-            animation:false
-        }, true, false)
+        var download = chart.get('download')
+        if (download) {
+            download.remove();
+        }
+        /*
+        chart.series[0].setData(preparedData['192.168.1.212'].rx, true);
+        chart.addSeries({
+                name: 'test',
+                data: preparedData['192.168.1.212'].rx,
+                animation:false
+            }, true, false)
+*/
     })
+    $("#myTable").click(function(e) {
+        var element = $(e.target),
+        selectedIP = element.parent().attr('data-ip');
+        $("#table tr").removeClass('selected');
+        element.parent().addClass('selected');
+        
+        while(chart.series.length > 3)
+            chart.series[chart.series.length-1].remove();
 
+        chart.addSeries({
+            name: 'Download',
+            data: preparedData[selectedIP].rx,
+            animation: false,
+            id: selectedIP+'d',
+            type: 'areaspline',
+            color: download_color_device
+        }, true, false)
+        chart.addSeries({
+            name: 'Upload',
+            data: preparedData[selectedIP].tx,
+            animation: true,
+            id: selectedIP+'u',
+            yAxis: 1,
+            type: 'areaspline',
+            color: upload_color_device
+        }, true, false)
+        
+    })
+    /*
      $("#myTable").mouseover(function(e) {
-        trElement = $(e.target).parent();
-        selectedIP = $(trElement).find('td:first').text();
-        chart.series[0].setData(preparedData[selectedIP].rx, true);
+        console.log("mouseover")
+        var element = $(e.target),
+        selectedIP = element.parent().attr('data-ip');
+        console.log(selectedIP+'d')
+        chart.addSeries({
+            name: 'test',
+            data: preparedData[selectedIP].rx,
+            animation: false,
+            id: selectedIP+'d'
+        }, true, false)
+        chart.addSeries({
+            name: 'test',
+            data: preparedData[selectedIP].tx,
+            animation: false,
+            id: selectedIP+'u',
+            yAxis: 1
+        }, true, false)
 
-    }).mouseout(function() {
+    }).mouseout(function(e) {
+    console.log("mouseout")
+        var element = $(e.target),
+            selectedIP = element.parent().attr('data-ip');
+        var down =  chart.get('selectedIP'+'d'),
+            up = chart.get('selectedIP'+'u');
+        if (down) {
+            console.log('down')
+            down.remove();
+        }
+        if (up) {
+            console.log('up')
+            up.remove();
+        }
+
+        for (var i=0; i<chart.series.length;i++) {
+            console.log(chart.series[i])
+        }
+        
         $(this).css('background-color', 'transparent');
-    });
 
+    });
+*/
     
 }
 
@@ -225,7 +307,6 @@ function updateData(callback) {
     $.getScript("js/data.js", function(data, textStatus, jqxhr) {
         delete speed_history["_next"];
         preparedData = prepareDataforHighCharts(speed_history);
-        console.log(preparedData)
         callback();
     });
 }
