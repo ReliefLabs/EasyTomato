@@ -271,7 +271,42 @@ function newColors(i) {
       //$.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
       $.getScript("js/data.js", function(data, textStatus, jqxhr) {
       delete speed_history["_next"];
+
+      var preparedData = prepareDataforHighCharts(speed_history);
+
       callback();
     });
     //updateScale();
+  }
+
+  function prepareDataforHighCharts(sh, time) {
+    data_massaged = {},
+    total_minutes = 24*60;
+
+    time = time || new Date();
+
+    for (ip in sh) {
+      data_massaged[ip] = {
+        rx : [],
+        tx : []
+      }
+      // rx
+      var down = sh[ip].rx,
+          up = sh[ip].tx;
+          
+      down.forEach(function(point, index) {
+        var current_minutes = new Date(time).getMinutes();
+        
+        data_massaged[ip].rx.push(
+          [
+            new Date(time).setMinutes(current_minutes - total_minutes),
+            point
+          ]
+        )
+
+        total_minutes = total_minutes - 2
+      })
+
+      // tx
+    }
   }

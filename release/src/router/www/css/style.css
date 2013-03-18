@@ -1101,6 +1101,9 @@ padding: 3px 0;
 	width: 105px;
 }
 
+#table {
+	padding: 25px;
+}
 #table tbody tr.selected td {
 	background-color: lightgray;
 }

@@ -33,7 +33,14 @@ setInterval(updateAndRenderGraph, 120000);
 function updateAndRenderGraph() {
 
     updateData(function() {
-        renderGraph();
+
+        var subnet_ip;
+        for (ip in preparedData) {
+            if (isSubnet(ip)) {
+                subnet_ip = ip;
+            }
+        }
+        renderGraph(subnet_ip);
         renderTable();
         // add parser for MB data
         $.tablesorter.addParser({
@@ -49,17 +56,34 @@ function updateAndRenderGraph() {
             // set type, either numeric or text 
             type: 'numeric'
         });
+       
         $("#myTable").tablesorter({
+            theme : 'blue',
+            headerTemplate : '{content} {icon}',
             widthFixed: true, 
-            widgets: ['zebra'], 
+            widgets: ['zebra', 'staticRow'], 
             headers:{
                 0: {sorter: "ipAddress"},
                 2: {sorter: "bandwidth"},
                 3: {sorter: "bandwidth"},
                 4: {sorter: "bandwidth"}
-            }
+            },
+            sortList: [[4,1]]
         })
-        .tablesorterPager({container: $("#pager")});       
+        .tablesorterPager({
+            container: $("#pager"),
+            output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+        });       
+
+        // Default 6 hours
+    
+        var nrDataPoints = preparedData[subnet_ip].rx.length; // 24 hours
+        var maxTimeLast6Hours = preparedData[subnet_ip].rx[nrDataPoints-1][0];
+        // Last 6 hours is the last fourth of the total
+        var offset = (nrDataPoints / 4) * 3;
+        var minTimeLast6Hours = preparedData[subnet_ip].rx[offset-1][0];
+        
+        updateTable(minTimeLast6Hours, maxTimeLast6Hours);
    
 
     });
@@ -68,8 +92,12 @@ function updateAndRenderGraph() {
 
 function renderTable(){
     for (id in speed_history) {
+        var trclass = '';
+        if (isSubnet(id)) {
+            trclass = 'static'
+        }
         $('#table tbody').append(
-            '<tr data-ip='+id+'>'+
+            '<tr class="'+trclass+'" data-ip='+id+'>'+
             '<td>'+
             id +
             '</td>'+
@@ -90,12 +118,40 @@ function renderTable(){
     }
 
 }
+function updateTable(min, max) {
+   var rows = $('#table tbody tr');
+    $.each(rows, function(index, r) {
+        var ip = $(r).attr('data-ip');
+        // Download total
+        var dt = _.reduce(
+            preparedData[ip].rx.filter(function(el) {
+                return el[0] >= min && el[0] <= max;
+            })
+            ,
+            function(memo, num) {return memo + num[1];}, 0);
+        var ut = _.reduce(
+            preparedData[ip].tx.filter(function(el) {
+                return el[0] >= min && el[0] <= max;
+            })
+            ,
+            function(memo, num) {return memo + num[1];}, 0);
+        
+        $(r).find('td:nth-child(3)').text(formatBandwidthNumber(dt));
+        // Upload total
+        $(r).find('td:nth-child(4)').text(formatBandwidthNumber(ut));
+        // Device Total
+        $(r).find('td:nth-child(5)').text(formatBandwidthNumber(dt+ut));
 
-function renderGraph() {
+    });
+    //$("table.tablesorter").trigger("update");
+}
 
-    var maxYDownvalue = _.max(_.map(preparedData['192.168.1.0'].rx, function(pair){return pair[1]}))
-    var maxYUpvalue = _.max(_.map(preparedData['192.168.1.0'].tx, function(pair){return pair[1]}))
 
+function renderGraph(subnet_ip) {
+
+    var maxYDownvalue = _.max(_.map(preparedData[subnet_ip].rx, function(pair){return pair[1]}))
+    var maxYUpvalue = _.max(_.map(preparedData[subnet_ip].tx, function(pair){return pair[1]}))
+    
     var seriesData = [];
 
     var download_color = '#2c99ce',
@@ -104,7 +160,7 @@ function renderGraph() {
         upload_color_device = '#0a9a5b';
     seriesData.push({
             name: 'Download Rate',
-            data: preparedData['192.168.1.0'].rx,
+            data: preparedData[subnet_ip].rx,
             type: 'areaspline',
             yAxis: 0,
             id: 'download',
@@ -112,7 +168,7 @@ function renderGraph() {
     })
     seriesData.push({
             name: 'Upload Rate',
-            data: preparedData['192.168.1.0'].tx,
+            data: preparedData[subnet_ip].tx,
             type: 'areaspline',
             yAxis: 1,
             id : 'upload',
@@ -185,7 +241,12 @@ function renderGraph() {
         ],
 
         xAxis: {
-            minRange: 3600000
+            minRange: 3600000,
+             events: {
+                setExtremes: function(event) {
+                    updateTable(event.min, event.max);
+                }
+            }
         },
         tooltip: {
             ySuffix: " kbps",
@@ -228,7 +289,8 @@ function renderGraph() {
                 enabled : false
             },
 
-        series: seriesData
+        series: seriesData,
+       
     });
 
     
@@ -259,11 +321,12 @@ function renderGraph() {
         chart.addSeries({
             name: 'Download',
             data: preparedData[selectedIP].rx,
-            animation: false,
+            animation: true,
             id: selectedIP+'d',
             type: 'areaspline',
             color: download_color_device
-        }, true, false)
+        }, true, false);
+
         chart.addSeries({
             name: 'Upload',
             data: preparedData[selectedIP].tx,
@@ -370,4 +433,8 @@ function formatBandwidthNumber(number) {
     number = number / 1000000;
 
     return Math.round(number*10)/10 + " MB";
+}
+function isSubnet(ip) {
+    reg = /\.0$/;
+    return reg.test(ip);
 }
