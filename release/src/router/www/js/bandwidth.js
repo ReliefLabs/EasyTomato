@@ -1,9 +1,10 @@
 var preparedData;
+var tableMap = {};
 
 $(document).ready(function() {
-    updateAndRenderGraph() // only here to call fake data, remove when online
-});
-/*
+//    updateAndRenderGraph() // only here to call fake data, remove when online
+//});
+
 $.when(load_groups()).then(function(){
     $.when(load_devices()).then(function() {
       var devices_with_names = unassigned.concat(_.flatten(_.map(groups, function(g){ return g.devices; })));
@@ -27,7 +28,7 @@ $.when(load_groups()).then(function(){
   });
 setInterval(updateAndRenderGraph, 120000);
 });
-*/
+
 
 
 function updateAndRenderGraph() {
@@ -96,13 +97,13 @@ function renderTable(){
         if (isSubnet(id)) {
             trclass = 'static'
         }
-        $('#table tbody').append(
+        $('#table tbody').empty().append(
             '<tr class="'+trclass+'" data-ip='+id+'>'+
             '<td>'+
-            id +
+            (isSubnet(id) ? 'Network Total' : tableMap[id].device_name) +
             '</td>'+
             '<td>'+
-            'group'+
+            (isSubnet(id) ? '-' : tableMap[id].group_name) +
             '</td>'+
             '<td>'+
             formatBandwidthNumber(speed_history[id].rx_total) +
@@ -176,6 +177,9 @@ function renderGraph(subnet_ip) {
     })
 
     Highcharts.setOptions({
+        global: {
+            useUTC: false
+        },
         lang: {
             rangeSelectorZoom: "Hours"
         }
@@ -186,6 +190,8 @@ function renderGraph(subnet_ip) {
     var chart = new Highcharts.StockChart({
 
         chart: {
+            backgroundColor: 'transparent',
+            plotBackgroundColor: 'white',
             renderTo: 'chart_container',
             alignTicks: false
         },
@@ -385,10 +391,10 @@ function renderGraph(subnet_ip) {
 }
 
 function updateData(callback) {
-
-    $.getScript("js/data.js", function(data, textStatus, jqxhr) {
+    $.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
+    //$.getScript("js/data.js", function(data, textStatus, jqxhr) { ////FAKE DATA LINK
         delete speed_history["_next"];
-        preparedData = prepareDataforHighCharts(speed_history);
+        preparedData = prepareDataforHighCharts(speed_history, tomato_env.vars['time']);
         callback();
     });
 }
