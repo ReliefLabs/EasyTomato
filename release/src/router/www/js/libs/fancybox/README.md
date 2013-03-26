@@ -56,7 +56,7 @@ Tip: Automatically group and apply fancyBox to all images:
     $("a[href$='.jpg'],a[href$='.jpeg'],a[href$='.png'],a[href$='.gif']").attr('rel', 'gallery').fancybox();
 
 Script uses the `href` attribute of the matched elements to obtain the location of the content and to figure out content type you want to display.
-You can specify type directly by adding classname (fancybox.image, fancybox.iframe, etc) or `data-fancybox-group` attribute:
+You can specify type directly by adding classname (fancybox.image, fancybox.iframe, etc) or `data-fancybox-type` attribute:
 
     //Ajax:
     <a href="/example.html" class="fancybox fancybox.ajax">Example</a>
@@ -76,7 +76,8 @@ You can specify type directly by adding classname (fancybox.image, fancybox.ifra
     <a href="example.jpg" class="fancybox">Example</a>
 
 Note, ajax requests are subject to the [same origin policy](http://en.wikipedia.org/wiki/Same_origin_policy).
-If fancyBox will not be able to get content type, error message will be displayed (this is different from previsous versions where 'ajax' was used as default type).
+If fancyBox will not be able to get content type, it will try to guess based on 'href' and will quit silently if would not succeed.
+(this is different from previsous versions where 'ajax' was used as default type or an error message was displayed).
 
 Advanced
 --------
@@ -108,7 +109,7 @@ You can disable them, set custom options or enable other helpers. Examples:
             },
             overlay : {
                 css : {
-                    'background-color' : '#fff'
+                    'background' : 'rgba(255,255,255,0.5)'
                 }
             }
         }
@@ -184,11 +185,15 @@ There is a simply way to access wrapping elements using JS:
     $.fancybox.outer
     $.fancybox.inner
 
-You can override CSS to customize the look. For example, make navigation arrows always visible
-and move them outside of area (use this snippet after including fancybox.css):
+You can override CSS to customize the look. For example, make navigation arrows always visible,
+change width and move them outside of area (use this snippet after including fancybox.css):
 
     .fancybox-nav span {
         visibility: visible;
+    }
+
+    .fancybox-nav {
+        width: 80px;
     }
 
     .fancybox-prev {
