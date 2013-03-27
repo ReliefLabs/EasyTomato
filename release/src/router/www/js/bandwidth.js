@@ -59,7 +59,8 @@ function updateAndRenderGraph() {
         });
        
         $("#myTable").tablesorter({
-            theme : 'blue',
+            theme : 'dropbox',
+            sortInitialOrder: "desc",
             headerTemplate : '{content} {icon}',
             widthFixed: true, 
             widgets: ['zebra', 'staticRow'], 
@@ -155,10 +156,10 @@ function renderGraph(subnet_ip) {
     
     var seriesData = [];
 
-    var download_color = '#2c99ce',
-        upload_color = '#2cb78a',
-        download_color_device = '#0c7fb5',
-        upload_color_device = '#0a9a5b';
+    var download_color = '#2b82c0',
+        upload_color = '#39a24f',
+        download_color_device = '#0c5c94',
+        upload_color_device = '#046a19';
     seriesData.push({
             name: 'Download Rate',
             data: preparedData[subnet_ip].rx,
@@ -181,7 +182,7 @@ function renderGraph(subnet_ip) {
             useUTC: false
         },
         lang: {
-            rangeSelectorZoom: "Hours"
+            rangeSelectorZoom: "Time Range:"
         }
     });
     /********************
@@ -193,12 +194,17 @@ function renderGraph(subnet_ip) {
             backgroundColor: 'transparent',
             plotBackgroundColor: 'white',
             renderTo: 'chart_container',
-            alignTicks: false
+            alignTicks: false,
+            height: 375
         },
 
         plotOptions: {
             series: {
-                animation: false
+                animation: false,
+                marker:{
+                    symbol: 'circle'
+                }
+
             }
         },
 
@@ -210,8 +216,8 @@ function renderGraph(subnet_ip) {
                 title: {
                     text: 'Download Speed',
                     style: {
-                        //color: '#89A54E'
-                        color: download_color
+                        color: '#206da2'
+                        //color: download_color
                     }
                 },
                 labels: {
@@ -222,14 +228,17 @@ function renderGraph(subnet_ip) {
                 min: 0,
                 max: maxYDownvalue,
                 height: 115,
-                lineWidth: 2
-    
+                lineWidth: 1,
+                //endOnTick: false,
+                tickPixelInterval: 40,
+                gridLineColor: '#f3f3f3'
+
             }, { // Secondary yAxis
                 //gridLineWidth: 0,
                 title: {
                     text: 'Upload Speed',
                     style: {
-                        color: upload_color
+                        color: '#1d7c30'
                     }
                 },
                 labels: {
@@ -242,7 +251,10 @@ function renderGraph(subnet_ip) {
                 top: 170,
                 height: 115,
                 offset: 0,
-                lineWidth: 2
+                lineWidth: 1,
+                //endOnTick: false
+                tickPixelInterval: 40,
+                gridLineColor: '#f3f3f3'
         }
         ],
 
@@ -299,22 +311,6 @@ function renderGraph(subnet_ip) {
        
     });
 
-    
-    $button = $('#button');
-    $button.click(function() {
-        var download = chart.get('download')
-        if (download) {
-            download.remove();
-        }
-        /*
-        chart.series[0].setData(preparedData['192.168.1.212'].rx, true);
-        chart.addSeries({
-                name: 'test',
-                data: preparedData['192.168.1.212'].rx,
-                animation:false
-            }, true, false)
-*/
-    })
     $("#myTable").click(function(e) {
         var element = $(e.target),
         selectedIP = element.parent().attr('data-ip');
@@ -327,7 +323,9 @@ function renderGraph(subnet_ip) {
         chart.addSeries({
             name: 'Download',
             data: preparedData[selectedIP].rx,
-            animation: true,
+            animation: {
+                duration: 1000
+            },
             id: selectedIP+'d',
             type: 'areaspline',
             color: download_color_device
@@ -436,9 +434,9 @@ function prepareDataforHighCharts(sh, time) {
     return data_massaged;
 }
 function formatBandwidthNumber(number) {
-    number = number / 1000000;
-
-    return Math.round(number*10)/10 + " MB";
+    number = (number+.0001) / 1000000;
+    return parseFloat(Math.round(number * 100) / 100).toFixed(1) + " MB";
+    //return Math.round(number*10)/10 + " MB";
 }
 function isSubnet(ip) {
     reg = /\.0$/;

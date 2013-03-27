@@ -1102,10 +1102,8 @@ padding: 3px 0;
 }
 
 #table {
-	padding: 25px;
-}
-#table tbody tr.selected td {
-	background-color: lightgray;
+	padding-left: 35px;
+	padding-right: 10px;
 }
 
 
