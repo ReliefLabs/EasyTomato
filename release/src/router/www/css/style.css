@@ -1105,6 +1105,10 @@ padding: 3px 0;
 	padding-left: 35px;
 	padding-right: 10px;
 }
+	#table tbody td.numeric {
+		text-align: right;
+		padding-right: 100px;
+	}
 div.scrollableContainer {
     position: relative;
 }

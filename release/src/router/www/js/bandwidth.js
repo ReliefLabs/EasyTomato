@@ -108,13 +108,13 @@ function renderTable(){
             '<td>'+
             (isSubnet(id) ? '-' : (tableMap[id] ? tableMap[id].group_name : '')) +
             '</td>'+
-            '<td>'+
+            '<td class="numeric">'+
             formatBandwidthNumber(speed_history[id].rx_total) +
             '</td>'+
-            '<td>'+
+            '<td class="numeric">'+
             formatBandwidthNumber(speed_history[id].tx_total) +
             '</td>'+
-            '<td>'+
+            '<td class="numeric">'+
             formatBandwidthNumber(speed_history[id].rx_total + speed_history[id].tx_total) +
             '</td>'+
             '</tr>'
