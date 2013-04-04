@@ -72,10 +72,12 @@ function updateAndRenderGraph() {
             },
             sortList: [[4,1]]
         })
+        /*
         .tablesorterPager({
             container: $("#pager"),
             output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
-        });       
+        });  
+        */     
 
         // Default 6 hours
     
@@ -101,10 +103,10 @@ function renderTable(){
         $('#table tbody').empty().append(
             '<tr class="'+trclass+'" data-ip='+id+'>'+
             '<td>'+
-            (isSubnet(id) ? 'Network Total' : tableMap[id].device_name) +
+            (isSubnet(id) ? 'Network Total' : (tableMap[id] ? tableMap[id].device_name : id)) +
             '</td>'+
             '<td>'+
-            (isSubnet(id) ? '-' : tableMap[id].group_name) +
+            (isSubnet(id) ? '-' : (tableMap[id] ? tableMap[id].group_name : '')) +
             '</td>'+
             '<td>'+
             formatBandwidthNumber(speed_history[id].rx_total) +
