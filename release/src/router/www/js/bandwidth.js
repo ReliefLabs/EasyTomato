@@ -100,7 +100,7 @@ function renderTable(){
         if (isSubnet(id)) {
             trclass = 'static'
         }
-        $('#table tbody').empty().append(
+        $('#table tbody').append(
             '<tr class="'+trclass+'" data-ip='+id+'>'+
             '<td>'+
             (isSubnet(id) ? 'Network Total' : (tableMap[id] ? tableMap[id].device_name : id)) +
@@ -221,7 +221,7 @@ function renderGraph(subnet_ip) {
         },
 
         credits: {
-            enabled: false
+            enabled: true
         },
 
         yAxis: [{ // Primary yAxis
@@ -234,7 +234,7 @@ function renderGraph(subnet_ip) {
                 },
                 labels: {
                     formatter: function() {
-                        return this.value/8000 +' kBps';
+                        return (this.value/120000).toFixed(2) +' kBps';
                     }
                 },
                 min: 0,
@@ -255,7 +255,7 @@ function renderGraph(subnet_ip) {
                 },
                 labels: {
                     formatter: function() {
-                        return this.value/1000000 +' kBps';
+                        return (this.value/120000).toFixed(2) +' kBps';
                     }
                 },
                 min: 0,
@@ -282,9 +282,9 @@ function renderGraph(subnet_ip) {
             ySuffix: " kbps",
             animation: false,
             shared: false,
-            //formatter: function() {      
-            //    return 'Download Speed ' + (this.y/1000000).toFixed(1) +' kBps';
-            //}
+            formatter: function() {      
+                return 'Download Speed ' + (this.y/120000).toFixed(2) +' kBps';
+            }
         },
         
         rangeSelector: {
