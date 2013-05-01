@@ -1109,6 +1109,7 @@ padding: 3px 0;
 		text-align: right;
 		padding-right: 100px;
 	}
+
 div.scrollableContainer {
     position: relative;
 }
@@ -1116,6 +1117,7 @@ div.scrollingArea {
     height: 240px;
     overflow: auto;
 }
+
 /*
 table.scrollable thead tr {
     left: -1px;

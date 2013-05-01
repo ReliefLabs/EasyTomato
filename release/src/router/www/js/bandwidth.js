@@ -3,10 +3,10 @@ var tableMap = {};
 var SPEED_HISTORY_DATA_POINTS = 720;
 
 $(document).ready(function() {
-    updateAndRenderGraph() // only here to call fake data, remove when online
-});
+//    updateAndRenderGraph() // only here to call fake data, remove when online
+//});
 
-/*
+
 $.when(load_groups()).then(function(){
     $.when(load_devices()).then(function() {
       var devices_with_names = unassigned.concat(_.flatten(_.map(groups, function(g){ return g.devices; })));
@@ -30,7 +30,7 @@ $.when(load_groups()).then(function(){
   });
 setInterval(updateAndRenderGraph, 120000);
 });
-*/
+
 
 
 function updateAndRenderGraph() {
@@ -100,6 +100,7 @@ function updateAndRenderGraph() {
 }
 
 function renderTable(){
+    $('#table tbody').empty();
     for (id in speed_history) {
         var trclass = '';
         if (isSubnet(id)) {
@@ -428,8 +429,8 @@ function renderGraph(subnet_ip) {
 }
 
 function updateData(callback) {
-    //$.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
-    $.getScript("js/data.js", function(data, textStatus, jqxhr) { ////FAKE DATA LINK
+    $.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
+    //$.getScript("js/data.js", function(data, textStatus, jqxhr) { ////FAKE DATA LINK
         delete speed_history["_next"];
         // if preparedData is empty, render graph and table with zeros
         if ($.isEmptyObject(speed_history)) {
@@ -489,7 +490,7 @@ function prepareDataforHighCharts(sh, time) {
     return data_massaged;
 }
 function formatBandwidthNumber(number) {
-    number = (number+.0001) / 1000000;
+    number = (number+.0001) / 1048576;
     return parseFloat(Math.round(number * 100) / 100).toFixed(1) + " MB";
     //return Math.round(number*10)/10 + " MB";
 }
