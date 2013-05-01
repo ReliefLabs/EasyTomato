@@ -1,5 +1,5 @@
 /*!
-* TableSorter 2.8.2 - Client-side table sorting with ease!
+* TableSorter 2.9.1 - Client-side table sorting with ease!
 * @requires jQuery v1.2.6+
 *
 * Copyright (c) 2007 Christian Bach
@@ -24,7 +24,7 @@
 
 			var ts = this;
 
-			ts.version = "2.8.2";
+			ts.version = "2.9.1";
 
 			ts.parsers = [];
 			ts.widgets = [];
@@ -663,14 +663,14 @@
 					j, downTime;
 				// apply event handling to headers
 				c.$headers
-				// http://stackoverflow.com/questions/5312849/jquery-find-self; andSelf() deprecated in jQuery 1.8
-				.find('*')[ $.fn.addBack ? 'addBack': 'andSelf' ]().filter(c.selectorSort)
-				.unbind('mousedown.tablesorter mouseup.tablesorter')
-				.bind('mousedown.tablesorter mouseup.tablesorter', function(e, external) {
+				// http://stackoverflow.com/questions/5312849/jquery-find-self;
+				.find(c.selectorSort).add( c.$headers.filter(c.selectorSort) )
+				.unbind('mousedown.tablesorter mouseup.tablesorter sort.tablesorter')
+				.bind('mousedown.tablesorter mouseup.tablesorter sort.tablesorter', function(e, external) {
 					// jQuery v1.2.6 doesn't have closest()
 					var $cell = this.tagName.match('TH|TD') ? $(this) : $(this).parents('th, td').filter(':last'), cell = $cell[0];
 					// only recognize left clicks
-					if ((e.which || e.button) !== 1) { return false; }
+					if ((e.which || e.button) !== 1 && e.type !== 'sort') { return false; }
 					// set timer on mousedown
 					if (e.type === 'mousedown') {
 						downTime = new Date().getTime();
@@ -1142,34 +1142,50 @@
 			};
 
 			ts.applyWidget = function(table, init) {
-				table = $(table)[0];
+				table = $(table)[0]; // in case this is called externally
 				var c = table.config,
 					wo = c.widgetOptions,
-					ws = c.widgets.sort().reverse(), // ensure that widgets are always applied in a certain order
-					time, i, w, l = ws.length;
-				// make zebra last
-				i = $.inArray('zebra', c.widgets);
-				if (i >= 0) {
-					c.widgets.splice(i,1);
-					c.widgets.push('zebra');
-				}
-				if (c.debug) {
-					time = new Date();
-				}
-				// add selected widgets
-				for (i = 0; i < l; i++) {
-					w = ts.getWidgetById(ws[i]);
-					if ( w ) {
-						if (init) {
-							if (w.hasOwnProperty('options')) { $.extend( true, w.options, wo ); }
-							if (w.hasOwnProperty('init')) { w.init(table, w, c, wo); }
-						} else if (!init && w.hasOwnProperty('format')) {
-							w.format(table, c, wo, false);
+					widgets = [],
+					time, i, w, wd;
+				if (c.debug) { time = new Date(); }
+				if (c.widgets.length) {
+					// ensure unique widget ids
+					c.widgets = $.grep(c.widgets, function(v, k){
+						return $.inArray(v, c.widgets) === k;
+					});
+					// build widget array & add priority as needed
+					$.each(c.widgets || [], function(i,n){
+						wd = ts.getWidgetById(n);
+						if (wd && wd.id) {
+							// set priority to 10 if not defined
+							if (!wd.priority) { wd.priority = 10; }
+							widgets[i] = wd;
 						}
-					}
+					});
+					// sort widgets by priority
+					widgets.sort(function(a, b){
+						return a.priority < b.priority ? -1 : a.priority === b.priority ? 0 : 1;
+					});
+
+					// add/update selected widgets
+					$.each(widgets, function(i,w){
+						if (w) {
+							if (init) {
+								if (w.hasOwnProperty('options')) {
+									wo = table.config.widgetOptions = $.extend( true, {}, w.options, wo );
+								}
+								if (w.hasOwnProperty('init')) {
+									w.init(table, w, c, wo);
+								}
+							} else if (!init && w.hasOwnProperty('format')) {
+								w.format(table, c, wo, false);
+							}
+						}
+					});
 				}
 				if (c.debug) {
-					benchmark("Completed " + (init === true ? "initializing" : "applying") + " widgets", time);
+					w = c.widgets.length;
+					benchmark("Completed " + (init === true ? "initializing " : "applying ") + w + " widget" + (w !== 1 ? "s" : ""), time);
 				}
 			};
 
@@ -1409,6 +1425,7 @@
 	// add default widgets
 	ts.addWidget({
 		id: "zebra",
+		priority: 90,
 		format: function(table, c, wo) {
 			var $tb, $tv, $tr, row, even, time, k, l,
 			child = new RegExp(c.cssChildRow, 'i'),
