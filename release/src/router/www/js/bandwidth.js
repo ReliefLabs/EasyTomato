@@ -1,10 +1,12 @@
 var preparedData;
 var tableMap = {};
+var SPEED_HISTORY_DATA_POINTS = 720;
 
 $(document).ready(function() {
-//    updateAndRenderGraph() // only here to call fake data, remove when online
-//});
+    updateAndRenderGraph() // only here to call fake data, remove when online
+});
 
+/*
 $.when(load_groups()).then(function(){
     $.when(load_devices()).then(function() {
       var devices_with_names = unassigned.concat(_.flatten(_.map(groups, function(g){ return g.devices; })));
@@ -28,7 +30,7 @@ $.when(load_groups()).then(function(){
   });
 setInterval(updateAndRenderGraph, 120000);
 });
-
+*/
 
 
 function updateAndRenderGraph() {
@@ -82,12 +84,15 @@ function updateAndRenderGraph() {
         // Default 6 hours
     
         var nrDataPoints = preparedData[subnet_ip].rx.length; // 24 hours
-        var maxTimeLast6Hours = preparedData[subnet_ip].rx[nrDataPoints-1][0];
-        // Last 6 hours is the last fourth of the total
-        var offset = (nrDataPoints / 4) * 3;
-        var minTimeLast6Hours = preparedData[subnet_ip].rx[offset-1][0];
-        
-        updateTable(minTimeLast6Hours, maxTimeLast6Hours);
+        if (nrDataPoints === SPEED_HISTORY_DATA_POINTS) {
+
+            var maxTimeLast6Hours = preparedData[subnet_ip].rx[nrDataPoints-1][0];
+            // Last 6 hours is the last fourth of the total
+            var offset = (nrDataPoints / 4) * 3;
+            var minTimeLast6Hours = preparedData[subnet_ip].rx[offset-1][0];
+            
+            updateTable(minTimeLast6Hours, maxTimeLast6Hours);
+        }
    
 
     });
@@ -320,8 +325,30 @@ function renderGraph(subnet_ip) {
             },
 
         series: seriesData,
+
+        loading: {
+            
+            labelStyle: {
+                fontWeight: 'bold',
+                color: 'black',
+                position: 'relative',
+                top: '100px',
+                fontSize: '24px'
+            },
+            
+            style: {
+                position: 'absolute',
+                backgroundColor: 'lightgray',
+                opacity: 0.7,
+                textAlign: 'center'
+            }   
+        }
        
     });
+
+    if (speed_history['X.X.X.0']) {
+        chart.showLoading('No data available <br/> Come back in 2 minutes')
+    }
 
     $("#myTable").click(function(e) {
         var element = $(e.target),
@@ -401,9 +428,25 @@ function renderGraph(subnet_ip) {
 }
 
 function updateData(callback) {
-    $.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
-    //$.getScript("js/data.js", function(data, textStatus, jqxhr) { ////FAKE DATA LINK
+    //$.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
+    $.getScript("js/data.js", function(data, textStatus, jqxhr) { ////FAKE DATA LINK
         delete speed_history["_next"];
+        // if preparedData is empty, render graph and table with zeros
+        if ($.isEmptyObject(speed_history)) {
+            var zeros = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            speed_history = {
+                'X.X.X.0': {
+                    rx: zeros,
+                    rx_avg: 0,
+                    rx_max: 0,
+                    rx_total: 0,
+                    tx: zeros,
+                    tx_avg: 0,
+                    tx_max: 0,
+                    tx_total: 0 
+                }
+            }
+        }
         preparedData = prepareDataforHighCharts(speed_history, tomato_env.vars['time']);
         callback();
     });
