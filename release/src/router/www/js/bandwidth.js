@@ -240,7 +240,7 @@ function renderGraph(subnet_ip) {
                 },
                 labels: {
                     formatter: function() {
-                        return (this.value/120000).toFixed(2) +' kBps';
+                        return (this.value/122880).toFixed(2) +' kBps';
                     }
                 },
                 min: 0,
@@ -261,7 +261,7 @@ function renderGraph(subnet_ip) {
                 },
                 labels: {
                     formatter: function() {
-                        return (this.value/120000).toFixed(2) +' kBps';
+                        return (this.value/122880).toFixed(2) +' kBps';
                     }
                 },
                 min: 0,
@@ -289,7 +289,7 @@ function renderGraph(subnet_ip) {
             animation: false,
             shared: false,
             formatter: function() {      
-                return 'Download Speed ' + (this.y/120000).toFixed(2) +' kBps';
+                return 'Speed: ' + (this.y/122880).toFixed(2) +' kBps';
             }
         },
         
