@@ -365,8 +365,8 @@ const defaults_t defaults[] = {
 	{ "wan_domain",			""				},
 
 // basic-time
-	{ "tm_sel",				"BRT3BRST,M10.3.0/0,M2.3.0/0"	},
-	{ "tm_tz",				"BRT3BRST,M10.3.0/0,M2.3.0/0"	},
+	{ "tm_sel",				"EST5EDT,M3.2.0/2,M11.1.0/2"	},
+	{ "tm_tz",				"EST5EDT,M3.2.0/2,M11.1.0/2"	},
 	{ "tm_dst",				"1",							},
 	{ "ntp_updates",		"4"								},
 	{ "ntp_tdod",			"0"								},

@@ -1,9 +1,11 @@
 var preparedData;
 var tableMap = {};
+var SPEED_HISTORY_DATA_POINTS = 720;
 
 $(document).ready(function() {
 //    updateAndRenderGraph() // only here to call fake data, remove when online
 //});
+
 
 $.when(load_groups()).then(function(){
     $.when(load_devices()).then(function() {
@@ -72,20 +74,25 @@ function updateAndRenderGraph() {
             },
             sortList: [[4,1]]
         })
+        /*
         .tablesorterPager({
             container: $("#pager"),
             output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
-        });       
+        });  
+        */     
 
         // Default 6 hours
     
         var nrDataPoints = preparedData[subnet_ip].rx.length; // 24 hours
-        var maxTimeLast6Hours = preparedData[subnet_ip].rx[nrDataPoints-1][0];
-        // Last 6 hours is the last fourth of the total
-        var offset = (nrDataPoints / 4) * 3;
-        var minTimeLast6Hours = preparedData[subnet_ip].rx[offset-1][0];
-        
-        updateTable(minTimeLast6Hours, maxTimeLast6Hours);
+        if (nrDataPoints === SPEED_HISTORY_DATA_POINTS) {
+
+            var maxTimeLast6Hours = preparedData[subnet_ip].rx[nrDataPoints-1][0];
+            // Last 6 hours is the last fourth of the total
+            var offset = (nrDataPoints / 4) * 3;
+            var minTimeLast6Hours = preparedData[subnet_ip].rx[offset-1][0];
+            
+            updateTable(minTimeLast6Hours, maxTimeLast6Hours);
+        }
    
 
     });
@@ -93,26 +100,27 @@ function updateAndRenderGraph() {
 }
 
 function renderTable(){
+    $('#table tbody').empty();
     for (id in speed_history) {
         var trclass = '';
         if (isSubnet(id)) {
             trclass = 'static'
         }
-        $('#table tbody').empty().append(
+        $('#table tbody').append(
             '<tr class="'+trclass+'" data-ip='+id+'>'+
             '<td>'+
-            (isSubnet(id) ? 'Network Total' : tableMap[id].device_name) +
+            (isSubnet(id) ? 'Network Total' : (tableMap[id] ? tableMap[id].device_name : id)) +
             '</td>'+
             '<td>'+
-            (isSubnet(id) ? '-' : tableMap[id].group_name) +
+            (isSubnet(id) ? '-' : (tableMap[id] ? tableMap[id].group_name : '')) +
             '</td>'+
-            '<td>'+
+            '<td class="numeric">'+
             formatBandwidthNumber(speed_history[id].rx_total) +
             '</td>'+
-            '<td>'+
+            '<td class="numeric">'+
             formatBandwidthNumber(speed_history[id].tx_total) +
             '</td>'+
-            '<td>'+
+            '<td class="numeric">'+
             formatBandwidthNumber(speed_history[id].rx_total + speed_history[id].tx_total) +
             '</td>'+
             '</tr>'
@@ -161,7 +169,7 @@ function renderGraph(subnet_ip) {
         download_color_device = '#0c5c94',
         upload_color_device = '#046a19';
     seriesData.push({
-            name: 'Download Rate',
+            name: 'Total Download Speed',
             data: preparedData[subnet_ip].rx,
             type: 'areaspline',
             yAxis: 0,
@@ -169,12 +177,12 @@ function renderGraph(subnet_ip) {
             color: download_color
     })
     seriesData.push({
-            name: 'Upload Rate',
+            name: 'Total Upload Speed',
             data: preparedData[subnet_ip].tx,
             type: 'areaspline',
             yAxis: 1,
             id : 'upload',
-            color: upload_color
+            color: upload_color,
     })
 
     Highcharts.setOptions({
@@ -208,8 +216,18 @@ function renderGraph(subnet_ip) {
             }
         },
 
+        legend:{
+             enabled: true,
+             align: "right",
+             floating: true,
+             verticalAlign: "top",
+             itemMarginTop: -3,
+             itemMarginBottom: -3
+
+        },
+
         credits: {
-            enabled: false
+            enabled: true
         },
 
         yAxis: [{ // Primary yAxis
@@ -222,7 +240,7 @@ function renderGraph(subnet_ip) {
                 },
                 labels: {
                     formatter: function() {
-                        return this.value/1000000 +' kBps';
+                        return (this.value/122880).toFixed(2) +' kBps';
                     }
                 },
                 min: 0,
@@ -243,7 +261,7 @@ function renderGraph(subnet_ip) {
                 },
                 labels: {
                     formatter: function() {
-                        return this.value/1000000 +' kBps';
+                        return (this.value/122880).toFixed(2) +' kBps';
                     }
                 },
                 min: 0,
@@ -270,9 +288,9 @@ function renderGraph(subnet_ip) {
             ySuffix: " kbps",
             animation: false,
             shared: false,
-            //formatter: function() {      
-            //    return 'Download Speed ' + (this.y/1000000).toFixed(1) +' kBps';
-            //}
+            formatter: function() {      
+                return 'Speed: ' + (this.y/122880).toFixed(2) +' kBps';
+            }
         },
         
         rangeSelector: {
@@ -308,8 +326,30 @@ function renderGraph(subnet_ip) {
             },
 
         series: seriesData,
+
+        loading: {
+            
+            labelStyle: {
+                fontWeight: 'bold',
+                color: 'black',
+                position: 'relative',
+                top: '100px',
+                fontSize: '24px'
+            },
+            
+            style: {
+                position: 'absolute',
+                backgroundColor: 'lightgray',
+                opacity: 0.7,
+                textAlign: 'center'
+            }   
+        }
        
     });
+
+    if (speed_history['X.X.X.0']) {
+        chart.showLoading('No data available <br/> Come back in 2 minutes')
+    }
 
     $("#myTable").click(function(e) {
         var element = $(e.target),
@@ -392,6 +432,22 @@ function updateData(callback) {
     $.getScript("update.cgi?exec=ipt_bandwidth&arg0=speed&_http_id="+tomato_env.vars['http_id'], function(data, textStatus, jqxhr) {
     //$.getScript("js/data.js", function(data, textStatus, jqxhr) { ////FAKE DATA LINK
         delete speed_history["_next"];
+        // if preparedData is empty, render graph and table with zeros
+        if ($.isEmptyObject(speed_history)) {
+            var zeros = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            speed_history = {
+                'X.X.X.0': {
+                    rx: zeros,
+                    rx_avg: 0,
+                    rx_max: 0,
+                    rx_total: 0,
+                    tx: zeros,
+                    tx_avg: 0,
+                    tx_max: 0,
+                    tx_total: 0 
+                }
+            }
+        }
         preparedData = prepareDataforHighCharts(speed_history, tomato_env.vars['time']);
         callback();
     });
@@ -434,7 +490,7 @@ function prepareDataforHighCharts(sh, time) {
     return data_massaged;
 }
 function formatBandwidthNumber(number) {
-    number = (number+.0001) / 1000000;
+    number = (number+.0001) / 1048576;
     return parseFloat(Math.round(number * 100) / 100).toFixed(1) + " MB";
     //return Math.round(number*10)/10 + " MB";
 }

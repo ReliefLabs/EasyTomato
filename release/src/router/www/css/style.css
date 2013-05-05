@@ -1105,9 +1105,26 @@ padding: 3px 0;
 	padding-left: 35px;
 	padding-right: 10px;
 }
+	#table tbody td.numeric {
+		text-align: right;
+		padding-right: 100px;
+	}
 
+div.scrollableContainer {
+    position: relative;
+}
+div.scrollingArea {
+    height: 240px;
+    overflow: auto;
+}
 
-
+/*
+table.scrollable thead tr {
+    left: -1px;
+    position: absolute;
+    top: 0;
+}
+*/
 /* ==|== media queries ======================================================
    EXAMPLE Media Query for Responsive Design.
    This example overrides the primary ('mobile first') styles
