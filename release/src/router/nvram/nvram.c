@@ -270,6 +270,7 @@ static int defaults_main(int argc, char **argv)
 		force = 1;
 	}
 
+#if 0
 	// EasyTomato: whenever we change major versions, force a clearing of nvram to prevent problems.  We really don't trust our users...
 	if ((p = nvram_get("os_version")) != NULL) {
 	  // Check if the major and minor version matches.  Small "build" revisions shouldn't require clearing nvram
@@ -289,6 +290,8 @@ static int defaults_main(int argc, char **argv)
 	  }
 	}
 
+#endif
+	
 #if 0	// --need to test--
 	// prevent lockout if upgrading from DD-WRT v23 SP2+ w/ encrypted password
 	if (nvram_match("nvram_ver", "2")) {

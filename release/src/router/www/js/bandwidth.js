@@ -227,7 +227,18 @@ function renderGraph(subnet_ip) {
         },
 
         credits: {
-            enabled: true
+            enabled: true,
+            text: 'Two Minute Interval',
+            position: {
+                align: 'right',
+                x: -10,
+                verticalAlign: 'bottom',
+                y: -3
+                },
+            style: {
+                color: '#909090',
+                fontSize: '11px'
+                }
         },
 
         yAxis: [{ // Primary yAxis

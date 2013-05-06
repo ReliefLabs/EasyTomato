@@ -423,7 +423,7 @@ const defaults_t defaults[] = {
 	{ "dhcpd_gwmode",		""				},
 	{ "dhcpd_lmax",			""				},
 	{ "dns_addget",			"0"				},
-	{ "dns_intcpt",			"0"				},
+	{ "dns_intcpt",			"1"				},
 	{ "dhcpc_minpkt",		"1"				},
 	{ "dhcpc_custom",		""				},
 	{ "dns_norebind",		"1"				},

@@ -384,7 +384,7 @@ void ipt_restrictions(void)
 		ip46t_write(":%s - [0:0]\n", strchain);
 		
 		// Add a multiport match so that only ports 53,443 and 80 get sent to strchain
-		ip46t_write("-A %s -p tcp -m multiport --dports 53,80,443 -j %s\n", reschain, strchain);
+		ip46t_write("-A %s -p tcp -m multiport --dports 53,80,443 -j %s\n-A %s -p udp -m multiport --dports 53 -j %s\n", reschain, strchain, reschain, strchain);
 
 		p = http;
 		while (*p) {

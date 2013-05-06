@@ -160,14 +160,12 @@ var render_groups = function() {
             .then(function(){
            		tomato_env.set('easytomato_saved_wan_dns', tomato_env.vars['wan_dns']); //saving old DNS ips to toggle back
            	    tomato_env.set('wan_dns', '208.67.222.123 208.67.220.123'); 
-           	    tomato_env.set('dns_intcpt', '1');
            		$('#apply_trigger').fadeIn();
            	});
         }
         else{
             tomato_env.set('wan_dns', tomato_env.vars['easytomato_saved_wan_dns']);
-            tomato_env.set('dns_intcpt', '0');
-          	$('#apply_trigger').fadeIn();
+            $('#apply_trigger').fadeIn();
         }
         tomato_env.set('_service','*'); //Full restart on apply
         full_restart_required = true;
