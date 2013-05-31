@@ -384,6 +384,5 @@ createFieldTable('', [
         <p>&copy; Tomato 2012</p>
       </footer>
     </div><!--/.fluid-container-->
-<script type='text/javascript'>init();</script>
 </body>
 </html>
