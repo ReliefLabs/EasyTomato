@@ -1,21 +1,6 @@
 $(document).ready (function (){
 
-	var qos_enabled_status = true;
-
-	//Set QoS enabled check box
-	if(qos_enabled_status){
-		$('input[name=enableqos]').attr('checked', true);
-	}
-	else{
-		$('input[name=enableqos]').attr('checked', false);
-		$('input[name=ul_speed]').attr('disabled','disabled');
-		$('input[name=dl_speed]').attr('disabled','disabled');
-		$('#preview_link').attr('style','display:none');
-		$('#check_bandwidth_link').attr('style','display:none');
-	}
-
 	$("a#preview_link").fancybox({type:"iframe"});
-
 
 	$("#save_qos_button").click(function(){
 		var ul_speed= $("#ul_speed").val();
@@ -64,6 +49,56 @@ $(document).ready (function (){
 			setTimeout('$.fancybox.close()', 7000);
 		 });
 	})
+
+	//Set QoS enabled check box
+
+/*
+	$.when(tomato_env.get("qos_enable").then(function(data) {
+		var qos_enabled_status = data.qos_enable;
+		if(qos_enabled_status){
+			$('input[name=enableqos]').attr('checked', true);
+		}
+		else{
+			$('input[name=enableqos]').attr('checked', false);
+			$('input[name=ul_speed]').attr('disabled','disabled');
+			$('input[name=dl_speed]').attr('disabled','disabled');
+			$('#preview_link').attr('style','display:none');
+			$('#check_bandwidth_link').attr('style','display:none');
+		}
+	 }));
+*/
+
+	var qos_enabled_status = true;
+	if(qos_enabled_status){
+		$('input[name=enableqos]').attr('checked', true);
+	}
+	else{
+		$('input[name=enableqos]').attr('checked', false);
+		$('input[name=ul_speed]').attr('disabled','disabled');
+		$('input[name=dl_speed]').attr('disabled','disabled');
+		$('#preview_link').hide();
+		$('#check_bandwidth_link').hide();
+	}
+
+
+	$("input[name=enableqos]").click(function(){
+		if ($(this).attr('checked')) {
+			//$('input[name=enableqos]').attr('checked', true);
+			$('input[name=ul_speed]').attr('disabled',null);
+			$('input[name=dl_speed]').attr('disabled',null);
+			$('#preview_link').show();
+			$('#check_bandwidth_link').show();
+		}
+		else {
+			//$('input[name=enableqos]').attr('checked', false);
+			$('input[name=ul_speed]').attr('disabled',"disabled");
+			$('input[name=dl_speed]').attr('disabled',"disabled");
+			$('#preview_link').hide();
+			$('#check_bandwidth_link').hide();
+		}
+	});
+
+
 })
 
 
