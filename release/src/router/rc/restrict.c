@@ -281,6 +281,10 @@ void ipt_restrictions(void)
 						  wanfaces.iface[n].name);
 				}
 			}
+
+			// Only mess with DNS requests that are coming in on INPUT
+			ip46t_write("-I INPUT 1 -p udp --dport 53 -j restrict\n");
+			
 		}
 
 		sprintf(reschain, "rres%02d", nrule);
@@ -384,7 +388,8 @@ void ipt_restrictions(void)
 		ip46t_write(":%s - [0:0]\n", strchain);
 		
 		// Add a multiport match so that only ports 53,443 and 80 get sent to strchain
-		ip46t_write("-A %s -p tcp -m multiport --dports 53,80,443 -j %s\n-A %s -p udp -m multiport --dports 53 -j %s\n", reschain, strchain, reschain, strchain);
+		ip46t_write("-A %s -p tcp -m multiport --dports 53,80,443 -j %s\n", reschain, strchain);
+		ip46t_write("-A %s -p udp --dport 53 -j %s\n", reschain, strchain);
 
 		p = http;
 		while (*p) {
@@ -416,6 +421,7 @@ void ipt_restrictions(void)
 			while (p2 != NULL)
 			{
 			  ip46t_write("-I %s 1 -p tcp -m string --string \"%s\" --algo bm  --from 1 --to 600 -j %s\n", strchain, p2, chain_out_reject);
+			  ip46t_write("-I %s 1 -p udp -m string --string \"%s\" --algo bm  --from 1 --to 600 -j REJECT\n", strchain, p2);
 			     p2 = strtok(NULL, delim);
 			}
 			
