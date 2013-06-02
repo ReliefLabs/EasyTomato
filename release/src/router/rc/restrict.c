@@ -446,6 +446,7 @@ void ipt_restrictions(void)
 
 		if (*comps) {
 			if (blockall) {
+				ip46t_write("-F %s\n", reschain);	// chain not needed
 				ip46t_write("-X %s\n", reschain);	// chain not needed
 				sprintf(nextchain, "-j %s", chain_out_drop);
 			}
