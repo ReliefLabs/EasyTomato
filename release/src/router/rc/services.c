@@ -86,6 +86,12 @@ void start_dnsmasq()
 	int do_dns;
 	int do_dhcpd_hosts;
 
+#ifdef TCONFIG_IPV6
+	char *prefix, *ipv6, *mtu;
+	int do_6to4, do_6rd;
+	int service;
+#endif
+
 	TRACE_PT("begin\n");
 
 	if (getpid() != 1) {
@@ -211,7 +217,7 @@ void start_dnsmasq()
 							sprintf(buf + strlen(buf), ",%s", inet_ntoa(dns->dns[n].addr));
 						}
 					}
-					fprintf(f, "dhcp-option=%s,6%s\n", nvram_safe_get(lanN_ifname), buf);
+					fprintf(f, "dhcp-option=tag:%s,6%s\n", nvram_safe_get(lanN_ifname), buf);
 				}
 			}
 
@@ -220,7 +226,7 @@ void start_dnsmasq()
 			sprintf(lanN_netmask, "lan%s_netmask", bridge);
 
 			if ((p = nvram_get(dhcpdN_startip)) && (*p) && (e = nvram_get(dhcpdN_endip)) && (*e)) {
-				fprintf(f, "dhcp-range=%s,%s,%s,%s,%dm\n", nvram_safe_get(lanN_ifname), p, e, nvram_safe_get(lanN_netmask), dhcp_lease);
+				fprintf(f, "dhcp-range=tag:%s,%s,%s,%s,%dm\n", nvram_safe_get(lanN_ifname), p, e, nvram_safe_get(lanN_netmask), dhcp_lease);
 			}
 			else {
 				// for compatibility
@@ -229,7 +235,7 @@ void start_dnsmasq()
 				sprintf(lanN_netmask, "lan%s_netmask", bridge);
 				dhcp_start = nvram_get_int(dhcpN_start);
 				dhcp_count = nvram_get_int(dhcpN_num);
-				fprintf(f, "dhcp-range=%s,%s%d,%s%d,%s,%dm\n",
+				fprintf(f, "dhcp-range=tag:%s,%s%d,%s%d,%s,%dm\n",
 					nvram_safe_get(lanN_ifname), lan, dhcp_start, lan, dhcp_start + dhcp_count - 1, nvram_safe_get(lanN_netmask), dhcp_lease);
 			}
 
@@ -240,24 +246,26 @@ void start_dnsmasq()
 			}
 #ifdef TCONFIG_VLAN
 			fprintf(f,
-				"dhcp-option=%s,3,%s\n",	// gateway
+				"dhcp-option=tag:%s,3,%s\n",	// gateway
 				nvram_safe_get(lanN_ifname), nv);
 #endif
 			if (((nv = nvram_get("wan_wins")) != NULL) && (*nv) && (strcmp(nv, "0.0.0.0") != 0)) {
-				fprintf(f, "dhcp-option=%s,44,%s\n", nvram_safe_get(lanN_ifname), nv);
+				fprintf(f, "dhcp-option=tag:%s,44,%s\n", nvram_safe_get(lanN_ifname), nv);
 			}
 #ifdef TCONFIG_SAMBASRV
 			else if (nvram_get_int("smbd_enable") && nvram_invmatch("lan_hostname", "") && nvram_get_int("smbd_wins")) {
 				if ((nv == NULL) || (*nv == 0) || (strcmp(nv, "0.0.0.0") == 0)) {
 					// Samba will serve as a WINS server
-					fprintf(f, "dhcp-option=%s,44,0.0.0.0\n", nvram_safe_get(lanN_ifname));
+					fprintf(f, "dhcp-option=tag:%s,44,%s\n", nvram_safe_get(lanN_ifname), nvram_safe_get(lanN_ipaddr));
 				}
 			}
 #endif
 		} else {
 			if (strcmp(nvram_safe_get(lanN_ifname),"")!=0) {
 				fprintf(f, "interface=%s\n", nvram_safe_get(lanN_ifname));
-				fprintf(f, "no-dhcp-interface=%s\n", nvram_safe_get(lanN_ifname));
+// if no dhcp range is set then no dhcp service will be offered so following
+// line is superflous.
+//				fprintf(f, "no-dhcp-interface=%s\n", nvram_safe_get(lanN_ifname));
 			}
 		}
 	}
@@ -365,6 +373,33 @@ void start_dnsmasq()
 
 #ifdef TCONFIG_PPTPD
 	write_pptpd_dnsmasq_config(f);
+#endif
+
+#ifdef TCONFIG_IPV6
+	if (ipv6_enabled() && nvram_get_int("ipv6_radvd")) {
+                service = get_ipv6_service();
+                do_6to4 = (service == IPV6_ANYCAST_6TO4);
+                do_6rd = (service == IPV6_6RD || service == IPV6_6RD_DHCP);
+                mtu = NULL;
+
+                switch (service) {
+                case IPV6_NATIVE_DHCP:
+                case IPV6_ANYCAST_6TO4:
+                case IPV6_6IN4:
+                case IPV6_6RD:
+                case IPV6_6RD_DHCP:
+                        mtu = (nvram_get_int("ipv6_tun_mtu") > 0) ? nvram_safe_get("ipv6_tun_mtu") : "1480";
+                        // fall through
+                default:
+                        prefix = do_6to4 ? "0:0:0:1::" : nvram_safe_get("ipv6_prefix");
+                        break;
+                }
+                if (!(*prefix)) prefix = "::";
+//                ipv6 = (char *)ipv6_router_address(NULL);
+
+		fprintf(f, "enable-ra\ndhcp-range=tag:br0,%s, slaac, ra-names, 64\n", prefix);
+
+	}
 #endif
 
 	fprintf(f, "%s\n\n", nvram_safe_get("dnsmasq_custom"));
@@ -562,9 +597,9 @@ void start_ipv6_tunnel(void)
 	eval("ip", "addr", "add", ip, "dev", (char *)tun_dev);
 	eval("ip", "route", "add", "::/0", "dev", (char *)tun_dev);
 
-	// (re)start radvd
+	// (re)start radvd - now dnsmasq provided
 	if (service == IPV6_ANYCAST_6TO4)
-		start_radvd();
+		start_dnsmasq();
 }
 
 void stop_ipv6_tunnel(void)
@@ -577,13 +612,133 @@ void stop_ipv6_tunnel(void)
 	modprobe_r("sit");
 }
 
+void start_6rd_tunnel(void)
+{
+	const char *tun_dev, *wanip;
+	int service, mask_len, prefix_len, local_prefix_len;
+	char mtu[10], prefix[INET6_ADDRSTRLEN], relay[INET_ADDRSTRLEN];
+	struct in_addr netmask_addr, relay_addr, relay_prefix_addr, wanip_addr;
+	struct in6_addr prefix_addr, local_prefix_addr;
+	char local_prefix[INET6_ADDRSTRLEN];
+	char tmp_ipv6[INET6_ADDRSTRLEN + 4], tmp_ipv4[INET_ADDRSTRLEN + 4];
+	char tmp[256];
+	FILE *f;
+
+	service = get_ipv6_service();
+	wanip = get_wanip();
+	tun_dev = get_wan6face();
+	sprintf(mtu, "%d", (nvram_get_int("wan_mtu") > 0) ? (nvram_get_int("wan_mtu") - 20) : 1280);
+
+	// maybe we can merge the ipv6_6rd_* variables into a single ipv_6rd_string (ala wan_6rd)
+	// to save nvram space?
+	if (service == IPV6_6RD) {
+		_dprintf("starting 6rd tunnel using manual settings.\n");
+		mask_len = nvram_get_int("ipv6_6rd_ipv4masklen");
+		prefix_len = nvram_get_int("ipv6_6rd_prefix_length");
+		strcpy(prefix, nvram_safe_get("ipv6_6rd_prefix"));
+		strcpy(relay, nvram_safe_get("ipv6_6rd_borderrelay"));
+	}
+	else {
+		_dprintf("starting 6rd tunnel using automatic settings.\n");
+		char *wan_6rd = nvram_safe_get("wan_6rd");
+		if (sscanf(wan_6rd, "%d %d %s %s", &mask_len,  &prefix_len, prefix, relay) < 4) {
+			_dprintf("wan_6rd string is missing or invalid (%s)\n", wan_6rd);
+			return;
+		}
+	}
+
+	// validate values that were passed
+	if (mask_len < 0 || mask_len > 32) {
+		_dprintf("invalid mask_len value (%d)\n", mask_len);
+		return;
+	}
+	if (prefix_len < 0 || prefix_len > 128) {
+		_dprintf("invalid prefix_len value (%d)\n", prefix_len);
+		return;
+	}
+	if ((32 - mask_len) + prefix_len > 128) {
+		_dprintf("invalid combination of mask_len and prefix_len!\n");
+		return;
+	}
+
+	sprintf(tmp, "ping -q -c 2 %s | grep packet", relay);
+	if ((f = popen(tmp, "r")) == NULL) {
+		_dprintf("error obtaining data\n");
+		return;
+	}
+	fgets(tmp, sizeof(tmp), f);
+	pclose(f);
+	if (strstr(tmp, " 0% packet loss") == NULL) {
+		_dprintf("failed to ping border relay\n");
+		return;
+	}
+
+	// get relay prefix from border relay address and mask
+	netmask_addr.s_addr = htonl(0xffffffff << (32 - mask_len));
+	inet_aton(relay, &relay_addr);
+	relay_prefix_addr.s_addr = relay_addr.s_addr & netmask_addr.s_addr;
+
+	// calculate the local prefix
+	inet_pton(AF_INET6, prefix, &prefix_addr);
+	inet_pton(AF_INET, wanip, &wanip_addr);
+	if (calc_6rd_local_prefix(&prefix_addr, prefix_len, mask_len,
+	    &wanip_addr, &local_prefix_addr, &local_prefix_len) == 0) {
+		_dprintf("error calculating local prefix.");
+		return;
+	}
+	inet_ntop(AF_INET6, &local_prefix_addr, local_prefix, sizeof(local_prefix));
+
+	snprintf(tmp_ipv6, sizeof(tmp_ipv6), "%s1", local_prefix);
+	nvram_set("ipv6_rtr_addr", tmp_ipv6);
+	nvram_set("ipv6_prefix", local_prefix);
+
+	// load sit module needed for the 6rd tunnel
+	modprobe("sit");
+
+	// creating the 6rd tunnel
+	eval("ip", "tunnel", "add", (char *)tun_dev, "mode", "sit", "local", (char *)wanip, "ttl", nvram_safe_get("ipv6_tun_ttl"));
+
+	snprintf(tmp_ipv6, sizeof(tmp_ipv6), "%s/%d", prefix, prefix_len);
+	snprintf(tmp_ipv4, sizeof(tmp_ipv4), "%s/%d", inet_ntoa(relay_prefix_addr), mask_len);
+	eval("ip", "tunnel" "6rd", "dev", (char *)tun_dev, "6rd-prefix", tmp_ipv6, "6rd-relay_prefix", tmp_ipv4);
+
+	// bringing up the link
+	eval("ip", "link", "set", "dev", (char *)tun_dev, "mtu", (char *)mtu, "up");
+
+	// setting the WAN address Note: IPv6 WAN CIDR should be: ((32 - ip6rd_ipv4masklen) + ip6rd_prefixlen)
+	snprintf(tmp_ipv6, sizeof(tmp_ipv6), "%s1/%d", local_prefix, local_prefix_len);
+	eval("ip", "-6", "addr", "add", tmp_ipv6, "dev", (char *)tun_dev);
+
+	// setting the LAN address Note: IPv6 LAN CIDR should be 64
+	snprintf(tmp_ipv6, sizeof(tmp_ipv6), "%s1/%d", local_prefix, nvram_get_int("ipv6_prefix_length") ? : 64);
+	eval("ip", "-6", "addr", "add", tmp_ipv6, "dev", nvram_safe_get("lan_ifname"));
+
+	// adding default route via the border relay
+	snprintf(tmp_ipv6, sizeof(tmp_ipv6), "::%s", relay);
+	eval("ip", "-6", "route", "add", "default", "via", tmp_ipv6, "dev", (char *)tun_dev);
+
+	nvram_set("ipv6_ifname", (char *)tun_dev);
+
+	// (re)start radvd
+	start_radvd();
+
+	printf("6rd end\n");
+}
+
+void stop_6rd_tunnel(void)
+{
+	eval("ip", "tunnel", "del", (char *)get_wan6face());
+	eval("ip", "-6", "addr", "flush", "dev", nvram_safe_get("lan_ifname"), "scope", "global");
+	modprobe_r("sit");
+}
+
 static pid_t pid_radvd = -1;
 
 void start_radvd(void)
 {
 	FILE *f;
 	char *prefix, *ip, *mtu;
-	int do_dns, do_6to4;
+	int do_dns, do_6to4, do_6rd;
 	char *argv[] = { "radvd", NULL, NULL, NULL };
 	int pid, argc, service, cnt;
 
@@ -597,6 +752,7 @@ void start_radvd(void)
 	if (ipv6_enabled() && nvram_get_int("ipv6_radvd")) {
 		service = get_ipv6_service();
 		do_6to4 = (service == IPV6_ANYCAST_6TO4);
+		do_6rd = (service == IPV6_6RD || service == IPV6_6RD_DHCP);
 		mtu = NULL;
 
 		switch (service) {
@@ -605,6 +761,8 @@ void start_radvd(void)
 			break;
 		case IPV6_ANYCAST_6TO4:
 		case IPV6_6IN4:
+		case IPV6_6RD:
+		case IPV6_6RD_DHCP:
 			mtu = (nvram_get_int("ipv6_tun_mtu") > 0) ? nvram_safe_get("ipv6_tun_mtu") : "1480";
 			// fall through
 		default:
@@ -638,7 +796,7 @@ void start_radvd(void)
 			nvram_safe_get("lan_ifname"),
 			mtu ? " AdvLinkMTU " : "", mtu ? : "", mtu ? ";\n" : "",
 			prefix,
-			do_6to4 ? "  AdvValidLifetime 300;\n  AdvPreferredLifetime 120;\n" : "",
+			(do_6to4 || do_6rd)  ? "  AdvValidLifetime 300;\n  AdvPreferredLifetime 120;\n" : "",
 		        do_6to4 ? "  Base6to4Interface " : "",
 		        do_6to4 ? get_wanface() : "",
 		        do_6to4 ? ";\n" : "");
@@ -813,6 +971,7 @@ void start_upnp(void)
 					char *lanip = nvram_safe_get(lanN_ipaddr);
 					char *lanmask = nvram_safe_get(lanN_netmask);
 					char *lanlisten = nvram_safe_get(upnp_lanN);
+
 					if((strcmp(lanlisten,"1")==0) && (strcmp(lanip,"")!=0) && (strcmp(lanip,"0.0.0.0")!=0)) {
 #else
 					char *lanip = nvram_safe_get("lan_ipaddr");
@@ -844,7 +1003,9 @@ void start_upnp(void)
 
 				fappend(f, "/jffs/upnpconfig.custom");
 				fappend(f, "/etc/upnp/config.custom");
+				fprintf(f, "%s\n", nvram_safe_get("upnp_custom"));
 				fprintf(f, "\ndeny 0-65535 0.0.0.0/0 0-65535\n");
+				
 				fclose(f);
 				
 				xstart("miniupnpd", "-f", "/etc/upnp/config");
@@ -1571,10 +1732,10 @@ static void start_ftpd(void)
 		/*
 		username<password<rights[<root_dir]
 		rights:
-			Read/Write
-			Read Only
-			View Only
-			Private
+			Read/Write - Odczyt/Zapis
+			Read Only - Odczyt
+			View Only - Widok
+			Private - Prywatne
 		*/
 		p = buf;
 		while ((q = strsep(&p, ">")) != NULL) {
@@ -1586,7 +1747,7 @@ static void start_ftpd(void)
 				root_dir = nvram_safe_get("ftp_pubroot");
 
 			/* directory */
-			if (strncmp(rights, "Private", 7) == 0)
+			if (strncmp(rights, "Prywatne", 7) == 0)
 			{
 				sprintf(tmp, "%s/%s", nvram_storage_path("ftp_pvtroot"), user);
 				mkdir_if_none(tmp);
@@ -1604,9 +1765,9 @@ static void start_ftpd(void)
 				tmp[0] = 0;
 				if (nvram_invmatch("ftp_dirlist", "1"))
 					strcat(tmp, "dirlist_enable=yes\n");
-				if (strstr(rights, "Read") || !strcmp(rights, "Private"))
+				if (strstr(rights, "Odczyt") || !strcmp(rights, "Prywatne"))
 					strcat(tmp, "download_enable=yes\n");
-				if (strstr(rights, "Write") || !strncmp(rights, "Private", 7))
+				if (strstr(rights, "Zapis") || !strncmp(rights, "Prywatne", 7))
 					strcat(tmp, "write_enable=yes\n");
 					
 				fputs(tmp, f);
@@ -2053,9 +2214,6 @@ void check_services(void)
 	_check(pid_dnsmasq, "dnsmasq", start_dnsmasq);
 	_check(pid_crond, "crond", start_cron);
 	_check(pid_igmp, "igmpproxy", start_igmp_proxy);
-#ifdef TCONFIG_IPV6
-	_check(pid_radvd, "radvd", start_radvd);
-#endif
 
 //	#ifdef TCONFIG_NOCAT
 //	if (nvram_get_int("NC_enable"))
@@ -2091,14 +2249,6 @@ void start_services(void)
 #ifdef TCONFIG_PPTPD
 	start_pptpd();
 #endif
-#ifdef TCONFIG_IPV6
-	/* note: starting radvd here might be too early in case of
-	 * DHCPv6 or 6to4 because we won't have received a prefix and
-	 * so it will disable advertisements. To restart them, we have
-	 * to send radvd a SIGHUP, or restart it.
-	 */
-	start_radvd();
-#endif
 	restart_nas_services(1, 1);	// !!TB - Samba, FTP and Media Server
 
 #ifdef TCONFIG_SNMP
@@ -2125,9 +2275,14 @@ void stop_services(void)
 	stop_snmp();
 #endif
 
-#ifdef TCONFIG_IPV6
-	stop_radvd();
+#ifdef TCONFIG_TOR
+	stop_tor();
 #endif
+
+#ifdef TCONFIG_NFS
+	stop_nfs();
+#endif
+	restart_nas_services(1, 0);	// stop Samba, FTP and Media Server
 #ifdef TCONFIG_PPTPD
 	stop_pptpd();
 #endif
@@ -2299,26 +2454,16 @@ TOP:
 #ifdef TCONFIG_IPV6
 	if (strcmp(service, "ipv6") == 0) {
 		if (action & A_STOP) {
-			stop_radvd();
+			stop_dnsmasq();
 			stop_ipv6();
 		}
 		if (action & A_START) {
 			start_ipv6();
-			start_radvd();
+			start_dnsmasq();
 		}
 		goto CLEAR;
 	}
 	
-	if (strcmp(service, "radvd") == 0) {
-		if (action & A_STOP) {
-			stop_radvd();
-		}
-		if (action & A_START) {
-			start_radvd();
-		}
-		goto CLEAR;
-	}
-
 	if (strncmp(service, "dhcp6", 5) == 0) {
 		if (action & A_STOP) {
 			stop_dhcp6c();
@@ -2501,9 +2646,6 @@ TOP:
 #ifdef TCONFIG_USB
 			stop_nas_services();
 #endif
-#ifdef TCONFIG_IPV6
-			stop_radvd();
-#endif
 			stop_httpd();
 			stop_dnsmasq();
 			stop_nas();
@@ -2520,9 +2662,6 @@ TOP:
 			start_nas();
 			start_dnsmasq();
 			start_httpd();
-#ifdef TCONFIG_IPV6
-			start_radvd();
-#endif
 			start_wl();
 #ifdef TCONFIG_USB
 			start_nas_services();

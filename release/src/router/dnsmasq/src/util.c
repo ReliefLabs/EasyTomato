@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2012 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2013 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -142,19 +142,23 @@ static int check_name(char *in)
 int legal_hostname(char *name)
 {
   char c;
+  int first;
 
   if (!check_name(name))
     return 0;
 
-  for (; (c = *name); name++)
+  for (first = 1; (c = *name); name++, first = 0)
     /* check for legal char a-z A-Z 0-9 - _ . */
     {
       if ((c >= 'A' && c <= 'Z') ||
-	  (c >= 'a' && c <= 'z') ||
-	  (c >= '0' && c <= '9') ||
-	  c == '-' || c == '_')
+	  (c >= 'a' && c <= 'z'))
 	continue;
-      
+
+      if (!first && 
+	  ((c >= '0' && c <= '9') ||
+	   c == '-' || c == '_'))
+	continue;
+
       /* end of hostname part */
       if (c == '.')
 	return 1;
@@ -280,7 +284,7 @@ int sa_len(union mysockaddr *addr)
 }
 
 /* don't use strcasecmp and friends here - they may be messed up by LOCALE */
-int hostname_isequal(char *a, char *b)
+int hostname_isequal(const char *a, const char *b)
 {
   unsigned int c1, c2;
   
@@ -330,7 +334,7 @@ int is_same_net6(struct in6_addr *a, struct in6_addr *b, int prefixlen)
     return 0;
 
   if (pfbits == 0 ||
-      (a->s6_addr[pfbytes] >> (8 - pfbits) != b->s6_addr[pfbytes] >> (8 - pfbits)))
+      (a->s6_addr[pfbytes] >> (8 - pfbits) == b->s6_addr[pfbytes] >> (8 - pfbits)))
     return 1;
 
   return 0;
@@ -426,7 +430,7 @@ int parse_hex(char *in, unsigned char *out, int maxlen,
   
   while (maxlen == -1 || i < maxlen)
     {
-      for (r = in; *r != 0 && *r != ':' && *r != '-'; r++)
+      for (r = in; *r != 0 && *r != ':' && *r != '-' && *r != ' '; r++)
 	if (*r != '*' && !isxdigit((unsigned char)*r))
 	  return -1;
       
@@ -444,12 +448,29 @@ int parse_hex(char *in, unsigned char *out, int maxlen,
 	  else
 	    {
 	      *r = 0;
-	      mask = mask << 1;
 	      if (strcmp(in, "*") == 0)
-		mask |= 1;
+		{
+		  mask = (mask << 1) | 1;
+		  i++;
+		}
 	      else
-		out[i] = strtol(in, NULL, 16);
-	      i++;
+		{
+		  int j, bytes = (1 + (r - in))/2;
+		  for (j = 0; j < bytes; j++)
+		    { 
+		      char sav;
+		      if (j < bytes - 1)
+			{
+			  sav = in[(j+1)*2];
+			  in[(j+1)*2] = 0;
+			}
+		      out[i] = strtol(&in[j*2], NULL, 16);
+		      mask = mask << 1;
+		      i++;
+		      if (j < bytes - 1)
+			in[(j+1)*2] = sav;
+		    }
+		}
 	    }
 	}
       in = r+1;
@@ -564,3 +585,20 @@ int read_write(int fd, unsigned char *packet, int size, int rw)
   return 1;
 }
 
+/* Basically match a string value against a wildcard pattern.  */
+int wildcard_match(const char* wildcard, const char* match)
+{
+  while (*wildcard && *match)
+    {
+      if (*wildcard == '*')
+        return 1;
+
+      if (*wildcard != *match)
+        return 0; 
+
+      ++wildcard;
+      ++match;
+    }
+
+  return *wildcard == *match;
+}

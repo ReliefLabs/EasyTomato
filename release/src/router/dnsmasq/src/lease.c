@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2012 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2013 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ void lease_init(time_t now)
 		s++;
 	      }
 	    
-	    hw_type = atoi(s);
+	    hw_type = strtoul(s, NULL, 10);
 	    
 	    if ((lease = lease6_allocate(&addr.addr.addr6, lease_type)))
 	      {
@@ -132,15 +132,18 @@ void lease_init(time_t now)
 	if (!lease)
 	  die (_("too many stored leases"), NULL, EC_MISC);
        	
-#ifdef HAVE_BROKEN_RTC
+//Some ASUS & TOMATO tweaks
+#if defined(HAVE_BROKEN_RTC) || defined(HAVE_LEASEFILE_EXPIRE)
 	if (ei != 0)
 	  lease->expires = (time_t)ei + now;
 	else
 	  lease->expires = (time_t)0;
+#ifdef HAVE_BROKEN_RT
 	lease->length = ei;
+#endif
 #else
-	/* strictly time_t is opaque, but this hack should work on all sane systems,
-	   even when sizeof(time_t) == 8 */
+	/* strictly time_t is opaque, but this hack should work on all sane
+           systems, even when sizeof(time_t) == 8 */
 	lease->expires = (time_t)ei;
 #endif
 	
@@ -227,14 +230,19 @@ void lease_update_file(time_t now)
 	    continue;
 #endif
 
-#if 1	// zzz
-	  ourprintf(&err, "%lu ", (unsigned long)lease->expires - now);
-#else
+//ASUS and TOMATO tweaks to output remaining leasetime
+#ifdef HAVE_LEASEFILE_EXPIRE
+	ourprintf(&err, "%u ",
 #ifdef HAVE_BROKEN_RTC
-	  ourprintf(&err, "%u ", lease->length);
+		(lease->length == 0) ? 0 :
 #else
-	  ourprintf(&err, "%lu ", (unsigned long)lease->expires);
+		(lease->expires == 0) ? 0 :
 #endif
+		(unsigned int)difftime(lease->expires, now));
+#elif defined(HAVE_BROKEN_RTC)
+	ourprintf(&err, "%u ", lease->length);
+else
+	ourprintf(&err, "%lu ", (unsigned long)lease->expires);
 #endif
 
 	  if (lease->hwaddr_type != ARPHRD_ETHER || lease->hwaddr_len == 0) 
@@ -275,12 +283,21 @@ void lease_update_file(time_t now)
 	      if (!(lease->flags & (LEASE_TA | LEASE_NA)))
 		continue;
 
+//ASUS and TOMATO tweaks to output remaining leasetime
+#ifdef HAVE_LEASEFILE_EXPIRE
+		ourprintf(&err, "%u ",
 #ifdef HAVE_BROKEN_RTC
-	      ourprintf(&err, "%u ", lease->length);
+			(lease->length == 0) ? 0 :
 #else
-	      ourprintf(&err, "%lu ", (unsigned long)lease->expires);
+			(lease->expires == 0) ? 0 :
 #endif
-    
+			(unsigned int)difftime(lease->expires, now));
+#elif defined(HAVE_BROKEN_RTC)
+		ourprintf(&err, "%u ", lease->length);
+else
+		ourprintf(&err, "%lu ", (unsigned long)lease->expires);
+#endif
+
 	      inet_ntop(AF_INET6, lease->hwaddr, daemon->addrbuff, ADDRSTRLEN);
 	 
 	      ourprintf(&err, "%s%u %s ", (lease->flags & LEASE_TA) ? "T" : "",
@@ -312,14 +329,21 @@ void lease_update_file(time_t now)
 
 #ifdef HAVE_DHCP6
   /* do timed RAs and determine when the next is, also pings to potential SLAAC addresses */
-  if (daemon->ra_contexts)
+  if (daemon->doing_ra)
     {
-      time_t ra_event = periodic_slaac(now, leases);
+      time_t event;
       
-      next_event = periodic_ra(now);
+      if ((event = periodic_slaac(now, leases)) != 0)
+	{
+	  if (next_event == 0 || difftime(next_event, event) > 0.0)
+	    next_event = event;
+	}
       
-      if (next_event == 0 || difftime(next_event, ra_event) > 0.0)
-	next_event = ra_event;
+      if ((event = periodic_ra(now)) != 0)
+	{
+	  if (next_event == 0 || difftime(next_event, event) > 0.0)
+	    next_event = event;
+	}
     }
 #endif
 
@@ -360,12 +384,15 @@ static int find_interface_v4(struct in_addr local, int if_index,
 
 #ifdef HAVE_DHCP6
 static int find_interface_v6(struct in6_addr *local,  int prefix,
-			     int scope, int if_index, int dad, void *vparam)
+			     int scope, int if_index, int flags, 
+			     int preferred, int valid, void *vparam)
 {
   struct dhcp_lease *lease;
   
   (void)scope;
-  (void)dad;
+  (void)flags;
+  (void)preferred;
+  (void)valid;
 
   for (lease = leases; lease; lease = lease->next)
     if ((lease->flags & (LEASE_TA | LEASE_NA)))
@@ -383,6 +410,18 @@ void lease_ping_reply(struct in6_addr *sender, unsigned char *packet, char *inte
     slaac_ping_reply(sender, packet, interface, leases);
 }
 
+void lease_update_slaac(time_t now)
+{
+  /* Called when we contruct a new RA-names context, to add putative
+     new SLAAC addresses to existing leases. */
+
+  struct dhcp_lease *lease;
+  
+  if (daemon->dhcp)
+    for (lease = leases; lease; lease = lease->next)
+      slaac_add_addrs(lease, now, 0);
+}
+
 #endif
 
 
@@ -392,10 +431,6 @@ void lease_ping_reply(struct in6_addr *sender, unsigned char *packet, char *inte
    start-time. */
 void lease_find_interfaces(time_t now)
 {
-#ifdef HAVE_DHCP6
-  build_subnet_map();
-#endif
-
   iface_enumerate(AF_INET, &now, find_interface_v4);
 #ifdef HAVE_DHCP6
   iface_enumerate(AF_INET6, &now, find_interface_v6);
@@ -417,6 +452,11 @@ void lease_update_dns(int force)
 
   if (daemon->port != 0 && (dns_dirty || force))
     {
+#ifndef HAVE_BROKEN_RTC
+      /* force transfer to authoritative secondaries */
+      daemon->soa_sn++;
+#endif
+      
       cache_unhash_dhcp();
 
       for (lease = leases; lease; lease = lease->next)
@@ -536,8 +576,7 @@ struct dhcp_lease *lease_find_by_addr(struct in_addr addr)
 }
 
 #ifdef HAVE_DHCP6
-/* addr or clid may be NULL for "don't care, both NULL resets "USED" flags both
-   set activates USED check */
+/* find address for {CLID, IAID, address} */
 struct dhcp_lease *lease6_find(unsigned char *clid, int clid_len, 
 			       int lease_type, int iaid, struct in6_addr *addr)
 {
@@ -548,24 +587,51 @@ struct dhcp_lease *lease6_find(unsigned char *clid, int clid_len,
       if (!(lease->flags & lease_type) || lease->hwaddr_type != iaid)
 	continue;
 
-      if (clid && addr && (lease->flags & LEASE_USED))
+      if (memcmp(lease->hwaddr, addr, IN6ADDRSZ) != 0)
 	continue;
       
-      if (addr && memcmp(lease->hwaddr, addr, IN6ADDRSZ) != 0)
-	continue;
-      
-      if (clid &&
-	  (clid_len != lease->clid_len ||
+      if ((clid_len != lease->clid_len ||
 	   memcmp(clid, lease->clid, clid_len) != 0))
 	continue;
       
-      if (clid || addr)
-	{
-	  lease->flags |= LEASE_USED;
-	  return lease;
-	}
-      else 
-	lease->flags &= ~LEASE_USED;
+      return lease;
+    }
+  
+  return NULL;
+}
+
+/* reset "USED flags */
+void lease6_reset(void)
+{
+  struct dhcp_lease *lease;
+  
+  for (lease = leases; lease; lease = lease->next)
+    lease->flags &= ~LEASE_USED;
+}
+
+/* enumerate all leases belonging to {CLID, IAID} */
+struct dhcp_lease *lease6_find_by_client(struct dhcp_lease *first, int lease_type, unsigned char *clid, int clid_len, int iaid)
+{
+  struct dhcp_lease *lease;
+
+  if (!first)
+    first = leases;
+  else
+    first = first->next;
+
+  for (lease = first; lease; lease = lease->next)
+    {
+      if (lease->flags & LEASE_USED)
+	continue;
+
+      if (!(lease->flags & lease_type) || lease->hwaddr_type != iaid)
+	continue;
+ 
+      if ((clid_len != lease->clid_len ||
+	   memcmp(clid, lease->clid, clid_len) != 0))
+	continue;
+
+      return lease;
     }
   
   return NULL;
@@ -658,8 +724,11 @@ static struct dhcp_lease *lease_allocate(void)
 struct dhcp_lease *lease4_allocate(struct in_addr addr)
 {
   struct dhcp_lease *lease = lease_allocate();
-  lease->addr = addr;
-  lease->hwaddr_len = 256; /* illegal value */
+  if (lease)
+    {
+      lease->addr = addr;
+      lease->hwaddr_len = 256; /* illegal value */
+    }
 
   return lease;
 }
@@ -668,8 +737,12 @@ struct dhcp_lease *lease4_allocate(struct in_addr addr)
 struct dhcp_lease *lease6_allocate(struct in6_addr *addrp, int lease_type)
 {
   struct dhcp_lease *lease = lease_allocate();
-  memcpy(lease->hwaddr, addrp, sizeof(*addrp)) ;
-  lease->flags |= lease_type;
+
+  if (lease)
+    {
+      memcpy(lease->hwaddr, addrp, sizeof(*addrp)) ;
+      lease->flags |= lease_type;
+    }
 
   return lease;
 }
@@ -1037,6 +1110,8 @@ void lease_add_extradata(struct dhcp_lease *lease, unsigned char *data, unsigned
 }
 #endif
 
+#ifdef HAVE_TOMATO
+
 void tomato_helper(time_t now)
 {
 	FILE *f;
@@ -1073,12 +1148,23 @@ void tomato_helper(time_t now)
 		rename("/var/tmp/dhcp/leases.!", "/var/tmp/dhcp/leases");
 	}
 }
+#endif //HAVE_TOMATO
 
+#ifdef HAVE_LEASEFILE_EXPIRE
 void flush_lease_file(time_t now)
 {
-	file_dirty = 1;
+	static time_t flush_time = (time_t)0;
+
+	if(difftime(flush_time, now) < 0)
+		file_dirty = 1;
+
+	lease_prune(NULL, now);
 	lease_update_file(now);
+
+	if (file_dirty == 0)
+		flush_time = now;
 }
+#endif //HAVE_LEASEFILE_EXPIRE
 
 #endif
 
