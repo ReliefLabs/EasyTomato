@@ -29,8 +29,8 @@
 <% include(header.html); %>
 
 <div style='margin:30px 30px;font-size:14px;color:#555;'>
-<b>EasyTomato Firmware Version 0.8 RC 1</b><br>
-<b>Based on Toastman's 1.28.7501.2 Tomato Relase</b><br>
+<b>EasyTomato Firmware Version 0.8</b><br>
+<b>Proudly Based on Toastman's 1.28.0502.7 Tomato Release</b><br>
 <br>
 Based on TomatoUSB by Fedor Kozhevnikov<br>
 - Linux kernel <% version(2); %> and Broadcom Wireless Driver <% version(3); %> updates<br>
