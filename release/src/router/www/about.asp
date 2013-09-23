@@ -60,7 +60,7 @@ Copyright (C) 2010 Keith Moyer<br>
 - USB Support, Samba, FTP, Media Servers<br>
 - Web Monitor, Per-connection transfer rates<br>
 - Additional ipv6 support in GUI, QOS, Conntrack<br>
-<a href='http://www.tomatousb.org/' target='_new'>http://www.tomatousb.org</a><br>
+<a href='http://www.linksysinfo.org/index.php?forums/tomato-firmware.33//' target='_new'>http://www.linksysinfo.org/index.php?forums/tomato-firmware.33/</a><br>
 <br>
 <b>"Victek RAF" features:</b><br>
 - CPU Freq | Previous WAN IP<br>
@@ -102,6 +102,7 @@ Copyright (C) 2010-2011 Jean-Yves Avenard<br>
 <!-- JYAVENARD-END -->
 <b>"Teaman" Features:</b><br>
 - QOS-detailed & ctrate improved filters<br>
+- Real-time bandwidth monitoring of LAN clients<br>
 - Per-IP bandwidth monitoring of LAN clients [cstats v2]<br>
 - IPTraffic conn/BW ratios graphs<br>
 - Static ARP binding<br>
@@ -114,8 +115,6 @@ Copyright (C) 2010-2011 Jean-Yves Avenard<br>
 <!-- PPTPD-BEGIN -->
 - PPTP VPN Server integration and GUI</a><br>
 <!-- PPTPD-END -->
-- Real-time bandwidth monitoring of LAN clients<br>
-- Static ARP binding<br>
 Copyright (C) 2011-2012 Augusto Bott<br>
 <a href='http://code.google.com/p/tomato-sdhc-vlan/' target='_new'>http://code.google.com/p/tomato-sdhc-vlan/</a><br>
 <br>
@@ -127,12 +126,13 @@ Copyright (C) 2012 Tiomo<br>
 <b>"Toastman" Features:</b><br>
 - 250 entry limit in Static DHCP  & Wireless Filter<br>
 - 500 entry limit in Access Restriction rules<br>
-- Up to 80 QOS rules<br>
+- Up to 80 QOS rules (all dependent on nvram <br>
 - IMQ based QOS/Bandwidth Limiter<br>
 - Configurable QOS class names<br>
 - Comprehensive QOS rule examples set by default<br>
 - TC-ATM overhead calculation - patch by tvlz<br>
 - GPT support for HDD by Yaniv Hamo<br>
+- Continuing IPv6 development by Kevin Darbyshire-Bryant<br>
 Copyright (C) 2010-2012 Toastman<br>
 <a href='http://www.toastmanfirmware.yolasite.com'>http://www.toastmanfirmware.yolasite.com</a><br>
 <br>

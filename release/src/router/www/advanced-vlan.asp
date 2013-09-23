@@ -38,7 +38,9 @@
 #vlan-grid .co14 {
   text-align: center;
 }
-
+#vlan-grid .co2 {
+	width: 60px;
+}
 #vlan-grid .centered {
   text-align: center;
 }
@@ -69,7 +71,6 @@ switch(nvram['boardtype']) {
   case '0x04ef':  // WRT320N/E2000
   case '0x04cf':  // WRT610Nv2/E3000, RT-N16
   case '0xf52c':  // E4200v1
-  case '0xf582':  // RT-N66
     trunk_vlan_supported = 1;
     break;
   default:
@@ -140,7 +141,7 @@ switch(nvram['boardtype']) {
     COL_P1N = '3';
     COL_P2N = '2';
     COL_P3N = '1';
-    COL_P4N = '0';
+    COL_P4N = '8';
     break;
    }
    if (nvram['boardrev'] == '0x1204') { //rt-n15u
@@ -366,8 +367,8 @@ if(port_vlan_supported) { // aka if(supported_hardware) block
   var vlg = new TomatoGrid();
   vlg.setup = function() {
     this.init('vlan-grid', '', (MAX_VLAN_ID + 1), [
-    { type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3'],[4, '4'],[5, '5'],[6, '6'],[7, '7'],[8, '8'],[9, '9'],[10, '10'],[11, '11'],[12, '12'],[13, '13'],[14, '14'],[15, '15']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-mini' },
-    { type: 'text', maxlen: 4, prefix: '<div class="centered">', suffix: '</div>',class: 'input-mini' },
+    { type: 'select', options: [[0, '0'],[1, '1'],[2, '2'],[3, '3'],[4, '4'],[5, '5'],[6, '6'],[7, '7'],[8, '8'],[9, '9'],[10, '10'],[11, '11'],[12, '12'],[13, '13'],[14, '14'],[15, '15']], prefix: '<div class="centered">', suffix: '</div>' },
+    { type: 'text', maxlen: 4, prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
@@ -379,7 +380,7 @@ if(port_vlan_supported) { // aka if(supported_hardware) block
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
     { type: 'checkbox', prefix: '<div class="centered">', suffix: '</div>' },
-    { type: 'select', options: [[1, 'none'],[2, 'WAN'],[3, 'LAN (br0)'],[4, 'LAN1 (br1)'],[5, 'LAN2 (br2)'],[6, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>', class: 'input-small' }]);
+    { type: 'select', options: [[1, 'none'],[2, 'WAN'],[3, 'LAN (br0)'],[4, 'LAN1 (br1)'],[5, 'LAN2 (br2)'],[6, 'LAN3 (br3)']], prefix: '<div class="centered">', suffix: '</div>' }]);
 
     this.headerSet(['VLAN', 'VID', 'Port 1', 'Tagged', 'Port 2', 'Tagged', 'Port 3', 'Tagged', 'Port 4', 'Tagged', 'WAN Port', 'Tagged', 'Default', 'Bridge']);
 
@@ -818,12 +819,15 @@ function earlyInit() {
 </script>
 </head>
 <body onload='init()'>
-    
-<% include(header.html); %>
-
-<!-- / / / -->
-
 <form id='_fom' method='post' action='tomato.cgi'>
+<table id='container' cellspacing=0>
+<tr><td colspan=2 id='header'>
+  <div class='title'>Tomato</div>
+  <div class='version'>Version <% version(); %></div>
+</td></tr>
+<tr id='body'><td id='navi'><script type='text/javascript'>navi()</script></td>
+<td id='content'>
+<div id='ident'><% ident(); %></div>
 <input type='hidden' name='_nextpage' value='advanced-vlan.asp'>
 <input type='hidden' name='_nextwait' value='30'>
 <input type='hidden' name='_reboot' value='1'>
@@ -886,14 +890,14 @@ function earlyInit() {
 <input type='hidden' name='vlan15vid'>
 
 <div id='sesdiv' style='display:none'>
-<h3>VLAN</h3>
+<div class='section-title'>VLAN</div>
 <div class='section'>
-  <table class='table table-striped table-condensed table-bordered' id='vlan-grid'></table>
+  <table class='tomato-grid' cellspacing=1 id='vlan-grid'></table>
 </div>
 
 <!-- / / / -->
 
-<h3>VID Offset <small><i><a href='javascript:toggleVisibility("vidmap");'><span id='sesdiv_vidmap_showhide'>(Click here to show)</span></a></i></small></h3>
+<div class='section-title'>VID Offset <small><i><a href='javascript:toggleVisibility("vidmap");'><span id='sesdiv_vidmap_showhide'>(Click here to show)</span></a></i></small></div>
 <div class='section' id='sesdiv_vidmap' style='display:none'>
 <script type='text/javascript'>
 createFieldTable('', [
@@ -906,7 +910,7 @@ createFieldTable('', [
 
 <!-- / / / -->
 
-<h3>Wireless <small><i><a href='javascript:toggleVisibility("wireless");'><span id='sesdiv_wireless_showhide'>(Click here to show)</span></a></i></small></h3>
+<div class='section-title'>Wireless <small><i><a href='javascript:toggleVisibility("wireless");'><span id='sesdiv_wireless_showhide'>(Click here to show)</span></a></i></small></div>
 <div class='section' id='sesdiv_wireless' style='display:none'>
 <script type='text/javascript'>
 var f = [];
@@ -923,7 +927,7 @@ if(port_vlan_supported) vlg.setup();
 
 <!-- / / / -->
 
-<h3>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></h3>
+<div class='section-title'>Notes <small><i><a href='javascript:toggleVisibility("notes");'><span id='sesdiv_notes_showhide'>(Click here to show)</span></a></i></small></div>
 <div class='section' id='sesdiv_notes' style='display:none'>
 <ul>
 <li><b>VLAN</b> - Unique identifier of a VLAN.</li>
@@ -968,13 +972,14 @@ if((trunk_vlan_supported) || (nvram.trunk_vlan_so == '1')) {
 </ul>
 </ul>
 <div id='trunk_vlan_override' style='display:none'>
-<h3>Trunk VLAN support override (experimental)</h3>
+<div class='section-title'>Trunk VLAN support override (experimental)</div>
 <div class='section'>
 <script type='text/javascript'>
 createFieldTable('', [
   { title: 'Enable', name: 'f_trunk_vlan_so', type: 'checkbox', value: nvram.trunk_vlan_so == '1' },
 ]);
 </script>
+</div>
 </div>
 </div>
 </small>
@@ -989,21 +994,14 @@ else {
     E('trunk_vlan_override').style.display = '';
 }
 </script>
- 
-<div id='footer'>
-<span id='footer-msg'></span>
-<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
-<input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();' class='btn'>
-</div>
+</td></tr>
+<tr><td id='footer' colspan=2>
+ <span id='footer-msg'></span>
+ <input type='button' value='Save' id='save-button' onclick='save()'>
+ <input type='button' value='Cancel' id='cancel-button' onclick='javascript:reloadPage();'>
+</td></tr>
+</table>
 </form>
-
-    </div><!--/span-->
-      </div><!--/row-->
-      <hr>
-      <footer>
-        <p>&copy; Tomato 2012</p>
-      </footer>
-    </div><!--/.fluid-container-->
-    <script type='text/javascript'>earlyInit(); verifyFields(null,1);</script>
+<script type='text/javascript'>earlyInit(); verifyFields(null,1);</script>
 </body>
 </html>

@@ -221,12 +221,15 @@ struct event_desc {
 #define OPT_TFTP_LC        38
 #define OPT_CLEVERBIND     39
 #define OPT_TFTP           40
+#define OPT_FAST_RA        41
 
 #ifdef HAVE_QUIET_DHCP	//Originally a TOMATO option
-  #define OPT_QUIET_DHCP 41
-  #define OPT_LAST	42
-#else 
-  #define OPT_LAST	41
+#define OPT_QUIET_DHCP     42
+#define OPT_QUIET_DHCP6    43
+#define OPT_QUIET_RA	   44
+#define OPT_LAST           45
+#else
+#define OPT_LAST		   42
 #endif //HAVE_QUIET_DHCP
 
 
@@ -314,6 +317,13 @@ struct host_record {
 struct interface_name {
   char *name; /* domain name */
   char *intr; /* interface name */
+  struct addrlist {
+    struct all_addr addr;
+    struct addrlist *next;
+  } *addr4;
+#ifdef HAVE_IPV6
+  struct addrlist *addr6;
+#endif
   struct interface_name *next;
 };
 
@@ -399,6 +409,7 @@ union mysockaddr {
 /* bits in flag param to IPv6 callbacks from iface_enumerate() */
 #define IFACE_TENTATIVE   1
 #define IFACE_DEPRECATED  2
+#define IFACE_PERMANENT   4
 
 
 #define SERV_FROM_RESOLV       1  /* 1 for servers from resolv, 0 for command line. */
@@ -706,8 +717,8 @@ struct dhcp_context {
   struct in6_addr start6, end6; /* range of available addresses */
   struct in6_addr local6;
   int prefix, if_index;
-  unsigned int valid, preferred;
-  time_t ra_time, ra_short_period_start;
+  unsigned int valid, preferred, saved_valid;
+  time_t ra_time, ra_short_period_start, address_lost_time;
   char *template_interface;
 #endif
   int flags;
@@ -731,6 +742,9 @@ struct dhcp_context {
 #define CONTEXT_RA          8192
 #define CONTEXT_CONF_USED  16384
 #define CONTEXT_USED       32768
+#define CONTEXT_NOAUTH     65536
+#define CONTEXT_OLD       131072
+
 
 struct ping_result {
   struct in_addr addr;
@@ -770,6 +784,12 @@ struct tftp_prefix {
   struct tftp_prefix *next;
 };
 
+struct dhcp_relay {
+  struct all_addr local, server;
+  char *interface; /* Allowable interface for replies from server, and dest for IPv6 multicast */
+  int iface_index; /* working - interface in which requests arrived, for return */
+  struct dhcp_relay *current, *next;
+};
 
 extern struct daemon {
   /* datastuctures representing the command-line and 
@@ -799,7 +819,7 @@ extern struct daemon {
   struct cond_domain *cond_domain, *synth_domains;
   char *runfile; 
   char *lease_change_command;
-  struct iname *if_names, *if_addrs, *if_except, *dhcp_except, *auth_peers;
+  struct iname *if_names, *if_addrs, *if_except, *dhcp_except, *auth_peers, *tftp_interfaces;
   struct bogus_addr *bogus_addr;
   struct server *servers;
   struct ipsets *ipsets;
@@ -819,6 +839,7 @@ extern struct daemon {
   struct pxe_service *pxe_services;
   struct tag_if *tag_if; 
   struct addr_list *override_relays;
+  struct dhcp_relay *relay4, *relay6;
   int override;
   int enable_pxe;
   int doing_ra, doing_dhcp6;
@@ -1031,15 +1052,15 @@ int random_sock(int family);
 void pre_allocate_sfds(void);
 int reload_servers(char *fname);
 void check_servers(void);
-int enumerate_interfaces();
+int enumerate_interfaces(int reset);
 void create_wildcard_listeners(void);
 void create_bound_listeners(int die);
 int is_dad_listeners(void);
 int iface_check(int family, struct all_addr *addr, char *name, int *auth_dns);
 int loopback_exception(int fd, int family, struct all_addr *addr, char *name);
+int label_exception(int index, int family, struct all_addr *addr);
 int fix_fd(int fd);
 int tcp_interface(int fd, int af);
-struct in_addr get_ifaddr(char *intr);
 #ifdef HAVE_IPV6
 int set_ipv6pktinfo(int fd);
 #endif
@@ -1218,6 +1239,9 @@ void dhcp_construct_contexts(time_t now);
 #ifdef HAVE_DHCP6
 unsigned short dhcp6_reply(struct dhcp_context *context, int interface, char *iface_name,  
 			   struct in6_addr *fallback, size_t sz, int is_multicast, time_t now);
+void relay_upstream6(struct dhcp_relay *relay, ssize_t sz, struct in6_addr *peer_address, u32 scope_id);
+
+unsigned short relay_reply6( struct sockaddr_in6 *peer, ssize_t sz, char *arrival_interface);
 #endif
 
 /* dhcp-common.c */
@@ -1244,6 +1268,7 @@ void bindtodevice(int fd);
 void display_opts6(void);
 #  endif
 void log_context(int family, struct dhcp_context *context);
+void log_relay(int family, struct dhcp_relay *relay);
 #endif
 
 /* outpacket.c */

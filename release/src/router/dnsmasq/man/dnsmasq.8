@@ -572,13 +572,18 @@ If you use the first DNSSEC mode, validating resolvers in clients,
 this option is not required. Dnsmasq always returns all the data
 needed for a client to do validation itself. 
 .TP
-.B --auth-zone=<domain>[,<subnet>[,<subnet>.....]]
+.B --auth-zone=<domain>[,<subnet>[/<prefix length>][,<subnet>[/<prefix length>].....]]
 Define a DNS zone for which dnsmasq acts as authoritative server. Locally defined DNS records which are in the domain
-will be served, except that A and AAAA records must be in one of the
+will be served. A and AAAA records must be in one of the
 specified subnets, or in a subnet corresponding to a constructed DHCP
-range. The subnet(s) are also used to define in-addr.arpa and
-ipv6.arpa domains which are served for reverse-DNS queries. For IPv4
-subnets, the prefix length is limited to the values 8, 16 or 24.
+range. (This can be overridden with 
+.B constructor-noauth:
+) The subnet(s) are also used to define in-addr.arpa and
+ipv6.arpa domains which are served for reverse-DNS queries. If not
+specified, the prefix length defaults to 24 for IPv4 and 64 for IPv6.
+For IPv4 subnets, the prefix length should be have the value 8, 16 or 24
+unless you are familiar with RFC 2317 and have arranged the
+in-addr.arpa delegation accordingly. 
 .TP
 .B --auth-soa=<serial>[,<hostmaster>[,<refresh>[,<retry>[,<expiry>]]]]
 Specify fields in the SOA record associated with authoritative
@@ -646,7 +651,22 @@ This forms a template which describes how to create ranges, based on the address
 
 .B --dhcp-range=::1,::400,constructor:eth0
 
-will look for addresses of the form <network>::1 on eth0 and then create a range from <network>::1 to <network>::400. If the interface is assigned more than one network, then the corresponding ranges will be automatically created, and then deprecated and finally removed again as the address is deprecated and then deleted. The interface name may have a final "*" wildcard.
+will look for addresses of the form <network>::1 or <network>:400 on
+eth0 and then create a range from <network>::1 to <network>::400. If
+the interface is assigned more than one network, then the
+corresponding ranges will be automatically created, and then
+deprecated and finally removed again as the address is deprecated and
+then deleted. The interface name may have a final "*" wildcard. Note
+that just any address on eth0 will not do: the non-prefix part must be
+equal either the start or end address given in the dhcp-range. This is
+to prevent prefixes becoming perpetual if the interface 
+gains a SLAAC address for the prefix when it is advertised by dnsmasq.
+
+There is a variant of the constructor: syntax using the keyword
+.B constructor-noauth.
+See 
+.B --auth-zone
+for an explanation of this.
 
 The optional 
 .B set:<tag> 
@@ -943,6 +963,38 @@ information (from dhcp-boot) out of their dedicated fields into
 DHCP options. This make extra space available in the DHCP packet for
 options but can, rarely, confuse old or broken clients. This flag
 forces "simple and safe" behaviour to avoid problems in such a case.
+.TP
+.B --dhcp-relay=<local address>,<server address>[,<interface]
+Configure dnsmasq to do DHCP relay. The local address is an address
+allocated to an interface on the host running dnsmasq. All DHCP
+requests arriving on that interface will we relayed to a remote DHCP
+server at the server address. It is possible to relay from a single local
+address to multiple remote servers by using multiple dhcp-relay
+configs with the same local address and different server
+addresses. A server address must be an IP literal address, not a
+domain name. In the case of DHCPv6, the server address may be the
+ALL_SERVERS multicast address, ff05::1:3. In this case the interface
+must be given, not be wildcard, and is used to direct the multicast to the
+correct interface to reach the DHCP server. 
+
+Access control for DHCP clients has the same rules as for the DHCP
+server, see --interface, --except-interface, etc. The optional
+interface name in the dhcp-relay config has a different function: it
+controls on which interface DHCP replies from the server will be
+accepted. This is intended for configurations which have three
+interfaces: one being relayed from, a second connecting the DHCP
+server, and a third untrusted network, typically the wider
+internet. It avoids the possibility of spoof replies arriving via this
+third interface.
+
+It is allowed to have dnsmasq act as a DHCP server on one set of
+interfaces and relay from a disjoint set of interfaces. Note that
+whilst it is quite possible to write configurations which appear to
+act as a server and a relay on the same interface, this is not
+supported: the relay function will take precedence.
+
+Both DHCPv4 and DHCPv6 relay is supported. It's not possible to relay
+DHCPv4 to a DHCPv6 server or vice-versa.
 .TP
 .B \-U, --dhcp-vendorclass=set:<tag>,[enterprise:<IANA-enterprise number>,]<vendor-class>
 Map from a vendor-class string to a tag. Most DHCP clients provide a 

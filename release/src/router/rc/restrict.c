@@ -2,12 +2,13 @@
 
 	Tomato Firmware
 	Copyright (C) 2006-2009 Jonathan Zarate
+	Portions rebuild by victek@tomato.raf, 2013. String chain restriction
 
 */
 
 #include "rc.h"
 #include <time.h>
-#include <string.h>
+#include <string.h> 
 
 #define MAX_NRULES	50
 
@@ -281,11 +282,9 @@ void ipt_restrictions(void)
 						  wanfaces.iface[n].name);
 				}
 			}
-
-			// Only mess with DNS requests that are coming in on INPUT
-			ip46t_write("-I INPUT 1 -p udp --dport 53 -j restrict\n");
-			
-		}
+		// Only mess with DNS requests that are coming in on INPUT
+		ip46t_write("-I INPUT 1 -p udp --dport 53 -j restrict\n");
+	}
 
 		sprintf(reschain, "rres%02d", nrule);
 		ip46t_write(":%s - [0:0]\n", reschain);
@@ -383,11 +382,11 @@ void ipt_restrictions(void)
 			}
 		}
 
-		// Set up a chain just to do the string matching
+// Build chain to perform string matching 
 		sprintf(strchain, "rstr%02d", nrule);
 		ip46t_write(":%s - [0:0]\n", strchain);
 		
-		// Add a multiport match so that only ports 53,443 and 80 get sent to strchain
+// Multiport match for ports 53,80,443 goto strchain 
 		ip46t_write("-A %s -p tcp -m multiport --dports 53,80,443 -j %s\n", reschain, strchain);
 		ip46t_write("-A %s -p udp --dport 53 -j %s\n", reschain, strchain);
 
@@ -408,14 +407,14 @@ void ipt_restrictions(void)
 			}
 			else p = NULL;
 
-			// Trim trailing whitespace from http
+// Trim trailing whitespace from http
 			char *p2 = http + strlen(http) - 1;
 			while (*p2 == ' ')
 			{
 			     *p2-- = '\0';
 			}
 
-			// Split the string delimited by whitespace.  Each substring should be a new iptables entry.
+// Split the string delimited by whitespace.  Each substring should be a new iptables entry.
 			char delim[] = " ";
 			p2 = strtok(http, delim);
 			while (p2 != NULL)
@@ -446,8 +445,8 @@ void ipt_restrictions(void)
 
 		if (*comps) {
 			if (blockall) {
-				ip46t_write("-F %s\n", reschain);	// chain not needed
-				ip46t_write("-X %s\n", reschain);	// chain not needed
+				ip46t_write("-F %s\n", reschain); // https://github.com/ReliefLabs/EasyTomato/
+				ip46t_write("-X %s\n", reschain); // chain not needed
 				sprintf(nextchain, "-j %s", chain_out_drop);
 			}
 			else {

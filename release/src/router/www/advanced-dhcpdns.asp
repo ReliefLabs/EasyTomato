@@ -24,7 +24,7 @@
 
 <script type='text/javascript'>
 
-//	<% nvram("ipv6_radvd,dhcpd_dmdns,dns_addget,dhcpd_gwmode,dns_intcpt,dhcpd_slt,dhcpc_minpkt,dnsmasq_custom,dnsmasq_norw,dhcpd_lmax,dhcpc_custom,dns_norebind,dhcpd_static_only"); %>
+//	<% nvram("dnsmasq_q,ipv6_radvd,dhcpd_dmdns,dns_addget,dhcpd_gwmode,dns_intcpt,dhcpd_slt,dhcpc_minpkt,dnsmasq_custom,dnsmasq_norw,dhcpd_lmax,dhcpc_custom,dns_norebind,dhcpd_static_only"); %>
 
 if ((isNaN(nvram.dhcpd_lmax)) || ((nvram.dhcpd_lmax *= 1) < 1)) nvram.dhcpd_lmax = 255;
 
@@ -61,6 +61,11 @@ function save()
 	fom.dhcpc_minpkt.value = E('_f_dhcpc_minpkt').checked ? 1 : 0;
 	fom.dhcpd_static_only.value = E('_f_dhcpd_static_only').checked ? '1' : '0';
 	fom.ipv6_radvd.value = E('_f_ipv6_radvd').checked ? '1' : '0';
+
+	fom.dnsmasq_q.value = 0;
+	if (fom.f_dnsmasq_q4.checked) fom.dnsmasq_q.value |= 1;
+	if (fom.f_dnsmasq_q6.checked) fom.dnsmasq_q.value |= 2;
+	if (fom.f_dnsmasq_qr.checked) fom.dnsmasq_q.value |= 4;
 
 	if (fom.dhcpc_minpkt.value != nvram.dhcpc_minpkt ||
 	    fom.dhcpc_custom.value != nvram.dhcpc_custom) {
@@ -128,6 +133,7 @@ function init() {
 <input type='hidden' name='dhcpc_minpkt'>
 <input type='hidden' name='dhcpd_static_only'>
 <input type='hidden' name='ipv6_radvd'>
+<input type='hidden' name='dnsmasq_q'>
 
 <h3>DHCP / DNS Server (LAN)</h3>
 <div class='section'>
@@ -145,7 +151,10 @@ createFieldTable('', [
 			value: (nvram.dhcpd_slt < 1) ? nvram.dhcpd_slt : 1 },
 		{ name: 'f_dhcpd_slt', type: 'text', maxlen: 5, size: 8, prefix: '<span id="_dhcpd_sltman"> ', suffix: ' <i>(minutes)</i></span>',
 			value: (nvram.dhcpd_slt >= 1) ? nvram.dhcpd_slt : 3600 } ] },
-	{ title: 'Enable IPv6 RA', name: 'f_ipv6_radvd', type: 'checkbox', value: nvram.ipv6_radvd == '1' },
+	{ title: 'Announce IPv6 on LAN', name: 'f_ipv6_radvd', type: 'checkbox', value: nvram.ipv6_radvd == '1' },
+	{ title: 'Mute dhcpv4 logging', name: 'f_dnsmasq_q4', type: 'checkbox', value: (nvram.dnsmasq_q & 1) },
+	{ title: 'Mute dhcpv6 logging', name: 'f_dnsmasq_q6', type: 'checkbox', value: (nvram.dnsmasq_q & 2) },
+	{ title: 'Mute RA logging', name: 'f_dnsmasq_qr', type: 'checkbox', value: (nvram.dnsmasq_q & 4) },
 	{ title: '<a href="http://www.thekelleys.org.uk/" target="_new">Dnsmasq</a><br>Custom configuration', name: 'dnsmasq_custom', type: 'textarea', value: nvram.dnsmasq_custom }
 ]);
 </script>

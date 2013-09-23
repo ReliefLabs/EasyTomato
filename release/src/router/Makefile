@@ -473,7 +473,7 @@ endif
 	@rm -f $(TARGETDIR)/lib/modules/*/build
 
 	@$(MAKE) -C $(LINUXDIR)/scripts/squashfs mksquashfs-lzma
-	$(LINUXDIR)/scripts/squashfs/mksquashfs-lzma $(TARGETDIR) $(PLATFORMDIR)/target.image -all-root -noappend -no-duplicates | tee target.info
+	@$(LINUXDIR)/scripts/squashfs/mksquashfs-lzma $(TARGETDIR) $(PLATFORMDIR)/target.image -all-root -noappend -no-duplicates | tee target.info
 
 #	Package kernel and filesystem
 #	if grep -q "CONFIG_EMBEDDED_RAMDISK=y" $(LINUXDIR)/.config ; then \
@@ -596,16 +596,6 @@ httpd: shared nvram mssl
 www-install:
 	@$(MAKE) -C www install INSTALLDIR=$(INSTALLDIR)/www TOMATO_EXPERIMENTAL=$(TOMATO_EXPERIMENTAL)
 
-easytomatoscripts-install:
-	mkdir -p $(TARGETDIR)/easytomato
-	mkdir -p $(TARGETDIR)/easytomato/easyoptionals
-	cp easytomato/.adblocker.sh $(TARGETDIR)/easytomato/.
-	cp easytomato/.autorun $(TARGETDIR)/easytomato/.
-	cp easytomato/easyoptionals_setup.sh $(TARGETDIR)/easytomato/.
-	cp easytomato/adblock.gif $(TARGETDIR)/easytomato/.
-	cp easytomato/pixelserv $(TARGETDIR)/easytomato/.
-	cp easytomato/tcpdump $(TARGETDIR)/easytomato/.
-
 matrixssl:
 	@$(SEP)
 	@$(MAKE) -C matrixssl/src
@@ -726,7 +716,8 @@ endif
 iptables-install:
 	install -D iptables/iptables $(INSTALLDIR)/iptables/usr/sbin/iptables
 	cd $(INSTALLDIR)/iptables/usr/sbin && \
-		ln -sf iptables iptables-restore
+		ln -sf iptables iptables-restore && \
+		ln -sf iptables iptables-save
 
 	install -d $(INSTALLDIR)/iptables/usr/lib/iptables
 	install -D iptables/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/iptables/
@@ -741,7 +732,8 @@ ifeq ($(TCONFIG_IPV6),y)
 	install iptables/ip6tables $(INSTALLDIR)/iptables/usr/sbin/ip6tables
 	$(STRIP) $(INSTALLDIR)/iptables/usr/sbin/ip6tables
 	cd $(INSTALLDIR)/iptables/usr/sbin && \
-		ln -sf ip6tables ip6tables-restore
+		ln -sf ip6tables ip6tables-restore && \
+		ln -sf ip6tables ip6tables-save
 endif
 
 iptables-clean:

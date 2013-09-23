@@ -143,13 +143,21 @@ void enable_ip_forward(void)
 	*/
 	f_write_string("/proc/sys/net/ipv4/ip_forward", "1", 0, 0);
 
+}
+
 #ifdef TCONFIG_IPV6
+void enable_ip6_forward(void)
+{
 	if (ipv6_enabled()) {
 		f_write_string("/proc/sys/net/ipv6/conf/default/forwarding", "1", 0, 0);
 		f_write_string("/proc/sys/net/ipv6/conf/all/forwarding", "1", 0, 0);
 	}
-#endif
+	else {
+		f_write_string("/proc/sys/net/ipv6/conf/default/forwarding", "0", 0, 0);
+		f_write_string("/proc/sys/net/ipv6/conf/all/forwarding", "0", 0, 0);
+	}
 }
+#endif
 
 
 // -----------------------------------------------------------------------------
@@ -435,6 +443,9 @@ static void ipt_account(void) {
 	char lanN[] = "lanXX";
 	char netaddrnetmask[] = "255.255.255.255/255.255.255.255 ";
 	char br;
+	// If the IP Address changes, the below rule will cause things to choke, and blocking rules don't get applied
+	// As a workaround, flush the entire FORWARD chain
+	system("iptables -F FORWARD");
 
 	// If the IP Address changes, the below rule will cause things to choke, and blocking rules don't get applied
 	// As a workaround, flush the entire FORWARD chain
@@ -1760,6 +1771,9 @@ int start_firewall(void)
 	simple_unlock("restrictions");
 	sched_restrictions();
 	enable_ip_forward();
+#ifdef TCONFIG_IPV6
+	if (ipv6_enabled()) enable_ip6_forward();
+#endif
 
 	led(LED_DMZ, dmz_dst(NULL));
 

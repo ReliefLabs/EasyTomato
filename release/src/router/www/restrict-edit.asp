@@ -311,12 +311,12 @@ function verifyFields(focused, quiet)
 	return 1;
 }
 
-function cancel()
+function cancelRule()
 {
 	document.location = 'restrict.asp';
 }
 
-function remove()
+function removeRule()
 {
 	if (!confirm('Delete this rule?')) return;
 
@@ -328,7 +328,7 @@ function remove()
 	form.submit('_fom');
 }
 
-function save()
+function saveRule()
 {
 	if (!verifyFields(null, false)) return;
 	if ((cg.isEditing()) || (bpg.isEditing())) return;
@@ -438,8 +438,6 @@ function earlyInit()
 </head>
 <body onload='init()'>
 
-
-    
 <% include(header.html); %>
 
 <!-- / / / -->
@@ -487,11 +485,13 @@ createFieldTable('', [
 </script>
 </div>
 
+<!-- / / / -->
+
 	<span id='footer-msg'></span>
-	<input type='button' value='Delete...' id='delete-button' onclick='remove()' class='btn'>
+	<input type='button' value='Delete...' id='delete-button' onclick='removeRule()' class='btn'>
 	&nbsp;
-	<input type='button' value='Save' id='save-button' onclick='save()' class='btn'>
-	<input type='button' value='Cancel' id='cancel-button' onclick='cancel()' class='btn'>
+	<input type='button' value='Save' id='save-button' onclick='saveRule()' class='btn'>
+	<input type='button' value='Cancel' id='cancel-button' onclick='cancelRule()' class='btn'>
 </form>
 
 <!-- / / / -->
