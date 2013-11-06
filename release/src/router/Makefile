@@ -596,6 +596,16 @@ httpd: shared nvram mssl
 www-install:
 	@$(MAKE) -C www install INSTALLDIR=$(INSTALLDIR)/www TOMATO_EXPERIMENTAL=$(TOMATO_EXPERIMENTAL)
 
+easytomatoscripts-install:
+	mkdir -p $(TARGETDIR)/easytomato
+	mkdir -p $(TARGETDIR)/easytomato/easyoptionals
+	cp easytomato/.adblocker.sh $(TARGETDIR)/easytomato/.
+	cp easytomato/.autorun $(TARGETDIR)/easytomato/.
+	cp easytomato/easyoptionals_setup.sh $(TARGETDIR)/easytomato/.
+	cp easytomato/adblock.gif $(TARGETDIR)/easytomato/.
+	cp easytomato/pixelserv $(TARGETDIR)/easytomato/.
+	cp easytomato/tcpdump $(TARGETDIR)/easytomato/.
+
 matrixssl:
 	@$(SEP)
 	@$(MAKE) -C matrixssl/src
